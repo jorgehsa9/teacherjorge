@@ -28,14 +28,13 @@ import { dbService } from '../lib/dbService';
 import { fetchStudentsMinimal, supabase, supabaseAnonKey } from '../lib/supabase';
 
 interface TeacherDashboardProps {
-  isDemo: boolean;
   userEmail: string;
   onSignOut: () => void;
 }
 
 type ActiveTab = 'roster' | 'lessons' | 'billing' | 'resources';
 
-export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: TeacherDashboardProps) {
+export default function TeacherDashboard({ userEmail, onSignOut }: TeacherDashboardProps) {
   const [activeTab, setActiveTab] = useState<ActiveTab>('roster');
   
   // App States
@@ -128,11 +127,11 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const s = await dbService.getStudents(isDemo);
-      const l = await dbService.getLessons(isDemo);
-      const m = await dbService.getMaterials(isDemo);
-      const inv = await dbService.getInvoices(isDemo);
-      const ql = await dbService.getQuickLinks(isDemo);
+      const s = await dbService.getStudents();
+      const l = await dbService.getLessons();
+      const m = await dbService.getMaterials();
+      const inv = await dbService.getInvoices();
+      const ql = await dbService.getQuickLinks();
 
       setStudents(s);
       setLessons(l);
@@ -153,7 +152,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
 
   useEffect(() => {
     loadAllData();
-  }, [isDemo]);
+  }, []);
 
   const showFeedback = (text: string, type: 'success' | 'error') => {
     setMessage({ text, type });
@@ -241,7 +240,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
     };
 
     try {
-      await dbService.saveStudent(studentData, isDemo);
+      await dbService.saveStudent(studentData);
       await loadAllData();
       setIsStudentModalOpen(false);
       setSelectedStudent(studentData);
@@ -254,7 +253,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
   const handleDeleteStudent = async (id: string) => {
     if (confirm('Are you sure you want to remove this student? This will not delete their class history.')) {
       try {
-        await dbService.deleteStudent(id, isDemo);
+        await dbService.deleteStudent(id);
         await loadAllData();
         if (selectedStudent?.id === id) {
           setSelectedStudent(null);
@@ -310,7 +309,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
     };
 
     try {
-      await dbService.saveLesson(lessonData, isDemo);
+      await dbService.saveLesson(lessonData);
       await loadAllData();
       setIsLessonModalOpen(false);
       showFeedback('Class logged successfully.', 'success');
@@ -322,7 +321,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
   const toggleHomeworkCompleted = async (log: LessonLog) => {
     const updated = { ...log, homeworkCompleted: !log.homeworkCompleted };
     try {
-      await dbService.saveLesson(updated, isDemo);
+      await dbService.saveLesson(updated);
       await loadAllData();
       showFeedback('Homework status updated.', 'success');
     } catch (err) {
@@ -333,7 +332,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
   const handleDeleteLesson = async (id: string) => {
     if (confirm('Delete this lesson log?')) {
       try {
-        await dbService.deleteLesson(id, isDemo);
+        await dbService.deleteLesson(id);
         await loadAllData();
         showFeedback('Lesson log deleted.', 'success');
       } catch (err) {
@@ -375,7 +374,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
     };
 
     try {
-      await dbService.saveInvoice(invoiceData, isDemo);
+      await dbService.saveInvoice(invoiceData);
       await loadAllData();
       setIsInvoiceModalOpen(false);
       showFeedback('Invoice generated successfully.', 'success');
@@ -391,7 +390,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
       paymentDate: newStatus === 'paid' ? new Date().toISOString().split('T')[0] : undefined
     };
     try {
-      await dbService.saveInvoice(updated, isDemo);
+      await dbService.saveInvoice(updated);
       await loadAllData();
       showFeedback(`Invoice marked as ${newStatus}.`, 'success');
     } catch (err) {
@@ -408,7 +407,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
     }
     const updated = { ...invoice, packageUsed: currentUsed + 1 };
     try {
-      await dbService.saveInvoice(updated, isDemo);
+      await dbService.saveInvoice(updated);
       await loadAllData();
     } catch (err) {
       showFeedback('Failed to update package count.', 'error');
@@ -418,7 +417,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
   const handleDeleteInvoice = async (id: string) => {
     if (confirm('Delete this invoice?')) {
       try {
-        await dbService.deleteInvoice(id, isDemo);
+        await dbService.deleteInvoice(id);
         await loadAllData();
         showFeedback('Invoice deleted.', 'success');
       } catch (err) {
@@ -440,7 +439,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
     };
 
     try {
-      await dbService.saveQuickLink(newLink, isDemo);
+      await dbService.saveQuickLink(newLink);
       await loadAllData();
       setIsLinkModalOpen(false);
       setLinkForm({ title: '', url: '', category: 'drive' });
@@ -452,7 +451,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
 
   const handleDeleteLink = async (id: string) => {
     try {
-      await dbService.deleteQuickLink(id, isDemo);
+      await dbService.deleteQuickLink(id);
       await loadAllData();
       showFeedback('Quick Link deleted.', 'success');
     } catch (err) {
@@ -476,7 +475,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
     };
 
     try {
-      await dbService.saveMaterial(newMaterial, isDemo);
+      await dbService.saveMaterial(newMaterial);
       await loadAllData();
       setIsMaterialModalOpen(false);
       setMaterialForm({ studentId: 'global', title: '', type: 'pdf', url: '', description: '' });
@@ -488,7 +487,7 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
 
   const handleDeleteMaterial = async (id: string) => {
     try {
-      await dbService.deleteMaterial(id, isDemo);
+      await dbService.deleteMaterial(id);
       await loadAllData();
       showFeedback('Study material deleted.', 'success');
     } catch (err) {
@@ -558,15 +557,9 @@ export default function TeacherDashboard({ isDemo, userEmail, onSignOut }: Teach
         {/* Sidebar Footer */}
         <div className="p-6 border-t border-slate-800 text-xs text-slate-400 space-y-4" id="sidebar-footer">
           <div className="flex items-center gap-2" id="db-sync-status">
-            {isDemo ? (
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
-                Modo Sandbox
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
-                <Cloud className="h-3 w-3" /> Live DB Conectado
-              </span>
-            )}
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+              <Cloud className="h-3 w-3" /> Live DB Conectado
+            </span>
           </div>
           <div className="truncate font-mono" title={userEmail}>
             {userEmail}

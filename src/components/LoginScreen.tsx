@@ -15,7 +15,7 @@ import { supabase } from '../lib/supabase';
 import { UserRole } from '../types';
 
 interface LoginScreenProps {
-  onLoginSuccess: (role: UserRole, studentId: string | null, isDemo: boolean, email: string) => void;
+  onLoginSuccess: (role: UserRole, studentId: string | null, email: string) => void;
 }
 
 export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
@@ -28,7 +28,6 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   const [error, setError] = useState<string | null>(null);
   const [errorCode, setErrorCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [authMode, setAuthMode] = useState<'demo' | 'supabase'>('supabase');
 
   const handleSupabaseAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,7 +79,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         // Successfully signed up! Standard setup might require email confirmation,
         // but let's bypass it for instant testing ease if session is not started.
         const targetStudentId = role === 'student' ? (name || email.split('@')[0]) : null;
-        onLoginSuccess(role, targetStudentId, false, email);
+        onLoginSuccess(role, targetStudentId, email);
       } else {
         // Sign In
         let loginEmail = email.trim();
@@ -107,47 +106,29 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           console.warn('Supabase auth failed, trying database lookup...', authErr);
         }
 
-        // 2. FAIL-SAFE DB LOOKUP (If auth failed or user is not in Supabase Auth yet but exists in 'Students' table)
-        if (!authSuccess) {
-          const { data: students, error: dbError } = await supabase
-            .from('Students')
-            .select('*');
-
-          if (!dbError && students) {
-            // Check if email or name matches
-            const matchedStudent = students.find(
-              (s: any) =>
-                (s.email && s.email.toLowerCase() === loginEmail.toLowerCase()) ||
-                (s.name && s.name.toLowerCase() === loginEmail.toLowerCase())
-            );
-
-            if (matchedStudent) {
-              detectedRole = 'student';
-              studentId = matchedStudent.name; // primary key is name in user's table
-              loginEmail = matchedStudent.email || loginEmail;
-              authSuccess = true;
-            }
-          }
-
-          // Also allow the Teacher to log in instantly if using the teacher's email address or admin username
           if (!authSuccess) {
-            const emailLower = loginEmail.toLowerCase();
-            if (
-              emailLower === 'jorgehsantonio@gmail.com' ||
-              emailLower === 'teacher@example.com' ||
-              emailLower === 'admin' ||
-              emailLower === 'teacher' ||
-              emailLower.includes('teacher') ||
-              emailLower.includes('admin')
-            ) {
-              detectedRole = 'teacher';
-              authSuccess = true;
+            const { data: students, error: dbError } = await supabase
+              .from('Students')
+              .select('*');
+
+            if (!dbError && students) {
+              const matchedStudent = students.find(
+                (s: any) =>
+                  (s.email && s.email.toLowerCase() === loginEmail.toLowerCase()) ||
+                  (s.name && s.name.toLowerCase() === loginEmail.toLowerCase())
+              );
+
+              if (matchedStudent) {
+                detectedRole = 'student';
+                studentId = matchedStudent.name; // primary key is name in user's table
+                loginEmail = matchedStudent.email || loginEmail;
+                authSuccess = true;
+              }
             }
           }
-        }
 
         if (authSuccess) {
-          onLoginSuccess(detectedRole, studentId, false, loginEmail);
+          onLoginSuccess(detectedRole, studentId, loginEmail);
         } else {
           setError('Credenciais incorretas ou conta não encontrada. Para testar o aluno do seu banco de dados ("john"), insira "john@email.com" ou o nome "john"!');
         }
@@ -160,12 +141,6 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleDemoAccess = (demoRole: UserRole) => {
-    const studentId = demoRole === 'student' ? 'student-alice' : null;
-    const demoEmail = demoRole === 'teacher' ? 'teacher@demo.com' : 'alice.vance@example.com';
-    onLoginSuccess(demoRole, studentId, true, demoEmail);
   };
 
   return (
@@ -238,72 +213,8 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             </p>
           </div>
 
-          {/* Mode Selector - Demo vs Real Supabase */}
-          <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-2xl text-xs font-bold" id="login-mode-selector">
-            <button
-              onClick={() => { setAuthMode('demo'); setError(null); }}
-              className={`py-2.5 text-center rounded-xl transition-all duration-200 cursor-pointer ${authMode === 'demo' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
-              id="login-mode-demo-btn"
-            >
-              Modo de Demonstração
-            </button>
-            <button
-              onClick={() => { setAuthMode('supabase'); setError(null); }}
-              className={`py-2.5 text-center rounded-xl transition-all duration-200 cursor-pointer ${authMode === 'supabase' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
-              id="login-mode-supabase-btn"
-            >
-              Nuvem Real (Supabase)
-            </button>
-          </div>
-
-          {authMode === 'demo' ? (
-            /* DEMO SANDBOX CONTROLS */
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-              id="demo-mode-section"
-            >
-              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
-                <h3 className="text-xs font-bold text-slate-800 mb-1">Ambientes de Teste Instantâneos</h3>
-                <p className="text-[11px] text-slate-500 leading-normal">
-                  Sem necessidade de criar conta. Comece imediatamente com dados prontos contendo deveres de casa, lições e registros reais de aula.
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <button
-                  onClick={() => handleDemoAccess('teacher')}
-                  className="w-full flex items-center justify-between p-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-100 cursor-pointer text-sm"
-                  id="demo-teacher-login-btn"
-                >
-                  <div className="flex items-center gap-3">
-                    <GraduationCap className="h-5 w-5 text-indigo-100" />
-                    <span>Entrar como Professor (Admin Completo)</span>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-indigo-100" />
-                </button>
-
-                <button
-                  onClick={() => handleDemoAccess('student')}
-                  className="w-full flex items-center justify-between p-4 bg-white text-slate-700 border border-slate-200 rounded-2xl font-bold hover:bg-slate-50 transition-colors cursor-pointer text-sm"
-                  id="demo-student-login-btn"
-                >
-                  <div className="flex items-center gap-3">
-                    <User className="h-5 w-5 text-indigo-600" />
-                    <span>Entrar como Aluno (Alice Vance)</span>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-slate-400" />
-                </button>
-              </div>
-
-              <div className="pt-2 text-[10px] font-mono text-slate-400 text-center leading-relaxed">
-                As alterações no modo de demonstração são persistidas no navegador.
-              </div>
-            </motion.div>
-          ) : (
-            /* REAL SUPABASE AUTHENTICATION */
-            <motion.form
+          {/* REAL SUPABASE AUTHENTICATION */}
+          <motion.form
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               onSubmit={handleSupabaseAuth}
@@ -316,26 +227,6 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                     <AlertCircle className="h-4 w-4 shrink-0 text-rose-500 mt-0.5" />
                     <span className="font-semibold leading-relaxed">{error}</span>
                   </div>
-                  
-                  {/* Actionable recovery options based on the specific error */}
-                  {errorCode && (
-                    <div className="mt-2 pt-2 border-t border-rose-200/50 flex flex-col sm:flex-row gap-2">
-                      <button
-                        type="button"
-                        onClick={() => { setAuthMode('demo'); setError(null); setErrorCode(null); }}
-                        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-center transition-colors cursor-pointer"
-                      >
-                        Ativar Modo de Demonstração
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDemoAccess(role)}
-                        className="px-3 py-1.5 bg-white border border-rose-300 hover:bg-rose-100/50 text-rose-800 rounded-xl font-bold text-center transition-colors cursor-pointer"
-                      >
-                        Entrar Simulado como {role === 'teacher' ? 'Professor' : 'Aluno'}
-                      </button>
-                    </div>
-                  )}
                 </div>
               )}
 
@@ -449,21 +340,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                 )}
               </div>
 
-               {/* Quick tip on testing accounts */}
-              {!isSignUp && (
-                <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl text-emerald-900 text-xs leading-relaxed mt-4 font-medium space-y-2">
-                  <div>
-                    <span className="font-bold text-emerald-950 block mb-0.5">🔑 Acesso Administrador (Professor):</span>
-                    Digite <strong>admin</strong> ou <strong>teacher</strong> (ou o seu e-mail <strong>jorgehsantonio@gmail.com</strong>) no campo de e-mail e qualquer senha para entrar instantaneamente como Administrador!
-                  </div>
-                  <div className="pt-2 border-t border-emerald-200/50">
-                    <span className="font-bold text-emerald-950 block mb-0.5">👤 Acesso Aluno (John):</span>
-                    Se você inseriu o aluno <strong>john</strong> no seu banco de dados, digite <strong>john</strong> ou <strong>john@email.com</strong> com qualquer senha para ver o painel do aluno.
-                  </div>
-                </div>
-              )}
             </motion.form>
-          )}
         </div>
       </div>
     </div>

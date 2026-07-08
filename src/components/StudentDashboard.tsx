@@ -24,12 +24,11 @@ import { dbService } from '../lib/dbService';
 
 interface StudentDashboardProps {
   studentId: string; // The tied student profile ID
-  isDemo: boolean;
   userEmail: string;
   onSignOut: () => void;
 }
 
-export default function StudentDashboard({ studentId, isDemo, userEmail, onSignOut }: StudentDashboardProps) {
+export default function StudentDashboard({ studentId, userEmail, onSignOut }: StudentDashboardProps) {
   // Data States
   const [studentProfile, setStudentProfile] = useState<Student | null>(null);
   const [lessons, setLessons] = useState<LessonLog[]>([]);
@@ -44,7 +43,7 @@ export default function StudentDashboard({ studentId, isDemo, userEmail, onSignO
   const loadStudentWorkspaceData = async () => {
     setLoading(true);
     try {
-      const allStudents = await dbService.getStudents(isDemo);
+      const allStudents = await dbService.getStudents();
       // Find current student's profile. If not found, default to first or create dummy.
       let profile = allStudents.find(s => s.id === studentId || s.email.toLowerCase() === userEmail.toLowerCase());
       if (!profile && allStudents.length > 0) {
@@ -56,24 +55,24 @@ export default function StudentDashboard({ studentId, isDemo, userEmail, onSignO
         const currentStudentId = profile.id;
         
         // Fetch lessons for this student
-        const allLessons = await dbService.getLessons(isDemo);
+        const allLessons = await dbService.getLessons();
         const studentLessons = allLessons.filter(l => l.studentId === currentStudentId)
           .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         setLessons(studentLessons);
 
         // Fetch materials shared with this student OR global
-        const allMaterials = await dbService.getMaterials(isDemo);
+        const allMaterials = await dbService.getMaterials();
         const studentMaterials = allMaterials.filter(m => m.studentId === 'global' || m.studentId === currentStudentId);
         setMaterials(studentMaterials);
 
         // Fetch bills
-        const allInvoices = await dbService.getInvoices(isDemo);
+        const allInvoices = await dbService.getInvoices();
         const studentBills = allInvoices.filter(i => i.studentId === currentStudentId);
         setInvoices(studentBills);
       }
 
       // Quick links (always global)
-      const ql = await dbService.getQuickLinks(isDemo);
+      const ql = await dbService.getQuickLinks();
       setQuickLinks(ql);
 
     } catch (err) {
@@ -85,7 +84,7 @@ export default function StudentDashboard({ studentId, isDemo, userEmail, onSignO
 
   useEffect(() => {
     loadStudentWorkspaceData();
-  }, [studentId, isDemo, userEmail]);
+  }, [studentId, userEmail]);
 
   const triggerFeedback = (msg: string) => {
     setFeedbackMsg(msg);
@@ -99,7 +98,7 @@ export default function StudentDashboard({ studentId, isDemo, userEmail, onSignO
     };
 
     try {
-      await dbService.saveLesson(updated, isDemo);
+      await dbService.saveLesson(updated);
       await loadStudentWorkspaceData();
       triggerFeedback(updated.homeworkCompleted ? 'Dever de casa marcado como concluído! Bom trabalho.' : 'Dever de casa marcado como pendente.');
     } catch (err) {
