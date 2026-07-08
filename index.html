@@ -6,8 +6,96 @@
     <title>Teacher Jorge</title>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div id="root">
+      <div class="fallback-container">
+        <div class="fallback-box">
+          <h1>Teacher Jorge</h1>
+          <p>Bem-vindo ao espaço de gerenciamento de turmas.</p>
+          <div class="fallback-card">
+            <h2>Página de Login</h2>
+            <p>Este fallback aparece quando o app React não está sendo servido localmente.</p>
+            <div class="fallback-buttons">
+              <button>Entrar como Professor</button>
+              <button>Entrar como Aluno</button>
+            </div>
+          </div>
+          <p class="fallback-note">Para usar o app completo, abra-o via servidor Vite ou publicação hospedada.</p>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./src/main.tsx"></script>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .fallback-container {
+        width: 100%;
+        max-width: 540px;
+        padding: 24px;
+      }
+      .fallback-box {
+        background: #111827;
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 24px 80px rgba(15, 23, 42, 0.35);
+        text-align: center;
+      }
+      .fallback-box h1 {
+        margin: 0 0 12px;
+        font-size: 2rem;
+        letter-spacing: -0.04em;
+      }
+      .fallback-box p {
+        margin: 0 0 24px;
+        color: #cbd5e1;
+        line-height: 1.6;
+      }
+      .fallback-card {
+        background: #1f2937;
+        border: 1px solid rgba(148, 163, 184, 0.12);
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+      .fallback-card h2 {
+        margin: 0 0 12px;
+        font-size: 1.25rem;
+        color: #f8fafc;
+      }
+      .fallback-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .fallback-buttons button {
+        border: none;
+        border-radius: 999px;
+        padding: 12px 20px;
+        font-weight: 700;
+        cursor: pointer;
+        color: #0f172a;
+        background: #38bdf8;
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+      .fallback-buttons button:hover {
+        background: #0ea5e9;
+        transform: translateY(-1px);
+      }
+      .fallback-note {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #94a3b8;
+      }
+    </style>
   </body>
 </html>
 
