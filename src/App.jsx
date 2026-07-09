@@ -5,6 +5,7 @@ import DashboardLayout from './components/Layout/DashboardLayout';
 import Login from './pages/Auth/Login';
 import TeacherDashboard from './pages/Teacher/Dashboard';
 import StudentDashboard from './pages/Student/Dashboard';
+import StudentMaterials from './pages/Student/Materials';
 import StudentsList from './pages/Teacher/StudentsList';
 import Materials from './pages/Teacher/Materials';
 import Financial from './pages/Financial/Financial';
@@ -62,6 +63,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['student']}>
                   <StudentDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="student/materials" 
+              element={
+                <ProtectedRoute allowedRoles={['student']}>
+                  <StudentMaterials />
                 </ProtectedRoute>
               } 
             />

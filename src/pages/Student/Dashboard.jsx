@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { Play, Download, Book, Award, Calendar } from 'lucide-react';
 import './StudentDashboard.css';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   
   const [studentData, setStudentData] = useState(null);
   const [nextClass, setNextClass] = useState(null);
@@ -200,9 +202,6 @@ const StudentDashboard = () => {
                     <div className="font-semibold text-sm truncate">{mat.title}</div>
                     <div className="text-xs text-muted">{mat.file_type} • {formatShortDate(mat.created_at)}</div>
                   </div>
-                  <div className="btn-icon text-muted flex items-center justify-center" title="Download / Open" style={{padding: '4px', background: 'none', border: 'none', display: 'inline-flex'}}>
-                    <Download size={18} />
-                  </div>
                 </a>
               )) : (
                 <div className="text-center text-muted p-4 text-sm">
@@ -211,7 +210,7 @@ const StudentDashboard = () => {
               )}
             </div>
             {materials.length > 0 && (
-              <button className="btn btn-outline w-full mt-4 text-sm">View All Materials</button>
+              <button className="btn btn-outline w-full mt-4 text-sm" onClick={() => navigate('/dashboard/student/materials')}>View All Materials</button>
             )}
           </div>
         </div>
