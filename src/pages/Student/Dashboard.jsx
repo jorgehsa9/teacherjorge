@@ -149,47 +149,47 @@ const StudentDashboard = () => {
             </button>
           </div>
 
-          {/* Gamification 3D Progress Tracker */}
-          <div className="card glass mb-6" style={{ overflow: 'hidden' }}>
-            <h2 className="mb-6 flex items-center gap-2"><Award className="text-primary"/> Jornada do Aluno</h2>
+          {/* Gamification Progress Tracker */}
+          <div className="card glass mb-6">
+            <h2 className="mb-4 flex items-center gap-2"><Award className="text-primary"/> Jornada do Aluno</h2>
             
-            <div className="progress-3d-container">
-              <div className="flex justify-between text-sm mb-4 font-semibold px-2">
+            <div className="progress-elegant-container">
+              <div className="flex justify-between text-sm mb-2 font-semibold">
                 <span className="text-muted">{studentData?.current_module || 'Módulo de Boas-vindas'}</span>
-                <span style={{ color: '#ec4899' }}>{studentData?.module_progress || 0}% Concluído</span>
+                <span className="text-primary">{studentData?.module_progress || 0}% Concluído</span>
               </div>
-              <div className="progress-3d-track">
-                <div className="progress-3d-fill" style={{ width: `${studentData?.module_progress || 0}%` }}></div>
+              <div className="progress-elegant-track">
+                <div className="progress-elegant-fill" style={{ width: `${studentData?.module_progress || 0}%` }}></div>
               </div>
             </div>
 
-            <div className="grid-cols-3 mt-8 gap-4">
-              <div className="level-badge-3d">
-                <div className="badge-icon-3d">
+            <div className="grid-cols-3 mt-6 gap-4">
+              <div className="level-badge-elegant">
+                <div className="badge-icon-elegant">
                   <Play size={24} className="text-primary" />
                 </div>
-                <div className="badge-value-3d">{studentData?.hours_studied || 0}</div>
-                <div className="text-xs text-muted uppercase font-semibold">Horas de Voo</div>
+                <div className="badge-value-elegant">{studentData?.hours_studied || 0}</div>
+                <div className="text-xs text-muted uppercase font-medium">Horas Estudadas</div>
               </div>
               
-              <div className="level-badge-3d" style={{ borderColor: 'rgba(16, 185, 129, 0.3)' }}>
-                <div className="badge-icon-3d">
+              <div className="level-badge-elegant">
+                <div className="badge-icon-elegant" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)' }}>
                   <Award size={24} className="text-success" />
                 </div>
-                <div className="badge-value-3d" style={{ background: 'linear-gradient(to bottom, #fff, #34d399)', WebkitBackgroundClip: 'text' }}>
+                <div className="badge-value-elegant" style={{ color: 'var(--success)' }}>
                   {studentData?.level?.split(' ')[0] || 'A1'}
                 </div>
-                <div className="text-xs text-muted uppercase font-semibold">Nível Atual</div>
+                <div className="text-xs text-muted uppercase font-medium">Nível Atual</div>
               </div>
               
-              <div className="level-badge-3d" style={{ borderColor: 'rgba(245, 158, 11, 0.3)' }}>
-                <div className="badge-icon-3d">
+              <div className="level-badge-elegant">
+                <div className="badge-icon-elegant" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)' }}>
                   <Book size={24} className="text-warning" />
                 </div>
-                <div className="badge-value-3d" style={{ background: 'linear-gradient(to bottom, #fff, #fbbf24)', WebkitBackgroundClip: 'text' }}>
+                <div className="badge-value-elegant" style={{ color: 'var(--warning)' }}>
                   {studentData?.badges_earned || 0}
                 </div>
-                <div className="text-xs text-muted uppercase font-semibold">Medalhas</div>
+                <div className="text-xs text-muted uppercase font-medium">Medalhas</div>
               </div>
             </div>
           </div>
