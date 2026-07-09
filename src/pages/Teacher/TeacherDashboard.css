@@ -1,0 +1,115 @@
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem;
+}
+
+.stat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-primary-light { background-color: rgba(79, 70, 229, 0.1); }
+.bg-success-light { background-color: rgba(16, 185, 129, 0.1); }
+.bg-warning-light { background-color: rgba(245, 158, 11, 0.1); }
+.bg-danger-light { background-color: rgba(239, 68, 68, 0.1); }
+
+.text-primary { color: var(--primary); }
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-danger { color: var(--danger); }
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.control-center.border-primary {
+  border: 1px solid rgba(79, 70, 229, 0.3);
+  background: linear-gradient(to right, rgba(79, 70, 229, 0.05), transparent);
+}
+
+.start-class-btn {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+}
+
+.roster-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.roster-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+
+.roster-item:hover {
+  background-color: var(--bg-color);
+  border-color: var(--primary);
+}
+
+.font-semibold { font-weight: 600; }
+.text-sm { font-size: 0.875rem; }
+.truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.upload-dropzone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: var(--bg-color);
+}
+
+.upload-dropzone:hover {
+  border-color: var(--primary);
+  background-color: rgba(79, 70, 229, 0.05);
+}
+
+.material-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-color);
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--border);
+}
+
+.uppercase { text-transform: uppercase; }
+.flex-1 { flex: 1; }

@@ -1,6 +1,0 @@
-{
-  "name": "Teacher Jorge",
-  "description": "Um sistema de gerenciamento de alunos completo e dinâmico, com painel duplo para o Teacher Jorge e seus alunos de inglês.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
