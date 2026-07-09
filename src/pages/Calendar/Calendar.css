@@ -1,4 +1,4 @@
-/* Calendar Advanced Views */
+/* Calendar Advanced Views & DnD */
 .calendar-wrapper {
   display: flex;
   flex-direction: column;
@@ -48,6 +48,11 @@
 .calendar-day-col {
   background-color: var(--surface);
   position: relative;
+}
+
+/* Permitir drop effects */
+.calendar-day-col.drag-over {
+  background-color: rgba(79, 70, 229, 0.05);
 }
 
 .calendar-header-row {
@@ -109,18 +114,28 @@
   padding: 0.5rem;
   font-size: 0.75rem;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.1s, box-shadow 0.1s;
+  transition: box-shadow 0.1s;
   overflow: hidden;
   z-index: 5;
   border-left: 4px solid rgba(0,0,0,0.2);
   cursor: pointer;
+  user-select: none;
 }
 
 .weekly-event:hover {
-  transform: translateY(-2px);
   box-shadow: var(--shadow-md);
   z-index: 10;
   filter: brightness(1.1);
+}
+
+.weekly-event.dragging {
+  opacity: 0.5;
+  z-index: 15;
+}
+
+.weekly-event.resizing {
+  z-index: 15;
+  opacity: 0.9;
 }
 
 .weekly-event.bg-primary { background-color: var(--primary); color: white; }
@@ -133,6 +148,7 @@
   margin-bottom: 2px;
   font-size: 0.7rem;
   opacity: 0.9;
+  pointer-events: none;
 }
 
 .weekly-event .event-title {
@@ -140,6 +156,35 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* Resize Handle */
+.resize-handle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  cursor: ns-resize;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  background-color: rgba(0,0,0,0.1);
+}
+
+.weekly-event:hover .resize-handle {
+  opacity: 1;
+}
+
+.resize-handle::after {
+  content: '';
+  width: 20px;
+  height: 2px;
+  background-color: rgba(255,255,255,0.6);
+  border-radius: 2px;
 }
 
 /* Time Indicator (Red line) */
@@ -235,3 +280,37 @@
 .month-event.bg-warning { background-color: rgba(245, 158, 11, 0.15); color: var(--warning); border-left: 2px solid var(--warning); }
 .month-event.bg-success { background-color: rgba(16, 185, 129, 0.15); color: var(--success); border-left: 2px solid var(--success); }
 .month-event.bg-purple { background-color: rgba(139, 92, 246, 0.15); color: #8b5cf6; border-left: 2px solid #8b5cf6; }
+
+/* Enhanced Modal Styles */
+.day-selector {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.day-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  color: var(--text-main);
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.day-btn:hover {
+  background-color: var(--bg-color);
+}
+
+.day-btn.selected {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
