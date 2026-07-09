@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { Users, Search, Edit, Trash, X, Phone, Clock, FileText } from 'lucide-react';
+import { Search, Edit, Trash, X, Phone, Clock, FileText } from 'lucide-react';
 
 const StudentsList = () => {
   const [students, setStudents] = useState([]);
@@ -31,7 +31,7 @@ const StudentsList = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    const { data, error } = await supabase.from('Students').insert([
+    const { error } = await supabase.from('Students').insert([
       { 
         name: newStudent.name, 
         email: newStudent.email, 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Play, Download, Book, Award, Clock, Calendar } from 'lucide-react';
+import { Play, Download, Book, Award, Calendar } from 'lucide-react';
 import './StudentDashboard.css';
 
 const StudentDashboard = () => {

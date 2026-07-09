@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { DollarSign, Copy, QrCode, FileText, CheckCircle, Clock } from 'lucide-react';
+import { Copy, QrCode, FileText, CheckCircle, Clock } from 'lucide-react';
 
 const Financial = () => {
   const { user } = useAuth();
