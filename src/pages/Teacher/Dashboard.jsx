@@ -5,15 +5,102 @@ import './TeacherDashboard.css';
 
 const TeacherDashboard = () => {
   const [students, setStudents] = useState([]);
+  const [classesThisMonth, setClassesThisMonth] = useState(0);
+  const [pendingPayments, setPendingPayments] = useState(0);
+  const [nextClass, setNextClass] = useState(null);
+  const [timeToNextClass, setTimeToNextClass] = useState('');
+  const [meetLink, setMeetLink] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStudents = async () => {
-      const { data, error } = await supabase.from('Students').select('*');
-      if (data) setStudents(data);
-      else console.error('Error fetching students:', error);
+    const fetchDashboardData = async () => {
+      setLoading(true);
+      
+      // 1. Fetch Students
+      const { data: studentsData } = await supabase.from('Students').select('*');
+      if (studentsData) setStudents(studentsData);
+
+      // 2. Fetch Classes for this month
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+
+      const endOfMonth = new Date();
+      endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+      endOfMonth.setDate(0);
+      endOfMonth.setHours(23, 59, 59, 999);
+
+      const { data: monthClasses } = await supabase
+        .from('Classes')
+        .select('*')
+        .gte('scheduled_at', startOfMonth.toISOString())
+        .lte('scheduled_at', endOfMonth.toISOString());
+      
+      if (monthClasses) {
+        setClassesThisMonth(monthClasses.length);
+        
+        // Calculate pending payments (assume all classes are pending for now, until Payments table is added)
+        // Only count distinct students
+        const distinctStudentsWithClasses = new Set(monthClasses.map(c => c.student_email));
+        setPendingPayments(distinctStudentsWithClasses.size);
+      }
+
+      // 3. Fetch Next Class
+      const now = new Date().toISOString();
+      const { data: nextClassData } = await supabase
+        .from('Classes')
+        .select('*')
+        .gte('scheduled_at', now)
+        .order('scheduled_at', { ascending: true })
+        .limit(1);
+
+      if (nextClassData && nextClassData.length > 0) {
+        const upcoming = nextClassData[0];
+        setNextClass(upcoming);
+        
+        // Find student meet link
+        if (studentsData) {
+          const studentInfo = studentsData.find(s => s.email === upcoming.student_email);
+          if (studentInfo && studentInfo.meet_link) {
+            setMeetLink(studentInfo.meet_link);
+          }
+        }
+      }
+
+      setLoading(false);
     };
-    fetchStudents();
+
+    fetchDashboardData();
   }, []);
+
+  // Update time to next class every minute
+  useEffect(() => {
+    if (!nextClass) return;
+
+    const updateTimer = () => {
+      const now = new Date();
+      const scheduledAt = new Date(nextClass.scheduled_at);
+      const diffMs = scheduledAt - now;
+      
+      if (diffMs <= 0) {
+        setTimeToNextClass('Agora');
+        return;
+      }
+
+      const diffMins = Math.floor(diffMs / 60000);
+      if (diffMins < 60) {
+        setTimeToNextClass(`${diffMins}m`);
+      } else {
+        const hours = Math.floor(diffMins / 60);
+        const mins = diffMins % 60;
+        setTimeToNextClass(`${hours}h ${mins}m`);
+      }
+    };
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 60000);
+    return () => clearInterval(interval);
+  }, [nextClass]);
 
   return (
     <div className="dashboard-wrapper animate-fade-in-up">
@@ -47,7 +134,7 @@ const TeacherDashboard = () => {
             <Users size={24} className="text-primary" />
           </div>
           <div className="stat-info">
-            <span className="stat-value">{students.length}</span>
+            <span className="stat-value">{loading ? '-' : students.length}</span>
             <span className="stat-label">Alunos Ativos</span>
           </div>
         </div>
@@ -56,7 +143,7 @@ const TeacherDashboard = () => {
             <Video size={24} className="text-success" />
           </div>
           <div className="stat-info">
-            <span className="stat-value">12</span>
+            <span className="stat-value">{loading ? '-' : classesThisMonth}</span>
             <span className="stat-label">Aulas este Mês</span>
           </div>
         </div>
@@ -65,7 +152,7 @@ const TeacherDashboard = () => {
             <DollarSign size={24} className="text-warning" />
           </div>
           <div className="stat-info">
-            <span className="stat-value">4</span>
+            <span className="stat-value">{loading ? '-' : pendingPayments}</span>
             <span className="stat-label">Pagamentos Pendentes</span>
           </div>
         </div>
@@ -74,7 +161,7 @@ const TeacherDashboard = () => {
             <Clock size={24} className="text-danger" />
           </div>
           <div className="stat-info">
-            <span className="stat-value">45m</span>
+            <span className="stat-value">{loading ? '-' : (nextClass ? timeToNextClass : '--')}</span>
             <span className="stat-label">Próxima Aula</span>
           </div>
         </div>
@@ -90,17 +177,31 @@ const TeacherDashboard = () => {
               <div>
                 <h2>Controle de Aula ao Vivo</h2>
                 <p>Gerencie sua sessão ativa do Google Meet</p>
+                {nextClass && (
+                  <p className="text-sm mt-2 font-medium text-primary">
+                    Próxima: {students.find(s => s.email === nextClass.student_email)?.name || nextClass.student_email}
+                  </p>
+                )}
               </div>
-              <button className="btn btn-primary start-class-btn">
+              <button 
+                className="btn btn-primary start-class-btn" 
+                disabled={!meetLink}
+                onClick={() => window.open(meetLink, '_blank')}
+              >
                 <Play size={18} fill="currentColor" />
                 Iniciar Aula Agora
               </button>
             </div>
             <div className="input-group">
-              <label>Link Fixo do Google Meet</label>
+              <label>Link Fixo do Google Meet do Aluno</label>
               <div className="flex gap-2">
-                <input type="text" className="input w-full" defaultValue="https://meet.google.com/abc-defg-hij" />
-                <button className="btn btn-outline">Atualizar</button>
+                <input 
+                  type="text" 
+                  className="input w-full" 
+                  value={meetLink} 
+                  readOnly 
+                  placeholder={nextClass ? "Aluno não possui link do Meet configurado" : "Nenhuma aula programada"} 
+                />
               </div>
             </div>
           </div>
@@ -109,10 +210,11 @@ const TeacherDashboard = () => {
           <div className="card glass mb-6">
             <div className="flex justify-between items-center mb-4">
               <h2>Lista de Alunos</h2>
-              <button className="btn btn-outline btn-sm">Ver Todos</button>
             </div>
             <div className="roster-list">
-              {students.length > 0 ? students.map((student, i) => (
+              {loading ? (
+                <p className="text-muted text-sm p-4 text-center">Carregando...</p>
+              ) : students.length > 0 ? students.map((student, i) => (
                 <div key={i} className="roster-item" style={{padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
                   <div className="flex items-center">
                     <div>
@@ -123,7 +225,7 @@ const TeacherDashboard = () => {
                     </div>
                   </div>
                   <div className="text-sm text-muted">{student.email}</div>
-                  <button className="btn btn-outline">Perfil</button>
+                  <button className="btn btn-outline" disabled>Perfil</button>
                 </div>
               )) : (
                 <p className="text-muted text-sm p-4 text-center">Nenhum aluno encontrado.</p>
@@ -141,11 +243,11 @@ const TeacherDashboard = () => {
             </div>
             
             <div className="quick-actions-grid mt-4">
-              <button className="btn btn-outline flex-col py-4 h-auto">
+              <button className="btn btn-outline flex-col py-4 h-auto" disabled>
                 <UploadCloud size={24} className="mb-2 text-primary" />
                 Compartilhar Material
               </button>
-              <button className="btn btn-outline flex-col py-4 h-auto">
+              <button className="btn btn-outline flex-col py-4 h-auto" disabled>
                 <Clock size={24} className="mb-2 text-primary" />
                 Agendar Reposição
               </button>
@@ -155,7 +257,9 @@ const TeacherDashboard = () => {
           <div className="card glass mt-6">
             <h3 className="mb-4 flex items-center gap-2"><Users className="text-primary"/> Alunos Recentes</h3>
             <div className="recent-students-list">
-              {students.slice(0, 3).map((student) => (
+              {loading ? (
+                <p className="text-muted text-sm p-4 text-center">Carregando...</p>
+              ) : students.length > 0 ? students.slice(0, 3).map((student) => (
                 <div key={student.id} className="student-list-item flex items-center justify-between p-3 border-b border-border hover:bg-surface transition-colors rounded">
                   <div className="flex items-center gap-3">
                     <div className="avatar bg-primary-light text-primary font-bold rounded-full w-10 h-10 flex items-center justify-center">
@@ -166,12 +270,11 @@ const TeacherDashboard = () => {
                       <div className="text-xs text-muted">{student.level}</div>
                     </div>
                   </div>
-                  <button className="btn btn-outline btn-sm">Ver</button>
+                  <button className="btn btn-outline btn-sm" disabled>Ver</button>
                 </div>
-              ))}
-              <div className="text-center mt-4">
-                <button className="btn-link text-sm text-primary font-medium hover:underline">Ver Todos os Alunos →</button>
-              </div>
+              )) : (
+                <p className="text-muted text-sm text-center pt-2">Nenhum aluno.</p>
+              )}
             </div>
           </div>
 
