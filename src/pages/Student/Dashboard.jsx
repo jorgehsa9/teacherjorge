@@ -185,7 +185,14 @@ const StudentDashboard = () => {
             
             <div className="materials-grid">
               {materials.length > 0 ? materials.map((mat) => (
-                <div key={mat.id} className="student-material-item">
+                <a 
+                  key={mat.id} 
+                  href={mat.file_url.startsWith('http') ? mat.file_url : `https://${mat.file_url}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="student-material-item cursor-pointer"
+                  style={{ textDecoration: 'none', color: 'inherit' }}
+                >
                   <div className="material-icon">
                     <Book size={20} className="text-primary" />
                   </div>
@@ -193,17 +200,10 @@ const StudentDashboard = () => {
                     <div className="font-semibold text-sm truncate">{mat.title}</div>
                     <div className="text-xs text-muted">{mat.file_type} • {formatShortDate(mat.created_at)}</div>
                   </div>
-                  <a 
-                    href={mat.file_url.startsWith('http') ? mat.file_url : `https://${mat.file_url}`} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="btn-icon text-muted hover:text-primary flex items-center justify-center" 
-                    title="Download / Open"
-                    style={{padding: '4px', background: 'none', border: 'none', display: 'inline-flex'}}
-                  >
+                  <div className="btn-icon text-muted flex items-center justify-center" title="Download / Open" style={{padding: '4px', background: 'none', border: 'none', display: 'inline-flex'}}>
                     <Download size={18} />
-                  </a>
-                </div>
+                  </div>
+                </a>
               )) : (
                 <div className="text-center text-muted p-4 text-sm">
                   No materials available yet.
