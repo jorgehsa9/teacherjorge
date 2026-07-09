@@ -183,14 +183,42 @@ const TeacherDashboard = () => {
                   </p>
                 )}
               </div>
-              <button 
-                className="btn btn-primary start-class-btn" 
-                disabled={!meetLink}
-                onClick={() => window.open(meetLink, '_blank')}
-              >
-                <Play size={18} fill="currentColor" />
-                Iniciar Aula Agora
-              </button>
+              <div className="flex gap-2">
+                <button 
+                  className="btn btn-primary start-class-btn" 
+                  disabled={!meetLink}
+                  onClick={() => window.open(meetLink, '_blank')}
+                >
+                  <Play size={18} fill="currentColor" />
+                  Iniciar Aula
+                </button>
+                <button 
+                  className="btn btn-outline" 
+                  style={{borderColor: 'var(--success)', color: 'var(--success)'}}
+                  disabled={!nextClass}
+                  onClick={async () => {
+                    if (!window.confirm('Marcar esta aula como concluída? O aluno ganhará 1 hora de estudo no perfil.')) return;
+                    setLoading(true);
+                    
+                    // 1. Mark class as Completed
+                    await supabase.from('Classes').update({ status: 'Completed' }).eq('id', nextClass.id);
+                    
+                    // 2. Increment student's hours_studied
+                    const student = students.find(s => s.email === nextClass.student_email);
+                    if (student) {
+                      await supabase.from('Students').update({
+                        hours_studied: (student.hours_studied || 0) + 1
+                      }).eq('email', student.email);
+                    }
+                    
+                    // 3. Reload dashboard
+                    window.location.reload();
+                  }}
+                >
+                  <CheckCircle size={18} />
+                  Finalizar Aula
+                </button>
+              </div>
             </div>
             <div className="input-group">
               <label>Link Fixo do Google Meet do Aluno</label>

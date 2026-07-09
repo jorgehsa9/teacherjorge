@@ -149,32 +149,47 @@ const StudentDashboard = () => {
             </button>
           </div>
 
-          {/* Progress Tracker */}
-          <div className="card glass mb-6">
-            <h2 className="mb-4 flex items-center gap-2"><Award className="text-primary"/> Meu Progresso</h2>
+          {/* Gamification 3D Progress Tracker */}
+          <div className="card glass mb-6" style={{ overflow: 'hidden' }}>
+            <h2 className="mb-6 flex items-center gap-2"><Award className="text-primary"/> Jornada do Aluno</h2>
             
-            <div className="progress-section mb-4">
-              <div className="flex justify-between text-sm mb-2 font-semibold">
-                <span>{studentData?.current_module || 'Módulo de Boas-vindas'}</span>
-                <span className="text-primary">{studentData?.module_progress || 0}%</span>
+            <div className="progress-3d-container">
+              <div className="flex justify-between text-sm mb-4 font-semibold px-2">
+                <span className="text-muted">{studentData?.current_module || 'Módulo de Boas-vindas'}</span>
+                <span style={{ color: '#ec4899' }}>{studentData?.module_progress || 0}% Concluído</span>
               </div>
-              <div className="progress-bar-bg">
-                <div className="progress-bar-fill" style={{width: `${studentData?.module_progress || 0}%`}}></div>
+              <div className="progress-3d-track">
+                <div className="progress-3d-fill" style={{ width: `${studentData?.module_progress || 0}%` }}></div>
               </div>
             </div>
 
-            <div className="grid-cols-3 mt-6">
-              <div className="text-center p-4 border rounded-md bg-bg-color">
-                <div className="text-2xl font-bold text-primary mb-1">{studentData?.hours_studied || 0}</div>
-                <div className="text-xs text-muted uppercase">Horas Estudadas</div>
+            <div className="grid-cols-3 mt-8 gap-4">
+              <div className="level-badge-3d">
+                <div className="badge-icon-3d">
+                  <Play size={24} className="text-primary" />
+                </div>
+                <div className="badge-value-3d">{studentData?.hours_studied || 0}</div>
+                <div className="text-xs text-muted uppercase font-semibold">Horas de Voo</div>
               </div>
-              <div className="text-center p-4 border rounded-md bg-bg-color">
-                <div className="text-2xl font-bold text-success mb-1">{studentData?.level || 'Beginner'}</div>
-                <div className="text-xs text-muted uppercase">Nível Atual</div>
+              
+              <div className="level-badge-3d" style={{ borderColor: 'rgba(16, 185, 129, 0.3)' }}>
+                <div className="badge-icon-3d">
+                  <Award size={24} className="text-success" />
+                </div>
+                <div className="badge-value-3d" style={{ background: 'linear-gradient(to bottom, #fff, #34d399)', WebkitBackgroundClip: 'text' }}>
+                  {studentData?.level?.split(' ')[0] || 'A1'}
+                </div>
+                <div className="text-xs text-muted uppercase font-semibold">Nível Atual</div>
               </div>
-              <div className="text-center p-4 border rounded-md bg-bg-color">
-                <div className="text-2xl font-bold text-warning mb-1">{studentData?.badges_earned || 0}</div>
-                <div className="text-xs text-muted uppercase">Medalhas</div>
+              
+              <div className="level-badge-3d" style={{ borderColor: 'rgba(245, 158, 11, 0.3)' }}>
+                <div className="badge-icon-3d">
+                  <Book size={24} className="text-warning" />
+                </div>
+                <div className="badge-value-3d" style={{ background: 'linear-gradient(to bottom, #fff, #fbbf24)', WebkitBackgroundClip: 'text' }}>
+                  {studentData?.badges_earned || 0}
+                </div>
+                <div className="text-xs text-muted uppercase font-semibold">Medalhas</div>
               </div>
             </div>
           </div>

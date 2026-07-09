@@ -60,19 +60,89 @@
   100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
 }
 
-.progress-bar-bg {
-  width: 100%;
-  height: 8px;
-  background-color: var(--border);
-  border-radius: 9999px;
-  overflow: hidden;
+/* 3D Progress Bar System */
+.progress-3d-container {
+  perspective: 1000px;
+  margin: 2rem 0;
+  padding: 1rem;
 }
 
-.progress-bar-fill {
+.progress-3d-track {
+  width: 100%;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 14px;
+  box-shadow: inset 0 4px 15px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.1);
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(15deg);
+}
+
+.progress-3d-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--primary-hover));
-  border-radius: 9999px;
-  transition: width 1s ease-out;
+  background: linear-gradient(90deg, #4F46E5, #ec4899);
+  border-radius: 14px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: 0 0 30px rgba(236, 72, 153, 0.5), inset 0 2px 5px rgba(255,255,255,0.4);
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(5px);
+}
+
+/* 3D Glass Highlight for the progress bar */
+.progress-3d-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0));
+  border-radius: 14px 14px 0 0;
+}
+
+/* 3D Badges */
+.level-badge-3d {
+  background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform-style: preserve-3d;
+  transform: perspective(1000px) rotateX(0) rotateY(0);
+}
+
+.level-badge-3d:hover {
+  transform: perspective(1000px) translateY(-10px) rotateX(10deg) rotateY(-5deg);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(79, 70, 229, 0.2);
+  border-color: rgba(79, 70, 229, 0.3);
+}
+
+.badge-icon-3d {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--surface), var(--bg-color));
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.1);
+  transform: translateZ(20px);
+}
+
+.badge-value-3d {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(to bottom, #fff, #a5b4fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transform: translateZ(10px);
+  margin-bottom: 0.25rem;
 }
 
 .materials-grid {
