@@ -41,6 +41,7 @@ const DashboardLayout = () => {
     { name: 'Dashboard', path: `/dashboard/${user?.role}`, icon: LayoutDashboard },
     ...(user?.role === 'teacher' ? [{ name: 'Students', path: '/dashboard/students', icon: Users }] : []),
     ...(user?.role === 'teacher' ? [{ name: 'Materials', path: '/dashboard/materials', icon: Folder }] : []),
+    ...(user?.role === 'student' ? [{ name: 'Materials', path: '/dashboard/student/materials', icon: Folder }] : []),
     { name: 'Calendar', path: '/dashboard/calendar', icon: Calendar },
     { name: 'Financial', path: '/dashboard/financial', icon: DollarSign },
   ];
