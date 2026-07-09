@@ -21,6 +21,12 @@ const Profile = () => {
     setLoading(true);
 
     try {
+      // Refresh session just in case it dropped internally
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError || !session) {
+        throw new Error("Sua sessão de segurança expirou. Por favor, faça login novamente.");
+      }
+
       // 1. Update Supabase Auth metadata
       if (displayName !== user.name) {
         const { error: authError } = await supabase.auth.updateUser({
