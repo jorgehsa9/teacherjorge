@@ -45,7 +45,7 @@ const StudentsList = () => {
     // Create Supabase Auth User with a default temporary password
     const { error: authError } = await secondarySupabase.auth.signUp({
       email: studentEmail,
-      password: 'mudar123', // Senha provisória
+      password: '123456', // Senha provisória
     });
 
     if (authError && !authError.message.includes('already registered')) {
@@ -69,7 +69,7 @@ const StudentsList = () => {
       await fetchStudents();
       setNewStudent({ name: '', email: '', level: 'Beginner (A1)', status: 'Active' });
       setIsModalOpen(false);
-      alert(`Aluno adicionado com sucesso!\n\nDados de Login:\nID/Email: ${studentEmail.replace('@teacherjorge.com', '')}\nSenha Provisória: mudar123`);
+      alert(`Aluno adicionado com sucesso!\n\nDados de Login:\nID/Email: ${studentEmail.replace('@teacherjorge.com', '')}\nSenha Provisória: 123456`);
     }
     setIsSubmitting(false);
   };
