@@ -162,9 +162,16 @@ const Materials = () => {
                           {new Date(mat.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </td>
                         <td className="text-right">
-                          <button onClick={() => window.open(mat.file_url, '_blank')} title="Open Material" className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}>
+                          <a 
+                            href={mat.file_url.startsWith('http') ? mat.file_url : `https://${mat.file_url}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="btn-icon text-muted hover:text-primary flex items-center justify-center" 
+                            title="Open Material"
+                            style={{padding: '4px', background: 'none', border: 'none', marginRight: '8px', display: 'inline-flex'}}
+                          >
                             <Download size={16} />
-                          </button>
+                          </a>
                           <button onClick={() => handleDeleteMaterial(mat.id)} title="Delete Material" className="btn-icon text-muted hover:text-danger" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none'}}>
                             <Trash size={16} />
                           </button>

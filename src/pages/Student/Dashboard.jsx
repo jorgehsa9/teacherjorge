@@ -193,9 +193,16 @@ const StudentDashboard = () => {
                     <div className="font-semibold text-sm truncate">{mat.title}</div>
                     <div className="text-xs text-muted">{mat.file_type} • {formatShortDate(mat.created_at)}</div>
                   </div>
-                  <button className="btn-icon" onClick={() => window.open(mat.file_url, '_blank')} title="Download / Open">
-                    <Download size={18} className="text-muted hover:text-primary" />
-                  </button>
+                  <a 
+                    href={mat.file_url.startsWith('http') ? mat.file_url : `https://${mat.file_url}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="btn-icon text-muted hover:text-primary flex items-center justify-center" 
+                    title="Download / Open"
+                    style={{padding: '4px', background: 'none', border: 'none', display: 'inline-flex'}}
+                  >
+                    <Download size={18} />
+                  </a>
                 </div>
               )) : (
                 <div className="text-center text-muted p-4 text-sm">
