@@ -64,7 +64,7 @@ const DashboardLayout = () => {
           <h2>Teacher Jorge</h2>
         </div>
 
-        <div className="user-profile">
+        <NavLink to="/dashboard/profile" className="user-profile" style={{ textDecoration: 'none', color: 'inherit', display: 'flex' }}>
           <div className="avatar bg-primary text-white flex items-center justify-center rounded-full" style={{ width: '32px', height: '32px', flexShrink: 0, fontWeight: 'bold' }}>
             {user?.name?.charAt(0) || 'U'}
           </div>
@@ -72,7 +72,7 @@ const DashboardLayout = () => {
             <span className="user-name">{user?.name}</span>
             <span className="user-role badge primary" style={{ marginLeft: '0.5rem' }}>{user?.role}</span>
           </div>
-        </div>
+        </NavLink>
 
         <nav className="sidebar-nav">
           {navItems.map((item) => {

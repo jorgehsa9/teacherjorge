@@ -16,7 +16,8 @@ export const AuthProvider = ({ children }) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         const role = session.user.email === 'teacher@email.com' ? 'teacher' : 'student';
-        setUser({ ...session.user, role, name: session.user.email === 'teacher@email.com' ? 'Jorge' : session.user.email.split('@')[0] });
+        const displayName = session.user.user_metadata?.name || (session.user.email === 'teacher@email.com' ? 'Jorge' : session.user.email.split('@')[0]);
+        setUser({ ...session.user, role, name: displayName });
       } else {
         setUser(null);
       }
@@ -28,7 +29,8 @@ export const AuthProvider = ({ children }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         const role = session.user.email === 'teacher@email.com' ? 'teacher' : 'student';
-        setUser({ ...session.user, role, name: session.user.email === 'teacher@email.com' ? 'Jorge' : session.user.email.split('@')[0] });
+        const displayName = session.user.user_metadata?.name || (session.user.email === 'teacher@email.com' ? 'Jorge' : session.user.email.split('@')[0]);
+        setUser({ ...session.user, role, name: displayName });
       } else {
         setUser(null);
       }

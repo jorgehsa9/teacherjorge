@@ -10,6 +10,7 @@ import StudentsList from './pages/Teacher/StudentsList';
 import Materials from './pages/Teacher/Materials';
 import Financial from './pages/Financial/Financial';
 import Calendar from './pages/Calendar/Calendar';
+import Profile from './pages/Profile/Profile';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
@@ -50,6 +51,14 @@ function App() {
                 <RoleBasedRedirect />
               </ProtectedRoute>
             } />
+            <Route 
+              path="profile" 
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } 
+            />
             <Route 
               path="teacher" 
               element={
