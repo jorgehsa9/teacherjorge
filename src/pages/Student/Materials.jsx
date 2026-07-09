@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { FileText, Download, ArrowLeft } from 'lucide-react';
+import { FileText, Download, ArrowLeft, BookOpen, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const StudentMaterials = () => {
@@ -55,7 +55,25 @@ const StudentMaterials = () => {
         </div>
       </div>
 
-      <div className="card glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-100 flex flex-col">
+      <div className="card glass mb-6 p-6 animate-fade-in-up delay-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(236, 72, 153, 0.05))', borderColor: 'var(--primary)' }}>
+        <div>
+          <h2 className="text-xl font-bold flex items-center gap-2 mb-2 text-primary">
+            <BookOpen size={24} /> Meu Livro de Inglês Interativo
+          </h2>
+          <p className="text-muted">Acesse suas lições completas, jogos, gramática e converse com o George!</p>
+        </div>
+        <a 
+          href="https://book-8uu.pages.dev" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="btn btn-primary"
+          style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem' }}
+        >
+          Acessar Livro <ExternalLink size={18} />
+        </a>
+      </div>
+
+      <div className="card glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-200 flex flex-col">
         {loading ? (
           <div className="p-8 text-center text-muted">Carregando seus materiais...</div>
         ) : materials.length > 0 ? (
