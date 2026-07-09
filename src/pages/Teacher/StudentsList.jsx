@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { Search, Edit, Trash, X, Phone, Clock, FileText } from 'lucide-react';
+import { Search, Edit, Trash, X, Phone, Clock, FileText, Calendar, UploadCloud } from 'lucide-react';
 
 const StudentsList = () => {
   const [students, setStudents] = useState([]);
@@ -9,10 +9,18 @@ const StudentsList = () => {
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isClassModalOpen, setIsClassModalOpen] = useState(false);
+  const [isMaterialModalOpen, setIsMaterialModalOpen] = useState(false);
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [newStudent, setNewStudent] = useState({ name: '', email: '', level: 'Beginner (A1)', status: 'Active' });
   const [editingStudent, setEditingStudent] = useState(null);
+  const [selectedStudentForAction, setSelectedStudentForAction] = useState(null);
+  
+  const [newClass, setNewClass] = useState({ date: '', time: '', duration: 60 });
+  const [newMaterial, setNewMaterial] = useState({ title: '', file_type: 'PDF', file_url: '' });
+  
   const [searchQuery, setSearchQuery] = useState('');
 
   const fetchStudents = async () => {
@@ -56,11 +64,22 @@ const StudentsList = () => {
     setIsEditModalOpen(true);
   };
 
+  const openClassModal = (student) => {
+    setSelectedStudentForAction(student);
+    setNewClass({ date: '', time: '', duration: 60 });
+    setIsClassModalOpen(true);
+  };
+
+  const openMaterialModal = (student) => {
+    setSelectedStudentForAction(student);
+    setNewMaterial({ title: '', file_type: 'PDF', file_url: '' });
+    setIsMaterialModalOpen(true);
+  };
+
   const handleUpdateStudent = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Fallback to updating by email if 'id' column doesn't exist
     const matchColumn = editingStudent.id ? 'id' : 'email';
     const matchValue = editingStudent.id || editingStudent.email;
 
@@ -89,6 +108,57 @@ const StudentsList = () => {
       await fetchStudents();
       setIsEditModalOpen(false);
       setEditingStudent(null);
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleScheduleClass = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Combine date and time into a single ISO timestamp
+    const scheduledAt = new Date(`${newClass.date}T${newClass.time}`).toISOString();
+
+    const { error } = await supabase.from('Classes').insert([
+      { 
+        student_email: selectedStudentForAction.email,
+        scheduled_at: scheduledAt,
+        duration: parseInt(newClass.duration),
+        status: 'Scheduled'
+      }
+    ]);
+
+    if (error) {
+      console.error('Error scheduling class:', error);
+      alert('Failed to schedule class. Check your permissions.');
+    } else {
+      alert(`Class scheduled for ${selectedStudentForAction.name}!`);
+      setIsClassModalOpen(false);
+      setSelectedStudentForAction(null);
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleAddMaterial = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const { error } = await supabase.from('Materials').insert([
+      { 
+        student_email: selectedStudentForAction.email,
+        title: newMaterial.title,
+        file_type: newMaterial.file_type,
+        file_url: newMaterial.file_url
+      }
+    ]);
+
+    if (error) {
+      console.error('Error adding material:', error);
+      alert('Failed to add material. Check your permissions.');
+    } else {
+      alert(`Material assigned to ${selectedStudentForAction.name}!`);
+      setIsMaterialModalOpen(false);
+      setSelectedStudentForAction(null);
     }
     setIsSubmitting(false);
   };
@@ -175,8 +245,10 @@ const StudentsList = () => {
                       </span>
                     </td>
                     <td className="text-right">
-                      <button onClick={() => openEditModal(student)} className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}><Edit size={16} /></button>
-                      <button onClick={() => handleDeleteStudent(student)} className="btn-icon text-muted hover:text-danger" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none'}}><Trash size={16} /></button>
+                      <button onClick={() => openClassModal(student)} title="Schedule Class" className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}><Calendar size={16} /></button>
+                      <button onClick={() => openMaterialModal(student)} title="Add Material" className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}><UploadCloud size={16} /></button>
+                      <button onClick={() => openEditModal(student)} title="Edit Profile" className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}><Edit size={16} /></button>
+                      <button onClick={() => handleDeleteStudent(student)} title="Delete Student" className="btn-icon text-muted hover:text-danger" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none'}}><Trash size={16} /></button>
                     </td>
                   </tr>
                 )) : (
@@ -363,6 +435,110 @@ const StudentsList = () => {
           </div>
         </div>
       )}
+
+      {/* Schedule Class Modal */}
+      {isClassModalOpen && selectedStudentForAction && (
+        <div className="modal-overlay flex items-center justify-center" style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
+        }}>
+          <div className="card glass w-full" style={{maxWidth: '400px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
+            <div className="flex justify-between items-center mb-6">
+              <h2 style={{margin: 0}}>Schedule Class</h2>
+              <button onClick={() => setIsClassModalOpen(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+                <X size={24} />
+              </button>
+            </div>
+            
+            <p className="text-sm text-muted mb-4">Scheduling for <strong>{selectedStudentForAction.name}</strong></p>
+
+            <form onSubmit={handleScheduleClass}>
+              <div className="input-group">
+                <label>Date</label>
+                <input type="date" className="input w-full" required
+                  value={newClass.date} onChange={(e) => setNewClass({...newClass, date: e.target.value})}
+                />
+              </div>
+              
+              <div className="grid-cols-2" style={{marginBottom: '1.25rem'}}>
+                <div className="input-group" style={{marginBottom: 0}}>
+                  <label>Time</label>
+                  <input type="time" className="input w-full" required
+                    value={newClass.time} onChange={(e) => setNewClass({...newClass, time: e.target.value})}
+                  />
+                </div>
+                <div className="input-group" style={{marginBottom: 0}}>
+                  <label>Duration (mins)</label>
+                  <input type="number" className="input w-full" min="15" step="15" required
+                    value={newClass.duration} onChange={(e) => setNewClass({...newClass, duration: parseInt(e.target.value)})}
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 mt-6">
+                <button type="button" className="btn btn-outline" onClick={() => setIsClassModalOpen(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                  {isSubmitting ? 'Saving...' : 'Schedule'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Add Material Modal */}
+      {isMaterialModalOpen && selectedStudentForAction && (
+        <div className="modal-overlay flex items-center justify-center" style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
+        }}>
+          <div className="card glass w-full" style={{maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
+            <div className="flex justify-between items-center mb-6">
+              <h2 style={{margin: 0}}>Assign Material</h2>
+              <button onClick={() => setIsMaterialModalOpen(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+                <X size={24} />
+              </button>
+            </div>
+            
+            <p className="text-sm text-muted mb-4">Assigning to <strong>{selectedStudentForAction.name}</strong></p>
+
+            <form onSubmit={handleAddMaterial}>
+              <div className="input-group">
+                <label>Material Title</label>
+                <input type="text" className="input w-full" required placeholder="e.g. Past Perfect Exercises"
+                  value={newMaterial.title} onChange={(e) => setNewMaterial({...newMaterial, title: e.target.value})}
+                />
+              </div>
+              
+              <div className="input-group">
+                <label>File Type</label>
+                <select className="input w-full" value={newMaterial.file_type} onChange={(e) => setNewMaterial({...newMaterial, file_type: e.target.value})}>
+                  <option>PDF</option>
+                  <option>DOCX</option>
+                  <option>Link</option>
+                  <option>Audio</option>
+                  <option>Video</option>
+                </select>
+              </div>
+
+              <div className="input-group">
+                <label>Google Drive URL (or external link)</label>
+                <input type="url" className="input w-full" required placeholder="https://drive.google.com/..."
+                  value={newMaterial.file_url} onChange={(e) => setNewMaterial({...newMaterial, file_url: e.target.value})}
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 mt-6">
+                <button type="button" className="btn btn-outline" onClick={() => setIsMaterialModalOpen(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                  {isSubmitting ? 'Saving...' : 'Add Material'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
