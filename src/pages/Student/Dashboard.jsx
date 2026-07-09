@@ -26,7 +26,13 @@ const StudentDashboard = () => {
           .eq('email', user.email)
           .single();
           
-        if (sData) setStudentData(sData);
+        if (sData) {
+          // Ensure completed_lessons is an array
+          if (!sData.completed_lessons) {
+            sData.completed_lessons = [];
+          }
+          setStudentData(sData);
+        }
 
         // 2. Fetch Next Class
         const { data: cData } = await supabase
@@ -57,6 +63,45 @@ const StudentDashboard = () => {
 
     fetchDashboardData();
   }, [user]);
+
+  const handleToggleLesson = async (lessonNumber) => {
+    if (!studentData) return;
+    
+    const currentLessons = studentData.completed_lessons || [];
+    let newLessons;
+    
+    if (currentLessons.includes(lessonNumber)) {
+      newLessons = currentLessons.filter(l => l !== lessonNumber);
+    } else {
+      newLessons = [...currentLessons, lessonNumber];
+    }
+    
+    // Calculate new progress (out of 12)
+    const newProgress = Math.round((newLessons.length / 12) * 100);
+    
+    // Optimistic update
+    setStudentData({
+      ...studentData,
+      completed_lessons: newLessons,
+      module_progress: newProgress
+    });
+    
+    // DB Update
+    try {
+      const { error } = await supabase
+        .from('Students')
+        .update({ 
+          completed_lessons: newLessons,
+          module_progress: newProgress
+        })
+        .eq('email', user.email);
+        
+      if (error) throw error;
+    } catch (err) {
+      console.error("Error updating checklist", err);
+      alert("Erro ao salvar progresso.");
+    }
+  };
 
   // Calculate if class is active (within 10 mins before, or during the 60 min duration)
   const isClassActive = () => {
@@ -192,6 +237,48 @@ const StudentDashboard = () => {
                 <div className="text-xs text-muted uppercase font-medium">Medalhas</div>
               </div>
             </div>
+
+            {/* Lessons Checklist */}
+            <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--border)' }}>
+              <h3 className="text-md font-semibold mb-4 text-main">Checklist de Lições</h3>
+              <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}>
+                {[
+                  "Simple Present", "Present Continuous", "Simple Past", "Past Continuous",
+                  "Present Perfect Simple", "Present Perfect Continuous", "Past Perfect Simple",
+                  "Past Perfect Continuous", "Simple Future", "Future Continuous",
+                  "Future Perfect Simple", "Future Perfect Continuous"
+                ].map((lessonTitle, index) => {
+                  const lessonNumber = index + 1;
+                  const isChecked = studentData?.completed_lessons?.includes(lessonNumber) || false;
+                  
+                  return (
+                    <label 
+                      key={lessonNumber} 
+                      className="flex items-start gap-3 p-3 rounded-md cursor-pointer transition-colors"
+                      style={{ 
+                        border: '1px solid',
+                        borderColor: isChecked ? 'var(--primary)' : 'var(--border)', 
+                        backgroundColor: isChecked ? 'rgba(79, 70, 229, 0.1)' : 'var(--bg-color)',
+                        borderRadius: 'var(--radius-md)'
+                      }}
+                    >
+                      <input 
+                        type="checkbox" 
+                        className="mt-1"
+                        style={{ width: '16px', height: '16px', accentColor: 'var(--primary)' }}
+                        checked={isChecked}
+                        onChange={() => handleToggleLesson(lessonNumber)}
+                      />
+                      <div className="flex-1">
+                        <div style={{ fontSize: '0.875rem', fontWeight: 600, color: isChecked ? 'var(--primary)' : 'var(--text-main)' }}>Lição {lessonNumber}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{lessonTitle}</div>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
           </div>
         </div>
 
