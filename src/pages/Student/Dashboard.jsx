@@ -74,7 +74,7 @@ const StudentDashboard = () => {
     if (studentData?.meet_link) {
       window.open(studentData.meet_link, '_blank');
     } else {
-      alert("No Google Meet link has been assigned to you yet. Please contact your teacher.");
+      alert("Nenhum link do Google Meet foi atribuído a você ainda. Por favor, contate seu professor.");
     }
   };
 
@@ -92,7 +92,7 @@ const StudentDashboard = () => {
   if (loading) {
     return (
       <div className="dashboard-wrapper flex justify-center items-center h-full">
-        <p className="text-muted text-lg">Loading your dashboard...</p>
+        <p className="text-muted text-lg">Carregando seu painel...</p>
       </div>
     );
   }
@@ -104,17 +104,17 @@ const StudentDashboard = () => {
       <div className="hero-section card glass mb-6">
         <div className="flex justify-between items-center flex-wrap gap-4">
           <div>
-            <h1 className="mb-2 text-primary">Hello, {user?.name?.split(' ')[0] || 'Student'}!</h1>
-            <p className="text-lg text-muted">Ready to improve your English today?</p>
+            <h1 className="mb-2 text-primary">Olá, {user?.name?.split(' ')[0] || 'Aluno'}!</h1>
+            <p className="text-lg text-muted">Pronto para melhorar seu inglês hoje?</p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-muted mb-1">Next Class</p>
+            <p className="text-sm text-muted mb-1">Próxima Aula</p>
             {nextClass ? (
               <p className="font-semibold text-lg flex items-center gap-2">
                 <Calendar size={18} className="text-primary"/> {formatClassDate(nextClass.scheduled_at)}
               </p>
             ) : (
-              <p className="font-semibold text-muted text-md">No upcoming classes</p>
+              <p className="font-semibold text-muted text-md">Nenhuma aula agendada</p>
             )}
           </div>
         </div>
@@ -129,14 +129,14 @@ const StudentDashboard = () => {
           <div className={`card mb-6 flex flex-col items-center justify-center text-center p-8 ${active ? 'active-class-card' : 'glass'}`}>
             <div className={`status-indicator ${active ? 'active' : ''} mb-4`}>
               <div className="pulse-dot"></div>
-              <span>{active ? 'Teacher is Online' : (nextClass ? 'Scheduled' : 'Offline')}</span>
+              <span>{active ? 'Professor Online' : (nextClass ? 'Agendada' : 'Offline')}</span>
             </div>
             
-            <h2 className="mb-2">{active ? 'Your class is ready!' : (nextClass ? 'Upcoming Session' : 'No classes scheduled')}</h2>
+            <h2 className="mb-2">{active ? 'Sua aula está pronta!' : (nextClass ? 'Próxima Sessão' : 'Nenhuma aula agendada')}</h2>
             <p className="mb-6 text-muted">
               {active 
-                ? 'Join the Google Meet session to start your lesson.' 
-                : (nextClass ? `Your next class is scheduled for ${formatClassDate(nextClass.scheduled_at)}.` : 'Enjoy your free time and don\'t forget to study!')}
+                ? 'Entre na sessão do Google Meet para iniciar sua aula.' 
+                : (nextClass ? `Sua próxima aula está agendada para ${formatClassDate(nextClass.scheduled_at)}.` : 'Aproveite seu tempo livre e não esqueça de estudar!')}
             </p>
             
             <button 
@@ -145,17 +145,17 @@ const StudentDashboard = () => {
               onClick={handleJoinClass}
             >
               <Play size={20} fill="currentColor" />
-              {active ? 'Enter Live Class' : 'Enter Meeting Room'}
+              {active ? 'Entrar na Aula Ao Vivo' : 'Sala de Reunião'}
             </button>
           </div>
 
           {/* Progress Tracker */}
           <div className="card glass mb-6">
-            <h2 className="mb-4 flex items-center gap-2"><Award className="text-primary"/> My Progress</h2>
+            <h2 className="mb-4 flex items-center gap-2"><Award className="text-primary"/> Meu Progresso</h2>
             
             <div className="progress-section mb-4">
               <div className="flex justify-between text-sm mb-2 font-semibold">
-                <span>{studentData?.current_module || 'Welcome Module'}</span>
+                <span>{studentData?.current_module || 'Módulo de Boas-vindas'}</span>
                 <span className="text-primary">{studentData?.module_progress || 0}%</span>
               </div>
               <div className="progress-bar-bg">
@@ -166,15 +166,15 @@ const StudentDashboard = () => {
             <div className="grid-cols-3 mt-6">
               <div className="text-center p-4 border rounded-md bg-bg-color">
                 <div className="text-2xl font-bold text-primary mb-1">{studentData?.hours_studied || 0}</div>
-                <div className="text-xs text-muted uppercase">Hours Studied</div>
+                <div className="text-xs text-muted uppercase">Horas Estudadas</div>
               </div>
               <div className="text-center p-4 border rounded-md bg-bg-color">
                 <div className="text-2xl font-bold text-success mb-1">{studentData?.level || 'Beginner'}</div>
-                <div className="text-xs text-muted uppercase">Current Level</div>
+                <div className="text-xs text-muted uppercase">Nível Atual</div>
               </div>
               <div className="text-center p-4 border rounded-md bg-bg-color">
                 <div className="text-2xl font-bold text-warning mb-1">{studentData?.badges_earned || 0}</div>
-                <div className="text-xs text-muted uppercase">Badges Earned</div>
+                <div className="text-xs text-muted uppercase">Medalhas</div>
               </div>
             </div>
           </div>
@@ -183,7 +183,7 @@ const StudentDashboard = () => {
         {/* Side Column - Materials */}
         <div className="side-col">
           <div className="card glass h-full">
-            <h3 className="mb-4 flex items-center gap-2"><Book className="text-primary" /> My Materials</h3>
+            <h3 className="mb-4 flex items-center gap-2"><Book className="text-primary" /> Meus Materiais</h3>
             
             <div className="materials-grid">
               {materials.length > 0 ? materials.map((mat) => (
@@ -205,12 +205,12 @@ const StudentDashboard = () => {
                 </a>
               )) : (
                 <div className="text-center text-muted p-4 text-sm">
-                  No materials available yet.
+                  Nenhum material disponível ainda.
                 </div>
               )}
             </div>
             {materials.length > 0 && (
-              <button className="btn btn-outline w-full mt-4 text-sm" onClick={() => navigate('/dashboard/student/materials')}>View All Materials</button>
+              <button className="btn btn-outline w-full mt-4 text-sm" onClick={() => navigate('/dashboard/student/materials')}>Ver Todos os Materiais</button>
             )}
           </div>
         </div>

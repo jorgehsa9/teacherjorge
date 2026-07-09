@@ -7,19 +7,19 @@ const Calendar = () => {
   const { user } = useAuth();
   const isTeacher = user?.role === 'teacher';
 
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   const gridCells = Array.from({ length: 35 });
 
   return (
     <div className="dashboard-wrapper flex flex-col h-full">
       <div className="dashboard-header mb-6 flex justify-between items-center">
         <div>
-          <h1>Schedule</h1>
-          <p>Manage your class bookings.</p>
+          <h1>Agenda</h1>
+          <p>Gerencie as marcações de suas aulas.</p>
         </div>
         {isTeacher && (
           <button className="btn btn-primary">
-            <Plus size={18} /> Add Class
+            <Plus size={18} /> Adicionar Aula
           </button>
         )}
       </div>
@@ -30,11 +30,11 @@ const Calendar = () => {
           <div className="flex gap-2 items-center">
             <button className="btn btn-outline" style={{padding: '0.5rem'}}><ChevronLeft size={16}/></button>
             <button className="btn btn-outline" style={{padding: '0.5rem'}}><ChevronRight size={16}/></button>
-            <span className="font-bold text-lg ml-2">October 2023</span>
+            <span className="font-bold text-lg ml-2">Outubro 2023</span>
           </div>
           <div className="flex gap-2">
-            <button className="btn btn-primary">Month</button>
-            <button className="btn btn-outline">Week</button>
+            <button className="btn btn-primary">Mês</button>
+            <button className="btn btn-outline">Semana</button>
           </div>
         </div>
 
@@ -50,7 +50,7 @@ const Calendar = () => {
                 <div className="event bg-primary text-white">14:00 - Lucas S.</div>
               )}
               {i === 14 && (
-                <div className="event bg-warning">10:00 - Maria (Reschedule)</div>
+                <div className="event bg-warning">10:00 - Maria (Reagendar)</div>
               )}
             </div>
           ))}

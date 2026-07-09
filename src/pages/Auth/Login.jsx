@@ -22,7 +22,7 @@ const Login = () => {
       await login(email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message || 'Failed to sign in');
+      setError(err.message || 'Falha ao entrar');
     } finally {
       setIsLoading(false);
     }
@@ -34,9 +34,9 @@ const Login = () => {
         <div className="auth-header text-center mb-6">
           <div className="auth-logo justify-center flex items-center gap-2 mb-4">
             <BookOpen className="brand-icon" size={32} />
-            <h1 className="brand-name">Linguify</h1>
+            <h1 className="brand-name">Teacher Jorge</h1>
           </div>
-          <p>Sign in to your account</p>
+          <p>Entre na sua conta</p>
         </div>
 
         {error && (
@@ -47,7 +47,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="input-group">
-            <label>Email Address</label>
+            <label>Endereço de E-mail</label>
             <input 
               type="email" 
               className="input" 
@@ -58,7 +58,7 @@ const Login = () => {
             />
           </div>
           <div className="input-group">
-            <label>Password</label>
+            <label>Senha</label>
             <input 
               type="password" 
               className="input" 
@@ -71,12 +71,12 @@ const Login = () => {
 
           <button type="submit" className="btn btn-primary w-full mt-4" disabled={isLoading}>
             <LogIn size={18} />
-            {isLoading ? 'Signing in...' : 'Sign In'}
+            {isLoading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
 
         <div className="auth-divider">
-          <span>Or continue with</span>
+          <span>Ou continue com</span>
         </div>
 
         <button type="button" className="btn btn-outline w-full">

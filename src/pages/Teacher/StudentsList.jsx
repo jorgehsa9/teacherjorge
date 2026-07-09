@@ -131,13 +131,13 @@ const StudentsList = () => {
   };
 
   const handleDeleteStudent = async (student) => {
-    if (window.confirm(`Are you sure you want to delete ${student.name}?`)) {
+    if (window.confirm(`Tem certeza de que deseja excluir ${student.name}?`)) {
       const matchColumn = student.id ? 'id' : 'email';
       const matchValue = student.id || student.email;
       const { error } = await supabase.from('Students').delete().eq(matchColumn, matchValue);
       if (error) {
         console.error('Error deleting student:', error);
-        alert('Failed to delete student. Ensure you have delete permissions.');
+        alert('Falha ao excluir o aluno. Verifique suas permissões.');
       } else {
         await fetchStudents();
       }
@@ -153,15 +153,15 @@ const StudentsList = () => {
     <div className="dashboard-wrapper h-full flex flex-col relative animate-fade-in-up">
       <div className="dashboard-header mb-6 flex justify-between items-end">
         <div>
-          <h1>Students</h1>
-          <p>Manage your students and their levels.</p>
+          <h1>Alunos</h1>
+          <p>Gerencie seus alunos e seus níveis de inglês.</p>
         </div>
         <div className="flex gap-4 items-center">
           <div className="search-container" style={{ position: 'relative' }}>
             <Search size={18} className="text-muted" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
             <input 
               type="text" 
-              placeholder="Search students..." 
+              placeholder="Buscar alunos..." 
               className="input glass"
               style={{
                 width: '280px',
@@ -173,23 +173,23 @@ const StudentsList = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>Add Student</button>
+          <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>Adicionar Aluno</button>
         </div>
       </div>
 
       <div className="card glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-200">
         {loading ? (
-          <div className="p-8 text-center text-muted">Loading students...</div>
+          <div className="p-8 text-center text-muted">Carregando alunos...</div>
         ) : (
           <div className="px-4 pb-4 overflow-x-auto">
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Name</th>
+                  <th>Nome</th>
                   <th>Email</th>
-                  <th>Level</th>
+                  <th>Nível</th>
                   <th>Status</th>
-                  <th className="text-right">Actions</th>
+                  <th className="text-right">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -212,14 +212,14 @@ const StudentsList = () => {
                       </span>
                     </td>
                     <td className="text-right">
-                      <button onClick={() => openClassModal(student)} title="Schedule Class" className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}><Calendar size={16} /></button>
-                      <button onClick={() => openEditModal(student)} title="Edit Profile" className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}><Edit size={16} /></button>
-                      <button onClick={() => handleDeleteStudent(student)} title="Delete Student" className="btn-icon text-muted hover:text-danger" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none'}}><Trash size={16} /></button>
+                      <button onClick={() => openClassModal(student)} title="Agendar Aula" className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}><Calendar size={16} /></button>
+                      <button onClick={() => openEditModal(student)} title="Editar Perfil" className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}><Edit size={16} /></button>
+                      <button onClick={() => handleDeleteStudent(student)} title="Excluir Aluno" className="btn-icon text-muted hover:text-danger" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none'}}><Trash size={16} /></button>
                     </td>
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan="5" className="p-8 text-center text-muted" style={{background: 'transparent', boxShadow: 'none'}}>No students found in the database.</td>
+                    <td colSpan="5" className="p-8 text-center text-muted" style={{background: 'transparent', boxShadow: 'none'}}>Nenhum aluno encontrado no banco de dados.</td>
                   </tr>
                 )}
               </tbody>
@@ -236,7 +236,7 @@ const StudentsList = () => {
         }}>
           <div className="card glass w-full" style={{maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
             <div className="flex justify-between items-center mb-6">
-              <h2 style={{margin: 0}}>Add New Student</h2>
+              <h2 style={{margin: 0}}>Adicionar Novo Aluno</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
                 <X size={24} />
               </button>
@@ -244,21 +244,21 @@ const StudentsList = () => {
             
             <form onSubmit={handleAddStudent}>
               <div className="input-group">
-                <label>Full Name</label>
-                <input type="text" className="input w-full" required placeholder="e.g. Maria Santos"
+                <label>Nome Completo</label>
+                <input type="text" className="input w-full" required placeholder="Ex: Maria Santos"
                   value={newStudent.name} onChange={(e) => setNewStudent({...newStudent, name: e.target.value})}
                 />
               </div>
               <div className="input-group">
-                <label>Email Address</label>
-                <input type="email" className="input w-full" required placeholder="student@example.com"
+                <label>Endereço de E-mail</label>
+                <input type="email" className="input w-full" required placeholder="aluno@exemplo.com"
                   value={newStudent.email} onChange={(e) => setNewStudent({...newStudent, email: e.target.value})}
                 />
               </div>
               
               <div className="grid-cols-2" style={{marginBottom: '1.25rem'}}>
                 <div className="input-group" style={{marginBottom: 0}}>
-                  <label>English Level</label>
+                  <label>Nível de Inglês</label>
                   <select className="input w-full" value={newStudent.level} onChange={(e) => setNewStudent({...newStudent, level: e.target.value})}>
                     <option>Beginner (A1)</option><option>Pre-Intermediate (A2)</option><option>Intermediate (B1)</option><option>Upper-Intermediate (B2)</option><option>Advanced (C1)</option>
                   </select>
@@ -272,9 +272,9 @@ const StudentsList = () => {
               </div>
 
               <div className="flex justify-end gap-2 mt-6">
-                <button type="button" className="btn btn-outline" onClick={() => setIsModalOpen(false)}>Cancel</button>
+                <button type="button" className="btn btn-outline" onClick={() => setIsModalOpen(false)}>Cancelar</button>
                 <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                  {isSubmitting ? 'Saving...' : 'Add Student'}
+                  {isSubmitting ? 'Salvando...' : 'Adicionar Aluno'}
                 </button>
               </div>
             </form>
@@ -290,7 +290,7 @@ const StudentsList = () => {
         }}>
           <div className="card glass w-full" style={{maxWidth: '600px', backgroundColor: 'var(--surface)', margin: '1rem', maxHeight: '90vh', overflowY: 'auto'}}>
             <div className="flex justify-between items-center mb-6">
-              <h2 style={{margin: 0}}>Edit Student Profile</h2>
+              <h2 style={{margin: 0}}>Editar Perfil do Aluno</h2>
               <button onClick={() => setIsEditModalOpen(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
                 <X size={24} />
               </button>
@@ -299,13 +299,13 @@ const StudentsList = () => {
             <form onSubmit={handleUpdateStudent}>
               <div className="grid-cols-2">
                 <div className="input-group">
-                  <label>Full Name</label>
+                  <label>Nome Completo</label>
                   <input type="text" className="input w-full" required
                     value={editingStudent.name || ''} onChange={(e) => setEditingStudent({...editingStudent, name: e.target.value})}
                   />
                 </div>
                 <div className="input-group">
-                  <label>Email Address</label>
+                  <label>Endereço de E-mail</label>
                   <input type="email" className="input w-full" required
                     value={editingStudent.email || ''} onChange={(e) => setEditingStudent({...editingStudent, email: e.target.value})}
                   />
@@ -314,14 +314,14 @@ const StudentsList = () => {
 
               <div className="grid-cols-2">
                 <div className="input-group">
-                  <label className="flex items-center gap-2"><Phone size={14}/> Phone Number</label>
-                  <input type="text" className="input w-full" placeholder="+1 234 567 8900"
+                  <label className="flex items-center gap-2"><Phone size={14}/> Número de Telefone</label>
+                  <input type="text" className="input w-full" placeholder="+55 11 99999-9999"
                     value={editingStudent.phone_number || ''} onChange={(e) => setEditingStudent({...editingStudent, phone_number: e.target.value})}
                   />
                 </div>
                 <div className="input-group">
-                  <label className="flex items-center gap-2"><Clock size={14}/> Timezone</label>
-                  <input type="text" className="input w-full" placeholder="e.g. America/Sao_Paulo"
+                  <label className="flex items-center gap-2"><Clock size={14}/> Fuso Horário</label>
+                  <input type="text" className="input w-full" placeholder="Ex: America/Sao_Paulo"
                     value={editingStudent.timezone || ''} onChange={(e) => setEditingStudent({...editingStudent, timezone: e.target.value})}
                   />
                 </div>
@@ -329,7 +329,7 @@ const StudentsList = () => {
               
               <div className="grid-cols-2" style={{marginBottom: '1.25rem'}}>
                 <div className="input-group" style={{marginBottom: 0}}>
-                  <label>English Level</label>
+                  <label>Nível de Inglês</label>
                   <select className="input w-full" value={editingStudent.level} onChange={(e) => setEditingStudent({...editingStudent, level: e.target.value})}>
                     <option>Beginner (A1)</option><option>Pre-Intermediate (A2)</option><option>Intermediate (B1)</option><option>Upper-Intermediate (B2)</option><option>Advanced (C1)</option>
                   </select>
@@ -343,7 +343,7 @@ const StudentsList = () => {
               </div>
 
               <div className="input-group mt-4">
-                <label className="flex items-center gap-2"><Phone size={14}/> Unique Google Meet Link</label>
+                <label className="flex items-center gap-2"><Phone size={14}/> Link Único do Google Meet</label>
                 <input type="url" className="input w-full" placeholder="https://meet.google.com/xxx-xxxx-xxx"
                   value={editingStudent.meet_link || ''} onChange={(e) => setEditingStudent({...editingStudent, meet_link: e.target.value})}
                 />
@@ -351,13 +351,13 @@ const StudentsList = () => {
 
               <div className="grid-cols-2 mt-4" style={{marginBottom: '1.25rem'}}>
                 <div className="input-group" style={{marginBottom: 0}}>
-                  <label>Current Module</label>
-                  <input type="text" className="input w-full" placeholder="e.g. Business Phrasal Verbs"
+                  <label>Módulo Atual</label>
+                  <input type="text" className="input w-full" placeholder="Ex: Phrasal Verbs"
                     value={editingStudent.current_module || ''} onChange={(e) => setEditingStudent({...editingStudent, current_module: e.target.value})}
                   />
                 </div>
                 <div className="input-group" style={{marginBottom: 0}}>
-                  <label>Module Progress (%)</label>
+                  <label>Progresso do Módulo (%)</label>
                   <input type="number" min="0" max="100" className="input w-full" placeholder="75"
                     value={editingStudent.module_progress || ''} onChange={(e) => setEditingStudent({...editingStudent, module_progress: e.target.value})}
                   />
@@ -366,13 +366,13 @@ const StudentsList = () => {
 
               <div className="grid-cols-2" style={{marginBottom: '1.25rem'}}>
                 <div className="input-group" style={{marginBottom: 0}}>
-                  <label>Hours Studied</label>
+                  <label>Horas Estudadas</label>
                   <input type="number" min="0" className="input w-full" placeholder="24"
                     value={editingStudent.hours_studied || ''} onChange={(e) => setEditingStudent({...editingStudent, hours_studied: e.target.value})}
                   />
                 </div>
                 <div className="input-group" style={{marginBottom: 0}}>
-                  <label>Badges Earned</label>
+                  <label>Medalhas Conquistadas</label>
                   <input type="number" min="0" className="input w-full" placeholder="8"
                     value={editingStudent.badges_earned || ''} onChange={(e) => setEditingStudent({...editingStudent, badges_earned: e.target.value})}
                   />
@@ -380,11 +380,11 @@ const StudentsList = () => {
               </div>
 
               <div className="input-group mt-4">
-                <label className="flex items-center gap-2"><FileText size={14}/> Teacher Internal Notes</label>
+                <label className="flex items-center gap-2"><FileText size={14}/> Notas Internas do Professor</label>
                 <textarea 
                   className="input w-full" 
                   rows="3" 
-                  placeholder="Notes about learning style, goals, etc. (Not visible to student)"
+                  placeholder="Anotações sobre perfil de aprendizado, dificuldades, etc. (Invisível para o aluno)"
                   value={editingStudent.internal_notes || ''} 
                   onChange={(e) => setEditingStudent({...editingStudent, internal_notes: e.target.value})}
                   style={{resize: 'vertical', fontFamily: 'inherit'}}
@@ -392,9 +392,9 @@ const StudentsList = () => {
               </div>
 
               <div className="flex justify-end gap-2 mt-6 border-t pt-4" style={{borderColor: 'var(--border)'}}>
-                <button type="button" className="btn btn-outline" onClick={() => setIsEditModalOpen(false)}>Cancel</button>
+                <button type="button" className="btn btn-outline" onClick={() => setIsEditModalOpen(false)}>Cancelar</button>
                 <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                  {isSubmitting ? 'Saving...' : 'Save Changes'}
+                  {isSubmitting ? 'Salvando...' : 'Salvar Alterações'}
                 </button>
               </div>
             </form>
@@ -410,17 +410,17 @@ const StudentsList = () => {
         }}>
           <div className="card glass w-full" style={{maxWidth: '400px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
             <div className="flex justify-between items-center mb-6">
-              <h2 style={{margin: 0}}>Schedule Class</h2>
+              <h2 style={{margin: 0}}>Agendar Aula</h2>
               <button onClick={() => setIsClassModalOpen(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
                 <X size={24} />
               </button>
             </div>
             
-            <p className="text-sm text-muted mb-4">Scheduling for <strong>{selectedStudentForAction.name}</strong></p>
+            <p className="text-sm text-muted mb-4">Agendando para <strong>{selectedStudentForAction.name}</strong></p>
 
             <form onSubmit={handleScheduleClass}>
               <div className="input-group">
-                <label>Date</label>
+                <label>Data</label>
                 <input type="date" className="input w-full" required
                   value={newClass.date} onChange={(e) => setNewClass({...newClass, date: e.target.value})}
                 />
@@ -428,13 +428,13 @@ const StudentsList = () => {
               
               <div className="grid-cols-2" style={{marginBottom: '1.25rem'}}>
                 <div className="input-group" style={{marginBottom: 0}}>
-                  <label>Time</label>
+                  <label>Horário</label>
                   <input type="time" className="input w-full" required
                     value={newClass.time} onChange={(e) => setNewClass({...newClass, time: e.target.value})}
                   />
                 </div>
                 <div className="input-group" style={{marginBottom: 0}}>
-                  <label>Duration (mins)</label>
+                  <label>Duração (mins)</label>
                   <input type="number" className="input w-full" min="15" step="15" required
                     value={newClass.duration} onChange={(e) => setNewClass({...newClass, duration: parseInt(e.target.value)})}
                   />
@@ -442,9 +442,9 @@ const StudentsList = () => {
               </div>
 
               <div className="flex justify-end gap-2 mt-6">
-                <button type="button" className="btn btn-outline" onClick={() => setIsClassModalOpen(false)}>Cancel</button>
+                <button type="button" className="btn btn-outline" onClick={() => setIsClassModalOpen(false)}>Cancelar</button>
                 <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                  {isSubmitting ? 'Saving...' : 'Schedule'}
+                  {isSubmitting ? 'Salvando...' : 'Agendar'}
                 </button>
               </div>
             </form>

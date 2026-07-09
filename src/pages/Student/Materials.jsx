@@ -34,7 +34,7 @@ const StudentMaterials = () => {
 
   const formatClassDate = (dateString) => {
     const d = new Date(dateString);
-    return d.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return d.toLocaleString('pt-BR', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
   return (
@@ -47,26 +47,26 @@ const StudentMaterials = () => {
               className="text-muted hover:text-primary transition-colors flex items-center gap-1 text-sm font-medium"
               style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
             >
-              <ArrowLeft size={16} /> Back to Dashboard
+              <ArrowLeft size={16} /> Voltar ao Dashboard
             </button>
           </div>
-          <h1>All Materials</h1>
-          <p>Everything your teacher has shared with you.</p>
+          <h1>Todos os Materiais</h1>
+          <p>Tudo que seu professor compartilhou com você.</p>
         </div>
       </div>
 
       <div className="card glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-100 flex flex-col">
         {loading ? (
-          <div className="p-8 text-center text-muted">Loading your materials...</div>
+          <div className="p-8 text-center text-muted">Carregando seus materiais...</div>
         ) : materials.length > 0 ? (
           <div className="px-4 pb-4 overflow-x-auto flex-1">
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Title</th>
-                  <th>Type</th>
-                  <th>Date Added</th>
-                  <th className="text-right">Action</th>
+                  <th>Título</th>
+                  <th>Tipo</th>
+                  <th>Data de Adição</th>
+                  <th className="text-right">Ação</th>
                 </tr>
               </thead>
               <tbody>
@@ -93,7 +93,7 @@ const StudentMaterials = () => {
                         className="btn btn-outline btn-sm"
                         style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}
                       >
-                        <Download size={14} /> Open
+                        <Download size={14} /> Abrir
                       </a>
                     </td>
                   </tr>
@@ -104,7 +104,7 @@ const StudentMaterials = () => {
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center p-12 text-center text-muted">
             <FileText size={48} className="mb-4 opacity-20" />
-            <p>Your teacher hasn't shared any materials with you yet.</p>
+            <p>Seu professor não compartilhou nenhum material com você ainda.</p>
           </div>
         )}
       </div>

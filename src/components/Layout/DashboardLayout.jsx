@@ -39,11 +39,11 @@ const DashboardLayout = () => {
 
   const navItems = [
     { name: 'Dashboard', path: `/dashboard/${user?.role}`, icon: LayoutDashboard },
-    ...(user?.role === 'teacher' ? [{ name: 'Students', path: '/dashboard/students', icon: Users }] : []),
-    ...(user?.role === 'teacher' ? [{ name: 'Materials', path: '/dashboard/materials', icon: Folder }] : []),
-    ...(user?.role === 'student' ? [{ name: 'Materials', path: '/dashboard/student/materials', icon: Folder }] : []),
-    { name: 'Calendar', path: '/dashboard/calendar', icon: Calendar },
-    { name: 'Financial', path: '/dashboard/financial', icon: DollarSign },
+    ...(user?.role === 'teacher' ? [{ name: 'Alunos', path: '/dashboard/students', icon: Users }] : []),
+    ...(user?.role === 'teacher' ? [{ name: 'Materiais', path: '/dashboard/materials', icon: Folder }] : []),
+    ...(user?.role === 'student' ? [{ name: 'Materiais', path: '/dashboard/student/materials', icon: Folder }] : []),
+    { name: 'Calendário', path: '/dashboard/calendar', icon: Calendar },
+    { name: 'Financeiro', path: '/dashboard/financial', icon: DollarSign },
   ];
 
   return (
@@ -97,11 +97,11 @@ const DashboardLayout = () => {
           </div>
           <button onClick={() => setIsDarkMode(!isDarkMode)} className="nav-item w-full text-left logout-btn mb-2">
             {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-            <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+            <span>{isDarkMode ? 'Modo Claro' : 'Modo Escuro'}</span>
           </button>
           <button onClick={handleLogout} className="nav-item w-full text-left logout-btn">
             <LogOut size={20} />
-            <span>Logout</span>
+            <span>Sair</span>
           </button>
         </div>
       </nav>

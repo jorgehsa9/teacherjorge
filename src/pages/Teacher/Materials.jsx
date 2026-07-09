@@ -67,7 +67,7 @@ const Materials = () => {
 
     if (error) {
       console.error('Error adding material:', error);
-      alert('Failed to add material. Check your permissions.');
+      alert('Falha ao adicionar material. Verifique suas permissões.');
     } else {
       // Refresh materials list
       const { data } = await supabase
@@ -84,12 +84,12 @@ const Materials = () => {
   };
 
   const handleDeleteMaterial = async (id) => {
-    if (!window.confirm('Are you sure you want to remove this material?')) return;
+    if (!window.confirm('Tem certeza de que deseja remover este material?')) return;
     
     const { error } = await supabase.from('Materials').delete().eq('id', id);
     if (error) {
       console.error('Error deleting material:', error);
-      alert('Failed to delete material.');
+      alert('Falha ao excluir o material.');
     } else {
       setMaterials(materials.filter(m => m.id !== id));
     }
@@ -99,8 +99,8 @@ const Materials = () => {
     <div className="dashboard-wrapper h-full flex flex-col relative animate-fade-in-up">
       <div className="dashboard-header mb-6 flex justify-between items-end">
         <div>
-          <h1>Student Materials</h1>
-          <p>Share files, links, and homework with your students.</p>
+          <h1>Materiais dos Alunos</h1>
+          <p>Compartilhe arquivos, links e tarefas com seus alunos.</p>
         </div>
         
         {/* Student Selector */}
@@ -112,7 +112,7 @@ const Materials = () => {
               onChange={(e) => setSelectedStudentEmail(e.target.value)}
               disabled={loading || students.length === 0}
             >
-              {students.length === 0 && <option value="">No students found</option>}
+              {students.length === 0 && <option value="">Nenhum aluno encontrado</option>}
               {students.map(s => (
                 <option key={s.email} value={s.email}>{s.name} ({s.email})</option>
               ))}
@@ -123,7 +123,7 @@ const Materials = () => {
             onClick={() => setIsAdding(true)}
             disabled={!selectedStudentEmail}
           >
-            <Plus size={18} /> Assign New Material
+            <Plus size={18} /> Atribuir Novo Material
           </button>
         </div>
       </div>
@@ -133,16 +133,16 @@ const Materials = () => {
         <div className="main-col h-full flex flex-col" style={{ gridColumn: 'span 3' }}>
           <div className="card glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-100 flex flex-col">
             {loading ? (
-              <div className="p-8 text-center text-muted">Loading materials...</div>
+              <div className="p-8 text-center text-muted">Carregando materiais...</div>
             ) : materials.length > 0 ? (
               <div className="px-4 pb-4 overflow-x-auto flex-1">
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th>Title</th>
-                      <th>Type</th>
-                      <th>Date Added</th>
-                      <th className="text-right">Actions</th>
+                      <th>Título</th>
+                      <th>Tipo</th>
+                      <th>Data de Adição</th>
+                      <th className="text-right">Ações</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -159,7 +159,7 @@ const Materials = () => {
                           </span>
                         </td>
                         <td className="text-muted">
-                          {new Date(mat.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          {new Date(mat.created_at).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </td>
                         <td className="text-right">
                           <a 
@@ -172,7 +172,7 @@ const Materials = () => {
                           >
                             <Download size={16} />
                           </a>
-                          <button onClick={() => handleDeleteMaterial(mat.id)} title="Delete Material" className="btn-icon text-muted hover:text-danger" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none'}}>
+                          <button onClick={() => handleDeleteMaterial(mat.id)} title="Excluir Material" className="btn-icon text-muted hover:text-danger" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none'}}>
                             <Trash size={16} />
                           </button>
                         </td>
@@ -184,8 +184,8 @@ const Materials = () => {
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center p-12 text-center text-muted">
                 <FileText size={48} className="mb-4 opacity-20" />
-                <p>No materials have been shared with this student yet.</p>
-                <button className="btn btn-outline mt-4" onClick={() => setIsAdding(true)}>Assign the first material</button>
+                <p>Nenhum material foi compartilhado com este aluno ainda.</p>
+                <button className="btn btn-outline mt-4" onClick={() => setIsAdding(true)}>Atribuir o primeiro material</button>
               </div>
             )}
           </div>
@@ -200,44 +200,44 @@ const Materials = () => {
         }}>
           <div className="card glass w-full" style={{maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
             <div className="flex justify-between items-center mb-6">
-              <h2 style={{margin: 0}}>Assign New Material</h2>
+              <h2 style={{margin: 0}}>Atribuir Novo Material</h2>
               <button onClick={() => setIsAdding(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
                 <X size={24} />
               </button>
             </div>
             
-            <p className="text-sm text-muted mb-4">Sharing with student: <strong>{students.find(s => s.email === selectedStudentEmail)?.name}</strong></p>
+            <p className="text-sm text-muted mb-4">Compartilhando com o aluno: <strong>{students.find(s => s.email === selectedStudentEmail)?.name}</strong></p>
 
             <form onSubmit={handleAddMaterial}>
               <div className="input-group">
-                <label>Material Title</label>
-                <input type="text" className="input w-full" required placeholder="e.g. Past Perfect Exercises"
+                <label>Título do Material</label>
+                <input type="text" className="input w-full" required placeholder="Ex: Exercícios de Past Perfect"
                   value={newMaterial.title} onChange={(e) => setNewMaterial({...newMaterial, title: e.target.value})}
                 />
               </div>
               
               <div className="input-group">
-                <label>File Type</label>
+                <label>Tipo de Arquivo</label>
                 <select className="input w-full" value={newMaterial.file_type} onChange={(e) => setNewMaterial({...newMaterial, file_type: e.target.value})}>
                   <option>PDF</option>
                   <option>DOCX</option>
                   <option>Link</option>
-                  <option>Audio</option>
-                  <option>Video</option>
+                  <option>Áudio</option>
+                  <option>Vídeo</option>
                 </select>
               </div>
 
               <div className="input-group">
-                <label>Google Drive URL (or external link)</label>
+                <label>URL do Google Drive (ou link externo)</label>
                 <input type="url" className="input w-full" required placeholder="https://drive.google.com/..."
                   value={newMaterial.file_url} onChange={(e) => setNewMaterial({...newMaterial, file_url: e.target.value})}
                 />
               </div>
 
               <div className="flex justify-end gap-2 mt-6">
-                <button type="button" className="btn btn-outline" onClick={() => setIsAdding(false)}>Cancel</button>
+                <button type="button" className="btn btn-outline" onClick={() => setIsAdding(false)}>Cancelar</button>
                 <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                  {isSubmitting ? 'Saving...' : 'Share Material'}
+                  {isSubmitting ? 'Salvando...' : 'Compartilhar Material'}
                 </button>
               </div>
             </form>
