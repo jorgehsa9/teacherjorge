@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { BookOpen, Calendar, DollarSign, LogOut, LayoutDashboard, Users, Moon, Sun } from 'lucide-react';
+import { BookOpen, Calendar, DollarSign, LogOut, LayoutDashboard, Users, Moon, Sun, Folder } from 'lucide-react';
 import AnimatedBackground from './AnimatedBackground';
 import './Layout.css';
 
@@ -40,6 +40,7 @@ const DashboardLayout = () => {
   const navItems = [
     { name: 'Dashboard', path: `/dashboard/${user?.role}`, icon: LayoutDashboard },
     ...(user?.role === 'teacher' ? [{ name: 'Students', path: '/dashboard/students', icon: Users }] : []),
+    ...(user?.role === 'teacher' ? [{ name: 'Materials', path: '/dashboard/materials', icon: Folder }] : []),
     { name: 'Calendar', path: '/dashboard/calendar', icon: Calendar },
     { name: 'Financial', path: '/dashboard/financial', icon: DollarSign },
   ];

@@ -6,6 +6,7 @@ import Login from './pages/Auth/Login';
 import TeacherDashboard from './pages/Teacher/Dashboard';
 import StudentDashboard from './pages/Student/Dashboard';
 import StudentsList from './pages/Teacher/StudentsList';
+import Materials from './pages/Teacher/Materials';
 import Financial from './pages/Financial/Financial';
 import Calendar from './pages/Calendar/Calendar';
 
@@ -69,6 +70,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['teacher']}>
                   <StudentsList />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="materials" 
+              element={
+                <ProtectedRoute allowedRoles={['teacher']}>
+                  <Materials />
                 </ProtectedRoute>
               } 
             />
