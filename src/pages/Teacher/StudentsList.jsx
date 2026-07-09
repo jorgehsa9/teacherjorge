@@ -73,7 +73,12 @@ const StudentsList = () => {
         status: editingStudent.status,
         phone_number: editingStudent.phone_number || null,
         timezone: editingStudent.timezone || 'UTC',
-        internal_notes: editingStudent.internal_notes || null
+        internal_notes: editingStudent.internal_notes || null,
+        meet_link: editingStudent.meet_link || null,
+        hours_studied: parseInt(editingStudent.hours_studied) || 0,
+        current_module: editingStudent.current_module || null,
+        module_progress: parseInt(editingStudent.module_progress) || 0,
+        badges_earned: parseInt(editingStudent.badges_earned) || 0
       })
       .eq(matchColumn, matchValue);
 
@@ -296,6 +301,43 @@ const StudentsList = () => {
                   <select className="input w-full" value={editingStudent.status} onChange={(e) => setEditingStudent({...editingStudent, status: e.target.value})}>
                     <option>Active</option><option>Pending</option><option>Inactive</option>
                   </select>
+                </div>
+              </div>
+
+              <div className="input-group mt-4">
+                <label className="flex items-center gap-2"><Phone size={14}/> Unique Google Meet Link</label>
+                <input type="url" className="input w-full" placeholder="https://meet.google.com/xxx-xxxx-xxx"
+                  value={editingStudent.meet_link || ''} onChange={(e) => setEditingStudent({...editingStudent, meet_link: e.target.value})}
+                />
+              </div>
+
+              <div className="grid-cols-2 mt-4" style={{marginBottom: '1.25rem'}}>
+                <div className="input-group" style={{marginBottom: 0}}>
+                  <label>Current Module</label>
+                  <input type="text" className="input w-full" placeholder="e.g. Business Phrasal Verbs"
+                    value={editingStudent.current_module || ''} onChange={(e) => setEditingStudent({...editingStudent, current_module: e.target.value})}
+                  />
+                </div>
+                <div className="input-group" style={{marginBottom: 0}}>
+                  <label>Module Progress (%)</label>
+                  <input type="number" min="0" max="100" className="input w-full" placeholder="75"
+                    value={editingStudent.module_progress || ''} onChange={(e) => setEditingStudent({...editingStudent, module_progress: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="grid-cols-2" style={{marginBottom: '1.25rem'}}>
+                <div className="input-group" style={{marginBottom: 0}}>
+                  <label>Hours Studied</label>
+                  <input type="number" min="0" className="input w-full" placeholder="24"
+                    value={editingStudent.hours_studied || ''} onChange={(e) => setEditingStudent({...editingStudent, hours_studied: e.target.value})}
+                  />
+                </div>
+                <div className="input-group" style={{marginBottom: 0}}>
+                  <label>Badges Earned</label>
+                  <input type="number" min="0" className="input w-full" placeholder="8"
+                    value={editingStudent.badges_earned || ''} onChange={(e) => setEditingStudent({...editingStudent, badges_earned: e.target.value})}
+                  />
                 </div>
               </div>
 
