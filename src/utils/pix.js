@@ -27,6 +27,9 @@ export function generatePixPayload(pixKey, merchantName, merchantCity, amount, t
   // Payload Format Indicator
   let payload = formatLength('00', '01');
 
+  // Point of Initiation Method - 11 means static QR Code
+  payload += formatLength('01', '11');
+
   // Merchant Account Information (PIX)
   const gui = formatLength('00', 'br.gov.bcb.pix');
   const key = formatLength('01', pixKey);
