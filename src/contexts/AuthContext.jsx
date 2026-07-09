@@ -11,32 +11,40 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const determineRoleAndSetUser = async (authUser) => {
+    if (!authUser) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+    
+    // Verifica se o email pertence a um aluno cadastrado
+    const { data: student } = await supabase
+      .from('Students')
+      .select('email, name')
+      .eq('email', authUser.email)
+      .maybeSingle();
+
+    if (student) {
+      // É um aluno! Usa o nome real do banco de dados
+      setUser({ ...authUser, role: 'student', name: student.name });
+    } else {
+      // Se não está na tabela Students, consideramos o Teacher
+      setUser({ ...authUser, role: 'teacher', name: 'Teacher' });
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    // Check active sessions and sets the user
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        // Here we determine the role. Since your table doesn't have a role,
-        // we'll default everyone to 'student' unless their email has 'teacher' in it.
-        const role = session.user.email.includes('teacher') ? 'teacher' : 'student';
-        setUser({ ...session.user, role, name: session.user.email.split('@')[0] });
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
+      await determineRoleAndSetUser(session?.user);
     };
 
     checkSession();
 
-    // Listen for changes on auth state (sign in, sign out, etc.)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        const role = session.user.email.includes('teacher') ? 'teacher' : 'student';
-        setUser({ ...session.user, role, name: session.user.email.split('@')[0] });
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
+      determineRoleAndSetUser(session?.user);
     });
 
     return () => subscription.unsubscribe();
