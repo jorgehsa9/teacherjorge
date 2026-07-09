@@ -16,12 +16,19 @@ const themes = [
 const DashboardLayout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  const [activeTheme, setActiveTheme] = useState(themes[0]);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const saved = localStorage.getItem('isDarkMode');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+  const [activeTheme, setActiveTheme] = useState(() => {
+    const saved = localStorage.getItem('activeTheme');
+    return saved ? JSON.parse(saved) : themes[0];
+  });
 
   useEffect(() => {
     document.documentElement.style.setProperty('--primary', activeTheme.hex);
     document.documentElement.style.setProperty('--primary-glow', activeTheme.glow);
+    localStorage.setItem('activeTheme', JSON.stringify(activeTheme));
   }, [activeTheme]);
 
   useEffect(() => {
@@ -30,6 +37,7 @@ const DashboardLayout = () => {
     } else {
       document.body.classList.add('light');
     }
+    localStorage.setItem('isDarkMode', JSON.stringify(isDarkMode));
   }, [isDarkMode]);
 
   const handleLogout = async () => {
