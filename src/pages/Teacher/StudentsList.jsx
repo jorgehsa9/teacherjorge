@@ -9,6 +9,7 @@ const StudentsList = () => {
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClassModalOpen, setIsClassModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   
