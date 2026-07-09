@@ -19,7 +19,12 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      await login(email, password);
+      let loginEmail = email.trim();
+      if (!loginEmail.includes('@')) {
+        loginEmail = `${loginEmail}@teacherjorge.com`;
+      }
+      
+      await login(loginEmail, password);
       navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Falha ao entrar');
@@ -47,11 +52,11 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="input-group">
-            <label>Endereço de E-mail</label>
+            <label>ID do Aluno ou E-mail</label>
             <input 
-              type="email" 
+              type="text" 
               className="input" 
-              placeholder="you@example.com"
+              placeholder="Ex: jorge ou you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

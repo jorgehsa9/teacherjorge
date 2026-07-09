@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../../lib/supabase';
+import { supabase, secondarySupabase } from '../../lib/supabase';
 import { Search, Edit, Trash, X, Phone, Clock, FileText, Calendar, UploadCloud } from 'lucide-react';
 
 const StudentsList = () => {
@@ -37,10 +37,26 @@ const StudentsList = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
+    let studentEmail = newStudent.email.trim();
+    if (!studentEmail.includes('@')) {
+      studentEmail = `${studentEmail}@teacherjorge.com`;
+    }
+
+    // Create Supabase Auth User with a default temporary password
+    const { error: authError } = await secondarySupabase.auth.signUp({
+      email: studentEmail,
+      password: 'mudar123', // Senha provisória
+    });
+
+    if (authError && !authError.message.includes('already registered')) {
+      console.error('Auth Error:', authError);
+      alert('Aviso: Falha ao criar login de acesso (Supabase Auth) para o aluno: ' + authError.message);
+    }
+    
     const { error } = await supabase.from('Students').insert([
       { 
         name: newStudent.name, 
-        email: newStudent.email, 
+        email: studentEmail, 
         level: newStudent.level, 
         status: newStudent.status 
       }
@@ -48,11 +64,12 @@ const StudentsList = () => {
 
     if (error) {
       console.error('Error adding student:', error);
-      alert('Failed to add student. Ensure you have insert permissions.');
+      alert('Falha ao adicionar aluno no banco de dados. Verifique as permissões.');
     } else {
       await fetchStudents();
       setNewStudent({ name: '', email: '', level: 'Beginner (A1)', status: 'Active' });
       setIsModalOpen(false);
+      alert(`Aluno adicionado com sucesso!\n\nDados de Login:\nID/Email: ${studentEmail.replace('@teacherjorge.com', '')}\nSenha Provisória: mudar123`);
     }
     setIsSubmitting(false);
   };
@@ -251,8 +268,8 @@ const StudentsList = () => {
                 />
               </div>
               <div className="input-group">
-                <label>Endereço de E-mail</label>
-                <input type="email" className="input w-full" required placeholder="aluno@exemplo.com"
+                <label>ID do Aluno ou E-mail</label>
+                <input type="text" className="input w-full" required placeholder="Ex: lucas ou aluno@exemplo.com"
                   value={newStudent.email} onChange={(e) => setNewStudent({...newStudent, email: e.target.value})}
                 />
               </div>
