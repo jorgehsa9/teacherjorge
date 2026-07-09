@@ -22,18 +22,74 @@ const Financial = () => {
 };
 
 const TeacherFinancial = () => {
+  const [studentsData, setStudentsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const classPrice = 40;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+
+      const endOfMonth = new Date();
+      endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+      endOfMonth.setDate(0);
+      endOfMonth.setHours(23, 59, 59, 999);
+
+      // Fetch all students
+      const { data: students } = await supabase.from('Students').select('email, name');
+      
+      // Fetch all classes for the month
+      const { data: classes } = await supabase
+        .from('Classes')
+        .select('*')
+        .gte('scheduled_at', startOfMonth.toISOString())
+        .lte('scheduled_at', endOfMonth.toISOString());
+
+      if (students && classes) {
+        const aggregated = students.map(student => {
+          const studentClasses = classes.filter(c => c.student_email === student.email);
+          const totalAmount = studentClasses.length * classPrice;
+          return {
+            ...student,
+            classesCount: studentClasses.length,
+            totalAmount
+          };
+        }).filter(s => s.classesCount > 0); // Only show students with classes this month
+
+        setStudentsData(aggregated);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  const totalRevenue = studentsData.reduce((acc, curr) => acc + curr.totalAmount, 0);
+
   return (
     <div className="grid-cols-3">
       {/* Overview Cards */}
       <div className="card glass col-span-1">
-        <h2 className="mb-4 text-muted text-sm uppercase">Receita Total (Este Mês)</h2>
-        <div className="text-3xl font-bold text-success mb-2">R$ 4.250,00</div>
-        <p className="text-sm text-muted">+12% do mês passado</p>
+        <h2 className="mb-4 text-muted text-sm uppercase">Faturamento (Este Mês)</h2>
+        {loading ? <div className="text-muted">Carregando...</div> : (
+          <>
+            <div className="text-3xl font-bold text-success mb-2">
+              {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalRevenue)}
+            </div>
+            <p className="text-sm text-muted">De {studentsData.length} alunos ativos</p>
+          </>
+        )}
       </div>
       <div className="card glass col-span-1">
-        <h2 className="mb-4 text-muted text-sm uppercase">Pagamentos Pendentes</h2>
-        <div className="text-3xl font-bold text-warning mb-2">R$ 800,00</div>
-        <p className="text-sm text-muted">De 4 alunos</p>
+        <h2 className="mb-4 text-muted text-sm uppercase">Total de Aulas</h2>
+        {loading ? <div className="text-muted">Carregando...</div> : (
+          <div className="text-3xl font-bold text-main mb-2">
+            {studentsData.reduce((acc, curr) => acc + curr.classesCount, 0)}
+          </div>
+        )}
+        <p className="text-sm text-muted">Aulas agendadas no mês</p>
       </div>
       <div className="card glass col-span-1">
         <button className="btn btn-primary w-full h-full text-lg shadow-md flex-col justify-center gap-2">
@@ -44,29 +100,33 @@ const TeacherFinancial = () => {
 
       {/* Billing History */}
       <div className="card glass main-col mb-6 mt-6" style={{ gridColumn: 'span 3' }}>
-        <h2 className="mb-4">Histórico de Cobranças</h2>
+        <h2 className="mb-4">Resumo de Cobranças (Mês Atual)</h2>
         <table className="w-full text-left border-collapse" style={{width: '100%'}}>
           <thead>
             <tr className="text-muted" style={{borderBottom: '1px solid var(--border)'}}>
               <th className="pb-3" style={{paddingBottom: '1rem'}}>Aluno</th>
-              <th className="pb-3" style={{paddingBottom: '1rem'}}>Data</th>
-              <th className="pb-3" style={{paddingBottom: '1rem'}}>Valor</th>
+              <th className="pb-3" style={{paddingBottom: '1rem'}}>Qtd. Aulas</th>
+              <th className="pb-3" style={{paddingBottom: '1rem'}}>Valor Total</th>
               <th className="pb-3" style={{paddingBottom: '1rem'}}>Status</th>
             </tr>
           </thead>
           <tbody>
-            <tr style={{borderBottom: '1px solid var(--border)'}}>
-              <td className="py-4 font-medium" style={{padding: '1rem 0'}}>Lucas Silva</td>
-              <td className="py-4 text-muted" style={{padding: '1rem 0'}}>05 de Out, 2023</td>
-              <td className="py-4" style={{padding: '1rem 0'}}>R$ 200,00</td>
-              <td className="py-4" style={{padding: '1rem 0'}}><span className="badge success">Pago</span></td>
-            </tr>
-            <tr>
-              <td className="py-4 font-medium" style={{padding: '1rem 0'}}>Maria Santos</td>
-              <td className="py-4 text-muted" style={{padding: '1rem 0'}}>01 de Out, 2023</td>
-              <td className="py-4" style={{padding: '1rem 0'}}>R$ 200,00</td>
-              <td className="py-4" style={{padding: '1rem 0'}}><span className="badge warning">Pendente</span></td>
-            </tr>
+            {loading ? (
+              <tr><td colSpan="4" className="py-4 text-center text-muted">Carregando dados...</td></tr>
+            ) : studentsData.length > 0 ? (
+              studentsData.map((student, i) => (
+                <tr key={i} style={{borderBottom: '1px solid var(--border)'}}>
+                  <td className="py-4 font-medium" style={{padding: '1rem 0'}}>{student.name}</td>
+                  <td className="py-4 text-muted" style={{padding: '1rem 0'}}>{student.classesCount} aulas</td>
+                  <td className="py-4 font-bold" style={{padding: '1rem 0'}}>
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(student.totalAmount)}
+                  </td>
+                  <td className="py-4" style={{padding: '1rem 0'}}><span className="badge warning">A Receber</span></td>
+                </tr>
+              ))
+            ) : (
+              <tr><td colSpan="4" className="py-4 text-center text-muted">Nenhuma aula agendada neste mês.</td></tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -81,7 +141,7 @@ const StudentFinancial = () => {
   const classPrice = 40; // 40 reais por hora/aula
   const pixKey = '40170238865';
   const pixName = 'Jorge Antonio';
-  const pixCity = 'BRASIL';
+  const pixCity = 'BRASILIA';
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -115,7 +175,7 @@ const StudentFinancial = () => {
   }, [user]);
 
   const totalAmount = classesCount * classPrice;
-  const pixPayload = generatePixPayload(pixKey, pixName, pixCity, totalAmount);
+  const pixPayload = totalAmount > 0 ? generatePixPayload(pixKey, pixName, pixCity, totalAmount) : '';
 
   return (
     <div className="grid-cols-2">
@@ -139,7 +199,7 @@ const StudentFinancial = () => {
                 <h3 className="mb-4 flex items-center gap-2"><QrCode className="text-primary"/> Pagar com PIX</h3>
                 
                 <div className="pix-qr-placeholder mb-4 flex items-center justify-center p-4 bg-white rounded-lg">
-                  <QRCodeSVG value={pixPayload} size={160} />
+                  {pixPayload && <QRCodeSVG value={pixPayload} size={160} />}
                 </div>
 
                 <div className="w-full mt-2">
@@ -165,22 +225,12 @@ const StudentFinancial = () => {
       </div>
 
       {/* History */}
-      <div className="card glass h-full">
-        <h2 className="mb-4">Comprovantes de Pagamento</h2>
-        <div className="flex flex-col gap-4">
-          {[1,2,3].map((_, i) => (
-            <div key={i} className="flex justify-between items-center p-4 border rounded-md transition-colors" style={{backgroundColor: 'var(--bg-color)', border: '1px solid var(--border)'}}>
-              <div className="flex items-center gap-3">
-                <CheckCircle className="text-success" size={24} />
-                <div>
-                  <div className="font-semibold">Plano Mensal</div>
-                  <div className="text-sm text-muted">Setembro de 2023</div>
-                </div>
-              </div>
-              <div className="font-bold">R$ 200,00</div>
-            </div>
-          ))}
-        </div>
+      <div className="card glass h-full flex flex-col items-center justify-center text-center p-8">
+        <Clock className="text-muted mb-4 opacity-50" size={48} />
+        <h2 className="mb-2">Histórico Vazio</h2>
+        <p className="text-muted text-sm">
+          Ainda não há comprovantes de pagamento anteriores registrados no sistema.
+        </p>
       </div>
     </div>
   );
