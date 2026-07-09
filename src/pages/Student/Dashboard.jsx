@@ -102,7 +102,7 @@ const StudentDashboard = () => {
       <div className="hero-section card glass mb-6">
         <div className="flex justify-between items-center flex-wrap gap-4">
           <div>
-            <h1 className="mb-2 text-primary">Hello, {user?.name?.split(' ')[0] || 'Student'}! 🌟</h1>
+            <h1 className="mb-2 text-primary">Hello, {user?.name?.split(' ')[0] || 'Student'}!</h1>
             <p className="text-lg text-muted">Ready to improve your English today?</p>
           </div>
           <div className="text-right">
