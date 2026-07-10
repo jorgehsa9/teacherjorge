@@ -35,9 +35,10 @@
   background-color: var(--border);
   gap: 1px;
   position: relative;
+  min-width: 100%;
 }
 
-.calendar-weekly-grid.week-view { grid-template-columns: 60px repeat(7, 1fr); }
+.calendar-weekly-grid.week-view { grid-template-columns: 60px repeat(7, minmax(100px, 1fr)); }
 .calendar-weekly-grid.day-view { grid-template-columns: 60px 1fr; }
 
 .calendar-time-col {
@@ -62,9 +63,10 @@
   position: sticky;
   top: 0;
   z-index: 20;
+  min-width: 100%;
 }
 
-.calendar-header-row.week-view { grid-template-columns: 60px repeat(7, 1fr); }
+.calendar-header-row.week-view { grid-template-columns: 60px repeat(7, minmax(100px, 1fr)); }
 .calendar-header-row.day-view { grid-template-columns: 60px 1fr; }
 
 .time-slot {
@@ -313,4 +315,81 @@
   background-color: var(--primary);
   color: white;
   border-color: var(--primary);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .calendar-controls {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 1rem;
+  }
+  
+  .calendar-controls > div {
+    justify-content: space-between;
+  }
+  
+  .calendar-controls .font-bold {
+    font-size: 1rem;
+    margin-left: 0;
+    text-align: center;
+    flex: 1;
+  }
+
+  .view-tabs {
+    justify-content: center;
+  }
+
+  .view-tabs button {
+    flex: 1;
+  }
+
+  .calendar-wrapper {
+    overflow-x: auto;
+  }
+  
+  .calendar-month-grid {
+    grid-template-columns: repeat(7, minmax(50px, 1fr));
+    min-width: 500px; /* Allow scrolling for month view too if needed */
+  }
+
+  .calendar-weekly-grid.week-view {
+    grid-template-columns: 50px repeat(7, minmax(65px, 1fr));
+  }
+  
+  .calendar-header-row.week-view {
+    grid-template-columns: 50px repeat(7, minmax(65px, 1fr));
+  }
+
+  .calendar-time-col {
+    position: sticky;
+    left: 0;
+    z-index: 30;
+    background-color: var(--bg-color);
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  }
+
+  .calendar-header-row > div:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 40;
+    background-color: var(--bg-color);
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  }
+
+  .time-slot {
+    font-size: 0.65rem;
+  }
+
+  .weekly-event {
+    padding: 0.25rem;
+  }
+
+  .weekly-event .event-time {
+    font-size: 0.65rem;
+  }
+  
+  .weekly-event .event-title {
+    font-size: 0.65rem;
+  }
 }

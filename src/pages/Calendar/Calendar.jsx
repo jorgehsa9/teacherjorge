@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { ChevronLeft, ChevronRight, Plus, X, Trash2, Repeat } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, X, Trash2, Repeat, Calendar as CalendarIcon, Clock } from 'lucide-react';
 import './Calendar.css';
 
 const START_HOUR = 6;
@@ -17,7 +17,7 @@ const Calendar = () => {
   const { user } = useAuth();
   const isTeacher = user?.role === 'teacher';
 
-  const [currentView, setCurrentView] = useState('week'); // 'month', 'week', 'day'
+  const [currentView, setCurrentView] = useState(window.innerWidth <= 768 ? 'agenda' : 'week'); // 'month', 'week', 'agenda'
   const [currentDate, setCurrentDate] = useState(new Date());
   
   const [classes, setClasses] = useState([]);
@@ -119,7 +119,7 @@ const Calendar = () => {
 
   const getHeaderTitle = () => {
     const opts = { month: 'long', year: 'numeric' };
-    if (currentView === 'day') opts.day = 'numeric';
+    if (currentView === 'agenda') opts.day = 'numeric';
     return currentDate.toLocaleString('pt-BR', opts).replace(/^\w/, c => c.toUpperCase());
   };
 
@@ -458,6 +458,96 @@ const Calendar = () => {
     );
   };
 
+  const renderAgendaView = () => {
+    const stripDays = Array.from({ length: 14 }, (_, i) => {
+      const d = new Date(currentDate);
+      d.setDate(d.getDate() - 3 + i);
+      return d;
+    });
+
+    const selectedDateStr = currentDate.toDateString();
+    const dayClasses = classes
+      .filter(c => new Date(c.scheduled_at).toDateString() === selectedDateStr)
+      .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+
+    return (
+      <div className="agenda-view flex flex-col h-full w-full bg-bg">
+        {/* Horizontal Date Strip */}
+        <div className="agenda-date-strip flex overflow-x-auto p-4 gap-3 border-b border-border bg-surface" style={{ scrollbarWidth: 'none' }}>
+          {stripDays.map((day, i) => {
+            const isSelected = day.toDateString() === selectedDateStr;
+            const isToday = day.toDateString() === new Date().toDateString();
+            return (
+              <div 
+                key={i} 
+                className={`flex flex-col items-center justify-center min-w-[56px] p-2 rounded-2xl cursor-pointer transition-all duration-300 ${isSelected ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'text-muted hover:bg-border/50'} ${isToday && !isSelected ? 'border border-primary text-primary' : 'border border-transparent'}`}
+                onClick={() => setCurrentDate(day)}
+              >
+                <span className="text-[10px] uppercase font-bold tracking-wider mb-1 opacity-80">{day.toLocaleString('pt-BR', { weekday: 'short' }).replace('.', '')}</span>
+                <span className="text-xl font-extrabold">{day.getDate()}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Events List */}
+        <div className="agenda-events-list flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-4">
+          <h3 className="text-sm font-bold text-muted uppercase tracking-widest mb-2 flex items-center gap-2">
+            <CalendarIcon size={16} />
+            {currentDate.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+          </h3>
+          
+          {dayClasses.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-muted opacity-60">
+              <div className="w-16 h-16 rounded-full bg-border flex items-center justify-center mb-4" style={{background: 'rgba(0,0,0,0.1)'}}>
+                <CalendarIcon size={24} />
+              </div>
+              <p className="font-medium">Nenhuma aula agendada</p>
+            </div>
+          ) : (
+            dayClasses.map(cls => {
+              const classTime = new Date(cls.scheduled_at);
+              const endTime = new Date(classTime.getTime() + cls.duration * 60000);
+              const colorClass = COLORS[cls.student_email.length % COLORS.length];
+              
+              const borderClass = colorClass === 'bg-primary' ? 'border-primary' : 
+                                  colorClass === 'bg-warning' ? 'border-warning' : 
+                                  colorClass === 'bg-success' ? 'border-success' : 
+                                  'border-[#8b5cf6]';
+              
+              const bgFadeClass = colorClass === 'bg-primary' ? 'bg-[rgba(168,85,247,0.05)]' : 
+                                  colorClass === 'bg-warning' ? 'bg-[rgba(245,158,11,0.05)]' : 
+                                  colorClass === 'bg-success' ? 'bg-[rgba(16,185,129,0.05)]' : 
+                                  'bg-[rgba(139,92,246,0.05)]';
+
+              return (
+                <div 
+                  key={cls.id} 
+                  className={`p-4 md:p-5 rounded-2xl flex items-center gap-4 cursor-pointer hover:shadow-md transition-all bg-surface border-l-[6px] ${borderClass} ${bgFadeClass}`}
+                  onClick={() => openEditClassModal(cls)}
+                >
+                  <div className="flex flex-col justify-center items-center min-w-[60px]">
+                    <span className="font-black text-lg text-main">{classTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</span>
+                    <span className="text-xs font-semibold text-muted mt-1">{endTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</span>
+                  </div>
+                  
+                  <div className="w-px h-10 bg-border opacity-50 mx-2"></div>
+                  
+                  <div className="flex-1 flex flex-col">
+                    <span className="font-bold text-main text-lg">{getStudentName(cls.student_email)}</span>
+                    <span className="text-sm font-medium text-muted mt-1 flex items-center gap-1.5">
+                       <Clock size={14} /> {cls.duration} min
+                    </span>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="dashboard-wrapper flex flex-col h-full">
       <div className="dashboard-header mb-6 flex justify-between items-center">
@@ -473,7 +563,7 @@ const Calendar = () => {
       </div>
 
       <div className="card glass flex-1 flex flex-col p-0 overflow-hidden relative">
-        <div className="p-4 flex justify-between items-center" style={{backgroundColor: 'var(--surface)', borderBottom: '1px solid var(--border)'}}>
+        <div className="calendar-controls p-4 flex justify-between items-center" style={{backgroundColor: 'var(--surface)', borderBottom: '1px solid var(--border)'}}>
           <div className="flex gap-2 items-center">
             <button className="btn btn-outline" style={{padding: '0.5rem'}} onClick={() => navigate(-1)}><ChevronLeft size={16}/></button>
             <button className="btn btn-outline" style={{padding: '0.5rem'}} onClick={() => navigate(1)}><ChevronRight size={16}/></button>
@@ -484,7 +574,7 @@ const Calendar = () => {
           <div className="view-tabs">
             <button className={currentView === 'month' ? 'active' : ''} onClick={() => setCurrentView('month')}>Mês</button>
             <button className={currentView === 'week' ? 'active' : ''} onClick={() => setCurrentView('week')}>Semana</button>
-            <button className={currentView === 'day' ? 'active' : ''} onClick={() => setCurrentView('day')}>Dia</button>
+            <button className={currentView === 'agenda' ? 'active' : ''} onClick={() => setCurrentView('agenda')}>Agenda</button>
           </div>
         </div>
 
@@ -492,7 +582,7 @@ const Calendar = () => {
           <div className="flex-1 flex justify-center items-center text-muted">Carregando agenda...</div>
         ) : (
           <div className="calendar-wrapper">
-            {currentView === 'month' ? renderMonthView() : renderWeekOrDayView()}
+            {currentView === 'month' ? renderMonthView() : currentView === 'agenda' ? renderAgendaView() : renderWeekOrDayView()}
           </div>
         )}
       </div>

@@ -64,7 +64,7 @@ const DashboardLayout = () => {
           <h2>Teacher Jorge</h2>
         </div>
 
-        <NavLink to="/dashboard/profile" className="user-profile" style={{ textDecoration: 'none', color: 'inherit', display: 'flex' }}>
+        <NavLink to="/dashboard/profile" className="user-profile">
           <div className="avatar bg-primary text-white flex items-center justify-center rounded-full" style={{ width: '32px', height: '32px', flexShrink: 0, fontWeight: 'bold' }}>
             {user?.name?.charAt(0) || 'U'}
           </div>
