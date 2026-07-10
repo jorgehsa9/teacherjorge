@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { User, Lock, Save } from 'lucide-react';
+import { User, Lock, Save, Moon, Sun, LogOut, Palette } from 'lucide-react';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const outletContext = useOutletContext();
+  const { isDarkMode, setIsDarkMode, activeTheme, setActiveTheme, themes } = outletContext || {};
   
   const [displayName, setDisplayName] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -63,6 +67,11 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
   };
 
   return (
@@ -125,6 +134,42 @@ const Profile = () => {
           </div>
         </form>
       </div>
+
+      {outletContext && (
+        <div className="card glass mt-6" style={{ maxWidth: '600px' }}>
+          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <Palette className="text-primary" size={20} /> Aparência e Sessão
+          </h2>
+          
+          {themes && (
+            <div className="mb-6">
+              <label className="text-sm font-semibold text-muted uppercase tracking-wider mb-3 block">Cor Principal</label>
+              <div className="flex gap-4">
+                {themes.map(t => (
+                  <button 
+                    key={t.name}
+                    onClick={() => setActiveTheme(t)}
+                    className={`theme-dot ${activeTheme?.name === t.name ? 'active' : ''}`}
+                    style={{ backgroundColor: t.hex, width: '32px', height: '32px' }}
+                    title={t.name}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
+            <button onClick={() => setIsDarkMode && setIsDarkMode(!isDarkMode)} className="btn flex-1 flex items-center justify-center gap-2" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+              {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+              {isDarkMode ? 'Modo Claro' : 'Modo Escuro'}
+            </button>
+            
+            <button onClick={handleLogout} className="btn flex-1 flex items-center justify-center gap-2" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', border: 'none' }}>
+              <LogOut size={20} /> Sair da Conta
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
