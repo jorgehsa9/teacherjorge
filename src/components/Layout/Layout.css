@@ -173,6 +173,10 @@
   box-shadow: 0 0 10px rgba(255,255,255,0.3);
 }
 
+.mobile-only {
+  display: none !important;
+}
+
 /* Mobile Bottom Nav */
 @media (max-width: 768px) {
   .app-container {
@@ -253,5 +257,9 @@
     height: 3px;
     background: var(--primary);
     border-radius: 0 0 3px 3px;
+  }
+
+  .mobile-only {
+    display: flex !important;
   }
 }
