@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { FileText, Download, ArrowLeft, BookOpen, ExternalLink } from 'lucide-react';
+import { FileText, Download, ArrowLeft, BookOpen, ExternalLink, Plus, X, Trash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const StudentMaterials = () => {
@@ -9,6 +9,11 @@ const StudentMaterials = () => {
   const navigate = useNavigate();
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Add Material State
+  const [isAdding, setIsAdding] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newMaterial, setNewMaterial] = useState({ title: '', file_type: 'PDF', file_url: '' });
 
   useEffect(() => {
     const fetchMaterials = async () => {
@@ -32,6 +37,50 @@ const StudentMaterials = () => {
     fetchMaterials();
   }, [user]);
 
+  const handleAddMaterial = async (e) => {
+    e.preventDefault();
+    if (!user?.email) return;
+    
+    setIsSubmitting(true);
+    const { error } = await supabase.from('Materials').insert([
+      { 
+        student_email: user.email,
+        title: newMaterial.title,
+        file_type: newMaterial.file_type,
+        file_url: newMaterial.file_url
+      }
+    ]);
+
+    if (error) {
+      console.error('Error adding material:', error);
+      alert('Falha ao adicionar material.');
+    } else {
+      // Refresh materials list
+      const { data } = await supabase
+        .from('Materials')
+        .select('*')
+        .ilike('student_email', user.email)
+        .order('created_at', { ascending: false });
+      if (data) setMaterials(data);
+      
+      setNewMaterial({ title: '', file_type: 'PDF', file_url: '' });
+      setIsAdding(false);
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleDeleteMaterial = async (id) => {
+    if (!window.confirm('Tem certeza de que deseja remover este material?')) return;
+    
+    const { error } = await supabase.from('Materials').delete().eq('id', id);
+    if (error) {
+      console.error('Error deleting material:', error);
+      alert('Falha ao excluir o material.');
+    } else {
+      setMaterials(materials.filter(m => m.id !== id));
+    }
+  };
+
   const formatClassDate = (dateString) => {
     const d = new Date(dateString);
     return d.toLocaleString('pt-BR', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -39,7 +88,7 @@ const StudentMaterials = () => {
 
   return (
     <div className="dashboard-wrapper h-full flex flex-col relative animate-fade-in-up">
-      <div className="dashboard-header mb-6 flex justify-between items-end">
+      <div className="dashboard-header mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <button 
@@ -51,8 +100,15 @@ const StudentMaterials = () => {
             </button>
           </div>
           <h1>Todos os Materiais</h1>
-          <p>Tudo que seu professor compartilhou com você.</p>
+          <p>Tudo que foi compartilhado entre você e o professor.</p>
         </div>
+        <button 
+          className="btn btn-primary flex items-center gap-2 py-2 px-4 whitespace-nowrap" 
+          onClick={() => setIsAdding(true)}
+          style={{ borderRadius: '12px', fontWeight: 'bold' }}
+        >
+          <Plus size={18} /> Enviar Material
+        </button>
       </div>
 
       <div className="card glass mb-6 p-6 animate-fade-in-up delay-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(236, 72, 153, 0.05))', borderColor: 'var(--primary)' }}>
@@ -108,11 +164,15 @@ const StudentMaterials = () => {
                         href={mat.file_url.startsWith('http') ? mat.file_url : `https://${mat.file_url}`} 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="btn btn-outline btn-sm"
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}
+                        className="btn-icon text-muted hover:text-primary flex items-center justify-center" 
+                        title="Abrir Material"
+                        style={{padding: '4px', background: 'none', border: 'none', marginRight: '8px', display: 'inline-flex'}}
                       >
-                        <Download size={14} /> Abrir
+                        <Download size={16} />
                       </a>
+                      <button onClick={() => handleDeleteMaterial(mat.id)} title="Excluir Material" className="btn-icon text-muted hover:text-danger" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center'}}>
+                        <Trash size={16} />
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -126,6 +186,59 @@ const StudentMaterials = () => {
           </div>
         )}
       </div>
+
+      {/* Add Material Modal */}
+      {isAdding && (
+        <div className="modal-overlay flex items-center justify-center" style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
+        }}>
+          <div className="card glass w-full animate-fade-in-up" style={{maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem', borderRadius: '24px'}}>
+            <div className="flex justify-between items-center mb-6">
+              <h2 style={{margin: 0}} className="text-xl font-bold text-main">Enviar Material</h2>
+              <button onClick={() => setIsAdding(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+                <X size={24} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleAddMaterial}>
+              <div className="input-group mb-4">
+                <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>Título do Material</label>
+                <input type="text" className="input w-full" required placeholder="Ex: Minha Redação de Inglês"
+                  value={newMaterial.title} onChange={(e) => setNewMaterial({...newMaterial, title: e.target.value})}
+                  style={{ borderRadius: '12px' }}
+                />
+              </div>
+              
+              <div className="input-group mb-4">
+                <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>Tipo de Arquivo</label>
+                <select className="input w-full" value={newMaterial.file_type} onChange={(e) => setNewMaterial({...newMaterial, file_type: e.target.value})} style={{ borderRadius: '12px' }}>
+                  <option>PDF</option>
+                  <option>DOCX</option>
+                  <option>Link</option>
+                  <option>Áudio</option>
+                  <option>Vídeo</option>
+                </select>
+              </div>
+
+              <div className="input-group mb-6">
+                <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>URL do Google Drive (ou link externo)</label>
+                <input type="url" className="input w-full" required placeholder="https://drive.google.com/..."
+                  value={newMaterial.file_url} onChange={(e) => setNewMaterial({...newMaterial, file_url: e.target.value})}
+                  style={{ borderRadius: '12px' }}
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button type="button" className="btn btn-outline" onClick={() => setIsAdding(false)} style={{ borderRadius: '12px' }}>Cancelar</button>
+                <button type="submit" className="btn btn-primary" disabled={isSubmitting} style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 'bold' }}>
+                  {isSubmitting ? 'Enviando...' : 'Enviar para o Professor'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

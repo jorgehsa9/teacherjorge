@@ -20,10 +20,10 @@ const StudentDashboard = () => {
 
       try {
         // 1. Fetch Student Progress & Meet Link
-        const { data: sData } = await supabase
+        const { data: sData, error: sError } = await supabase
           .from('Students')
           .select('*')
-          .eq('email', user.email)
+          .ilike('email', user.email)
           .single();
           
         if (sData) {
@@ -94,7 +94,7 @@ const StudentDashboard = () => {
           completed_lessons: newLessons,
           module_progress: newProgress
         })
-        .eq('email', user.email);
+        .ilike('email', user.email);
         
       if (error) throw error;
     } catch (err) {

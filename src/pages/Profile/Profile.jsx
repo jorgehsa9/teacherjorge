@@ -40,7 +40,7 @@ const Profile = () => {
           const { error: dbError } = await supabase
             .from('Students')
             .update({ name: displayName })
-            .eq('email', user.email);
+            .ilike('email', user.email);
             
           if (dbError) console.error("Could not update DB:", dbError);
         }
