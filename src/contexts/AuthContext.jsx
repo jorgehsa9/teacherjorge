@@ -17,7 +17,9 @@ export const AuthProvider = ({ children }) => {
       if (session?.user) {
         const role = session.user.email === 'teacher@email.com' ? 'teacher' : 'student';
         const displayName = session.user.user_metadata?.name || (session.user.email === 'teacher@email.com' ? 'Jorge' : session.user.email.split('@')[0]);
-        setUser({ ...session.user, role, name: displayName });
+        const theme = session.user.user_metadata?.theme;
+        const isDarkMode = session.user.user_metadata?.isDarkMode;
+        setUser({ ...session.user, role, name: displayName, theme, isDarkMode });
       } else {
         setUser(null);
       }
@@ -30,7 +32,9 @@ export const AuthProvider = ({ children }) => {
       if (session?.user) {
         const role = session.user.email === 'teacher@email.com' ? 'teacher' : 'student';
         const displayName = session.user.user_metadata?.name || (session.user.email === 'teacher@email.com' ? 'Jorge' : session.user.email.split('@')[0]);
-        setUser({ ...session.user, role, name: displayName });
+        const theme = session.user.user_metadata?.theme;
+        const isDarkMode = session.user.user_metadata?.isDarkMode;
+        setUser({ ...session.user, role, name: displayName, theme, isDarkMode });
       } else {
         setUser(null);
       }

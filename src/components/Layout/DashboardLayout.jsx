@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../lib/supabase';
 import { BookOpen, Calendar, DollarSign, LogOut, LayoutDashboard, Users, Moon, Sun, Folder, User } from 'lucide-react';
 import AnimatedBackground from './AnimatedBackground';
 import './Layout.css';
@@ -16,14 +17,39 @@ const themes = [
 const DashboardLayout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  
   const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (user?.isDarkMode !== undefined) return user.isDarkMode;
     const saved = localStorage.getItem('isDarkMode');
     return saved !== null ? JSON.parse(saved) : true;
   });
+  
   const [activeTheme, setActiveTheme] = useState(() => {
+    if (user?.theme) {
+      const foundTheme = themes.find(t => t.name === user.theme);
+      if (foundTheme) return foundTheme;
+    }
     const saved = localStorage.getItem('activeTheme');
     return saved ? JSON.parse(saved) : themes[0];
   });
+
+  // Sync preferences with database
+  useEffect(() => {
+    const syncPreferences = async () => {
+      if (!user) return;
+      const needsUpdate = user.isDarkMode !== isDarkMode || user.theme !== activeTheme.name;
+      if (needsUpdate) {
+        // Save to Supabase auth metadata
+        await supabase.auth.updateUser({
+          data: { 
+            isDarkMode, 
+            theme: activeTheme.name 
+          }
+        });
+      }
+    };
+    syncPreferences();
+  }, [isDarkMode, activeTheme, user]);
 
   useEffect(() => {
     document.documentElement.style.setProperty('--primary', activeTheme.hex);
