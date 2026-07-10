@@ -37,7 +37,8 @@ const TeacherDashboard = () => {
         .lte('scheduled_at', endOfMonth.toISOString());
       
       if (monthClasses) {
-        setClassesThisMonth(monthClasses.length);
+        const actualClasses = monthClasses.filter(c => !c.type || c.type === 'Aula');
+        setClassesThisMonth(actualClasses.length);
         
         // Calculate pending payments (assume all classes are pending for now, until Payments table is added)
         // Only count distinct students

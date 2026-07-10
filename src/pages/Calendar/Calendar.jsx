@@ -90,7 +90,7 @@ const Calendar = () => {
       .gte('scheduled_at', start.toISOString())
       .lte('scheduled_at', end.toISOString());
 
-    if (!isTeacher) query = query.eq('student_email', user.email);
+    if (!isTeacher) query = query.ilike('student_email', user.email);
 
     const { data: classesData, error: classesError } = await query;
     if (classesData) setClasses(classesData);
@@ -233,7 +233,7 @@ const Calendar = () => {
     setEditMode(false);
     setSelectedClassId(null);
     setClassForm({ 
-      student_email: '', date: dateStr, startHour, startMinute, duration: 60, status: 'Scheduled',
+      student_email: '', date: dateStr, startHour, startMinute, duration: 60, status: 'Scheduled', type: 'Aula',
       isRecurring: false, repeatDays: [], repeatUntil: ''
     });
     setIsModalOpen(true);
@@ -250,7 +250,7 @@ const Calendar = () => {
     setSelectedClassId(cls.id);
     setClassForm({ 
       student_email: cls.student_email, date: dateStr, startHour: hourStr, startMinute: minStr, 
-      duration: cls.duration, status: cls.status,
+      duration: cls.duration, status: cls.status, type: cls.type || 'Aula',
       isRecurring: false, repeatDays: [], repeatUntil: ''
     });
     setIsModalOpen(true);
@@ -273,7 +273,8 @@ const Calendar = () => {
       student_email: classForm.student_email,
       scheduled_at: baseDate.toISOString(),
       duration: parseInt(classForm.duration),
-      status: classForm.status
+      status: classForm.status,
+      type: classForm.type
     };
 
     let error;
@@ -473,108 +474,197 @@ const Calendar = () => {
     return (
       <div className="agenda-view flex flex-col h-full w-full bg-bg">
         {/* Horizontal Date Strip */}
-        <div className="agenda-date-strip flex overflow-x-auto p-4 gap-3 border-b border-border bg-surface" style={{ scrollbarWidth: 'none' }}>
-          {stripDays.map((day, i) => {
+        <div className="agenda-date-strip flex justify-between md:justify-center md:gap-8 items-center px-4 py-6 md:px-8 border-b" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+          {stripDays.slice(0, 7).map((day, i) => {
             const isSelected = day.toDateString() === selectedDateStr;
             const isToday = day.toDateString() === new Date().toDateString();
+            const dayLetter = day.toLocaleString('pt-BR', { weekday: 'narrow' }).toUpperCase();
+            
             return (
               <div 
                 key={i} 
-                className={`flex flex-col items-center justify-center min-w-[56px] p-2 rounded-2xl cursor-pointer transition-all duration-300 ${isSelected ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'text-muted hover:bg-border/50'} ${isToday && !isSelected ? 'border border-primary text-primary' : 'border border-transparent'}`}
+                className="flex flex-col items-center justify-center cursor-pointer transition-all duration-300 flex-shrink-0"
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: isSelected ? 'transparent' : 'transparent',
+                  color: isSelected ? 'var(--success)' : 'var(--text-muted)',
+                  border: isSelected ? '2px solid var(--success)' : isToday ? '1px dashed var(--primary)' : 'none',
+                  fontWeight: isSelected ? '900' : '600',
+                  fontSize: '1rem',
+                  margin: '0 4px'
+                }}
                 onClick={() => setCurrentDate(day)}
               >
-                <span className="text-[10px] uppercase font-bold tracking-wider mb-1 opacity-80">{day.toLocaleString('pt-BR', { weekday: 'short' }).replace('.', '')}</span>
-                <span className="text-xl font-extrabold">{day.getDate()}</span>
+                {dayLetter}
               </div>
             );
           })}
         </div>
 
-        {/* Events List */}
-        <div className="agenda-events-list flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-4">
-          <h3 className="text-sm font-bold text-muted uppercase tracking-widest mb-2 flex items-center gap-2">
-            <CalendarIcon size={16} />
-            {currentDate.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+        {/* Events List (Timeline Layout) */}
+        <div className="agenda-events-list flex-1 overflow-y-auto flex flex-col p-4 md:p-8" style={{ backgroundColor: 'var(--bg-color)' }}>
+          <h3 className="text-xs md:text-sm font-extrabold uppercase tracking-widest mb-6 flex items-center gap-2" style={{ color: 'var(--text-muted)', letterSpacing: '2px' }}>
+            {currentDate.toLocaleDateString('pt-BR', { weekday: 'long' })}
           </h3>
           
           {dayClasses.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-muted opacity-60">
-              <div className="w-16 h-16 rounded-full bg-border flex items-center justify-center mb-4" style={{background: 'rgba(0,0,0,0.1)'}}>
-                <CalendarIcon size={24} />
+            <div className="flex flex-col items-center justify-center opacity-80" style={{ padding: '4rem 0' }}>
+              <div className="flex items-center justify-center mb-6" style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                <CalendarIcon size={32} style={{ opacity: 0.6 }} />
               </div>
-              <p className="font-medium">Nenhuma aula agendada</p>
+              <p className="font-extrabold text-lg" style={{ color: 'var(--text-main)' }}>Nenhuma aula agendada</p>
+              <p className="text-sm mt-2 text-center max-w-xs font-semibold" style={{ color: '#64748b' }}>Aproveite o tempo livre para preparar materiais ou descansar!</p>
             </div>
           ) : (
-            dayClasses.map(cls => {
-              const classTime = new Date(cls.scheduled_at);
-              const endTime = new Date(classTime.getTime() + cls.duration * 60000);
-              const colorClass = COLORS[cls.student_email.length % COLORS.length];
-              
-              const borderClass = colorClass === 'bg-primary' ? 'border-primary' : 
-                                  colorClass === 'bg-warning' ? 'border-warning' : 
-                                  colorClass === 'bg-success' ? 'border-success' : 
-                                  'border-[#8b5cf6]';
-              
-              const bgFadeClass = colorClass === 'bg-primary' ? 'bg-[rgba(168,85,247,0.05)]' : 
-                                  colorClass === 'bg-warning' ? 'bg-[rgba(245,158,11,0.05)]' : 
-                                  colorClass === 'bg-success' ? 'bg-[rgba(16,185,129,0.05)]' : 
-                                  'bg-[rgba(139,92,246,0.05)]';
+            <div className="relative pt-2 pb-4">
+              <div className="flex flex-col gap-4 md:gap-6">
+                {dayClasses.map((cls, index) => {
+                  const classTime = new Date(cls.scheduled_at);
+                  const endTime = new Date(classTime.getTime() + cls.duration * 60000);
+                  const colorClass = COLORS[cls.student_email.length % COLORS.length];
+                  
+                  const dotColor = colorClass === 'bg-primary' ? 'var(--primary)' : 
+                                      colorClass === 'bg-warning' ? 'var(--warning)' : 
+                                      colorClass === 'bg-success' ? 'var(--success)' : 
+                                      '#f97316'; // Fallback orange
+                  
+                  return (
+                    <div key={cls.id} className="flex gap-3 md:gap-4 w-full cursor-pointer group" onClick={() => openEditClassModal(cls)}>
+                      {/* Left Column: Timeline Spine & Dot */}
+                      <div className="relative flex flex-col items-center w-6 flex-shrink-0">
+                        {/* Spine */}
+                        <div className="absolute top-0 bottom-[-16px] md:bottom-[-24px]" style={{ width: '2px', backgroundColor: 'var(--border)', opacity: 0.6 }}></div>
+                        {/* Dot Container (creates gap in spine) */}
+                        <div className="w-5 h-5 rounded-full mt-4 z-10 flex items-center justify-center" style={{ backgroundColor: 'var(--bg-color)' }}>
+                          <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: dotColor, boxShadow: `0 0 10px ${dotColor}` }}></div>
+                        </div>
+                      </div>
 
-              return (
-                <div 
-                  key={cls.id} 
-                  className={`p-4 md:p-5 rounded-2xl flex items-center gap-4 cursor-pointer hover:shadow-md transition-all bg-surface border-l-[6px] ${borderClass} ${bgFadeClass}`}
-                  onClick={() => openEditClassModal(cls)}
-                >
-                  <div className="flex flex-col justify-center items-center min-w-[60px]">
-                    <span className="font-black text-lg text-main">{classTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</span>
-                    <span className="text-xs font-semibold text-muted mt-1">{endTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</span>
-                  </div>
-                  
-                  <div className="w-px h-10 bg-border opacity-50 mx-2"></div>
-                  
-                  <div className="flex-1 flex flex-col">
-                    <span className="font-bold text-main text-lg">{getStudentName(cls.student_email)}</span>
-                    <span className="text-sm font-medium text-muted mt-1 flex items-center gap-1.5">
-                       <Clock size={14} /> {cls.duration} min
-                    </span>
-                  </div>
-                </div>
-              );
-            })
+                      {/* Right Column: Event Card */}
+                      <div 
+                        className="flex-1 transition-all duration-300 p-4 md:p-5 card glass"
+                        style={{ 
+                          borderRadius: '20px',
+                          background: 'linear-gradient(135deg, rgba(var(--surface-rgb), 0.8) 0%, rgba(var(--surface-rgb), 0.4) 100%)',
+                          border: `1px solid ${dotColor}40`,
+                          boxShadow: '0 8px 32px rgba(0,0,0,0.04)',
+                          maxWidth: '600px'
+                        }}
+                      >
+                        <div className="flex justify-between items-start mb-3">
+                          <div className="flex items-center gap-2">
+                            <span className="font-extrabold text-base md:text-lg" style={{ color: 'var(--text-main)' }}>
+                              {getStudentName(cls.student_email)}
+                            </span>
+                            {cls.type === 'Reunião' && <span>🤝</span>}
+                            {!cls.type || cls.type === 'Aula' ? <span>📚</span> : null}
+                          </div>
+                          <span className="font-bold text-sm" style={{ color: 'var(--text-muted)' }}>
+                            {classTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-semibold flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
+                            {cls.status === 'Completed' ? '✅ Concluída' : cls.status === 'Cancelled' ? '❌ Cancelada' : '📍 Online / Local'}
+                          </span>
+                          <span className="text-xs font-semibold flex items-center gap-1.5 px-2 py-1" style={{ backgroundColor: 'rgba(0,0,0,0.04)', borderRadius: '8px', color: 'var(--text-muted)' }}>
+                            <Clock size={12} />
+                            {cls.duration} min
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           )}
         </div>
       </div>
     );
   };
-
   return (
-    <div className="dashboard-wrapper flex flex-col h-full">
-      <div className="dashboard-header mb-6 flex justify-between items-center">
+    <div className="dashboard-wrapper flex flex-col h-full p-2 md:p-4">
+      <div className="card glass mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 md:p-6" style={{ borderLeft: '6px solid var(--primary)', borderRadius: '20px' }}>
         <div>
-          <h1>Agenda</h1>
-          <p>{isTeacher ? 'Arraste as aulas para alterar horários ou clique nas bordas para mudar a duração.' : 'Visualize os horários das suas aulas.'}</p>
+          <h1 className="text-2xl md:text-3xl font-black m-0 tracking-tight" style={{ background: 'linear-gradient(90deg, var(--primary) 0%, #a855f7 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Agenda
+          </h1>
+          <p className="text-xs md:text-sm m-0 mt-1 font-semibold" style={{ color: '#64748b' }}>
+            {isTeacher ? 'Arraste horários ou clique nas aulas.' : 'Acompanhe seu cronograma diário.'}
+          </p>
         </div>
         {isTeacher && (
-          <button className="btn btn-primary" onClick={() => openNewClassModal()}>
-            <Plus size={18} /> Agendar Aula
+          <button 
+            className="btn btn-primary w-full sm:w-auto flex items-center justify-center gap-2 transition-all duration-300 text-sm py-2 px-4" 
+            style={{ borderRadius: '12px', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)', fontWeight: 'bold' }} 
+            onClick={() => openNewClassModal()}
+          >
+            <Plus size={16} strokeWidth={3} /> Nova Aula
           </button>
         )}
       </div>
 
-      <div className="card glass flex-1 flex flex-col p-0 overflow-hidden relative">
-        <div className="calendar-controls p-4 flex justify-between items-center" style={{backgroundColor: 'var(--surface)', borderBottom: '1px solid var(--border)'}}>
-          <div className="flex gap-2 items-center">
-            <button className="btn btn-outline" style={{padding: '0.5rem'}} onClick={() => navigate(-1)}><ChevronLeft size={16}/></button>
-            <button className="btn btn-outline" style={{padding: '0.5rem'}} onClick={() => navigate(1)}><ChevronRight size={16}/></button>
-            <button className="btn btn-outline ml-2 text-sm" onClick={goToToday}>Hoje</button>
-            <span className="font-bold text-lg ml-4">{getHeaderTitle()}</span>
+      <div className="card glass flex-1 flex flex-col p-0 overflow-hidden relative shadow-lg" style={{ borderRadius: '20px', borderColor: 'var(--border)' }}>
+        <div className="flex flex-col gap-4 p-3 md:p-5" style={{ background: 'linear-gradient(180deg, rgba(var(--surface-rgb), 0.9) 0%, rgba(var(--surface-rgb), 0.5) 100%)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)' }}>
+          
+          {/* Top Controls: View Tabs - Segmented Control (Full width on mobile) */}
+          <div className="flex w-full p-1" style={{ borderRadius: '14px', backgroundColor: 'rgba(0,0,0,0.04)', border: '1px solid var(--border)' }}>
+            <button 
+              className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
+              style={{
+                borderRadius: '10px',
+                backgroundColor: currentView === 'month' ? 'var(--surface)' : 'transparent',
+                color: currentView === 'month' ? 'var(--text-main)' : 'var(--text-muted)',
+                boxShadow: currentView === 'month' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none',
+                border: 'none'
+              }}
+              onClick={() => setCurrentView('month')}
+            >
+              Mês
+            </button>
+            <button 
+              className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
+              style={{
+                borderRadius: '10px',
+                backgroundColor: currentView === 'week' ? 'var(--surface)' : 'transparent',
+                color: currentView === 'week' ? 'var(--text-main)' : 'var(--text-muted)',
+                boxShadow: currentView === 'week' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none',
+                border: 'none'
+              }}
+              onClick={() => setCurrentView('week')}
+            >
+              Semana
+            </button>
+            <button 
+              className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
+              style={{
+                borderRadius: '10px',
+                backgroundColor: currentView === 'agenda' ? 'var(--surface)' : 'transparent',
+                color: currentView === 'agenda' ? 'var(--text-main)' : 'var(--text-muted)',
+                boxShadow: currentView === 'agenda' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none',
+                border: 'none'
+              }}
+              onClick={() => setCurrentView('agenda')}
+            >
+              Agenda
+            </button>
           </div>
 
-          <div className="view-tabs">
-            <button className={currentView === 'month' ? 'active' : ''} onClick={() => setCurrentView('month')}>Mês</button>
-            <button className={currentView === 'week' ? 'active' : ''} onClick={() => setCurrentView('week')}>Semana</button>
-            <button className={currentView === 'agenda' ? 'active' : ''} onClick={() => setCurrentView('agenda')}>Agenda</button>
+          {/* Bottom Controls: Nav & Title */}
+          <div className="flex items-center justify-between gap-3 w-full">
+            <span className="font-extrabold text-lg md:text-2xl capitalize tracking-tight whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: 'var(--text-main)' }}>
+              {getHeaderTitle()}
+            </span>
+            
+            <div className="flex items-center gap-1 p-1 flex-shrink-0" style={{ borderRadius: '12px', backgroundColor: 'rgba(0,0,0,0.03)', border: '1px solid var(--border)' }}>
+              <button className="flex items-center justify-center transition-all duration-200" style={{ width: '32px', height: '32px', borderRadius: '8px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={() => navigate(-1)}><ChevronLeft size={18}/></button>
+              <button className="font-black text-xs md:text-sm transition-all duration-200 px-2 py-1" style={{ borderRadius: '8px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={goToToday}>HOJE</button>
+              <button className="flex items-center justify-center transition-all duration-200" style={{ width: '32px', height: '32px', borderRadius: '8px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={() => navigate(1)}><ChevronRight size={18}/></button>
+            </div>
           </div>
         </div>
 
@@ -604,6 +694,14 @@ const Calendar = () => {
                 <select className="input w-full" required value={classForm.student_email} onChange={(e) => setClassForm({...classForm, student_email: e.target.value})}>
                   <option value="">Selecione um aluno...</option>
                   {students.map(s => <option key={s.email} value={s.email}>{s.name} ({s.email})</option>)}
+                </select>
+              </div>
+
+              <div className="input-group">
+                <label>Tipo de Evento</label>
+                <select className="input w-full" required value={classForm.type} onChange={(e) => setClassForm({...classForm, type: e.target.value})}>
+                  <option value="Aula">Aula (Será cobrada)</option>
+                  <option value="Reunião">Reunião / Outro (Não será cobrado)</option>
                 </select>
               </div>
 

@@ -38,7 +38,7 @@ const StudentDashboard = () => {
         const { data: cData } = await supabase
           .from('Classes')
           .select('*')
-          .eq('student_email', user.email)
+          .ilike('student_email', user.email)
           .gte('scheduled_at', new Date().toISOString())
           .order('scheduled_at', { ascending: true })
           .limit(1)
@@ -50,7 +50,7 @@ const StudentDashboard = () => {
         const { data: mData } = await supabase
           .from('Materials')
           .select('*')
-          .eq('student_email', user.email)
+          .ilike('student_email', user.email)
           .order('created_at', { ascending: false });
           
         if (mData) setMaterials(mData);

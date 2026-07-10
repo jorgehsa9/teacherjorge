@@ -18,7 +18,7 @@ const StudentMaterials = () => {
       const { data, error } = await supabase
         .from('Materials')
         .select('*')
-        .eq('student_email', user.email)
+        .ilike('student_email', user.email)
         .order('created_at', { ascending: false });
 
       if (data) {
