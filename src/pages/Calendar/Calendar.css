@@ -395,48 +395,74 @@
 }
 
 /* Apple Calendar Mobile Enhancements */
-.apple-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  display: inline-block;
-  margin: 1px;
-}
-
-.month-cell-mobile {
-  min-height: auto;
-  padding: 0.5rem 0.25rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 2px;
-  cursor: pointer;
-  border-radius: 12px;
-  transition: background-color 0.2s;
-}
-
-.month-cell-mobile:hover, .month-cell-mobile:active {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-.month-cell-mobile.today .month-date {
-  background-color: var(--primary);
-  color: white;
-  border-radius: 50%;
-}
-
-.month-cell-mobile.selected-day {
-  background-color: rgba(var(--primary-rgb, 168, 85, 247), 0.15);
-}
-
-.month-cell-mobile.selected-day .month-date {
-  color: var(--primary);
-  font-weight: 800;
-}
-
-/* Bottom Sheet Drawer for Modals on Mobile */
 @media (max-width: 768px) {
+  .calendar-month-grid {
+    background-color: transparent !important;
+    gap: 0 !important;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+  }
+  
+  .calendar-month-day-header {
+    background-color: transparent !important;
+    font-size: 0.65rem !important;
+    padding: 0.5rem 0 !important;
+    color: var(--text-muted);
+    border: none !important;
+  }
+
+  .month-cell-mobile {
+    min-height: 48px;
+    padding: 0.25rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: transparent !important;
+    cursor: pointer;
+  }
+
+  .month-cell-mobile.different-month {
+    opacity: 0.3;
+  }
+
+  .month-cell-mobile .month-date {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 2px;
+    color: var(--text-main);
+    transition: all 0.2s;
+  }
+
+  /* Today, not selected */
+  .month-cell-mobile.today:not(.selected-day) .month-date {
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  /* Selected Day */
+  .month-cell-mobile.selected-day .month-date {
+    background-color: var(--primary) !important;
+    color: white !important;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .apple-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 1.5px;
+  }
+
+  /* Bottom Sheet */
   .bottom-sheet-modal {
     align-items: flex-end !important;
     padding: 0 !important;
@@ -450,7 +476,6 @@
     animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   
-  /* Drag handle indicator for bottom sheet */
   .bottom-sheet-modal .card::before {
     content: '';
     display: block;
@@ -460,24 +485,24 @@
     border-radius: 2px;
     margin: -0.5rem auto 1rem auto;
   }
+
+  /* Clean Event Card for Agenda */
+  .ios-event-card {
+    position: relative;
+    border-left-width: 4px;
+    border-left-style: solid;
+    border-radius: 12px;
+    background-color: var(--surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .ios-event-card:active {
+    transform: scale(0.98);
+  }
 }
 
 @keyframes slideUp {
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
-}
-
-/* Clean Event Card for Agenda */
-.ios-event-card {
-  position: relative;
-  border-left-width: 4px;
-  border-left-style: solid;
-  border-radius: 12px;
-  background-color: var(--surface);
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.ios-event-card:active {
-  transform: scale(0.98);
 }
