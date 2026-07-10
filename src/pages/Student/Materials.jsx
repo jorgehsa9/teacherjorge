@@ -15,6 +15,9 @@ const StudentMaterials = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newMaterial, setNewMaterial] = useState({ title: '', file_type: 'PDF', file_url: '' });
 
+  // Edit Material State
+  const [editingMaterial, setEditingMaterial] = useState(null);
+
   useEffect(() => {
     const fetchMaterials = async () => {
       if (!user?.email) return;
@@ -71,14 +74,37 @@ const StudentMaterials = () => {
 
   const handleDeleteMaterial = async (id) => {
     if (!window.confirm('Tem certeza de que deseja remover este material?')) return;
-    
+    setIsSubmitting(true);
     const { error } = await supabase.from('Materials').delete().eq('id', id);
     if (error) {
       console.error('Error deleting material:', error);
       alert('Falha ao excluir o material.');
     } else {
       setMaterials(materials.filter(m => m.id !== id));
+      setEditingMaterial(null);
     }
+    setIsSubmitting(false);
+  };
+
+  const handleEditMaterialSubmit = async (e) => {
+    e.preventDefault();
+    if (!editingMaterial) return;
+    
+    setIsSubmitting(true);
+    const { error } = await supabase.from('Materials').update({
+      title: editingMaterial.title,
+      file_type: editingMaterial.file_type,
+      file_url: editingMaterial.file_url
+    }).eq('id', editingMaterial.id);
+
+    if (error) {
+      console.error('Error updating material:', error);
+      alert('Falha ao atualizar material.');
+    } else {
+      setMaterials(materials.map(m => m.id === editingMaterial.id ? editingMaterial : m));
+      setEditingMaterial(null);
+    }
+    setIsSubmitting(false);
   };
 
   const formatClassDate = (dateString) => {
@@ -133,51 +159,32 @@ const StudentMaterials = () => {
         {loading ? (
           <div className="p-8 text-center text-muted">Carregando seus materiais...</div>
         ) : materials.length > 0 ? (
-          <div className="px-4 pb-4 overflow-x-auto flex-1">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Título</th>
-                  <th>Tipo</th>
-                  <th>Data de Adição</th>
-                  <th className="text-right">Ação</th>
-                </tr>
-              </thead>
-              <tbody>
-                {materials.map((mat) => (
-                  <tr key={mat.id}>
-                    <td>
-                      <span className="font-medium text-main flex items-center gap-2">
-                        <FileText size={16} className="text-primary"/> {mat.title}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="badge" style={{backgroundColor: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)'}}>
-                        {mat.file_type}
-                      </span>
-                    </td>
-                    <td className="text-muted">
-                      {formatClassDate(mat.created_at)}
-                    </td>
-                    <td className="text-right">
-                      <a 
-                        href={mat.file_url.startsWith('http') ? mat.file_url : `https://${mat.file_url}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="btn-icon text-muted hover:text-primary flex items-center justify-center" 
-                        title="Abrir Material"
-                        style={{padding: '4px', background: 'none', border: 'none', marginRight: '8px', display: 'inline-flex'}}
-                      >
-                        <Download size={16} />
-                      </a>
-                      <button onClick={() => handleDeleteMaterial(mat.id)} title="Excluir Material" className="btn-icon text-muted hover:text-danger" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center'}}>
-                        <Trash size={16} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="p-4 overflow-y-auto flex-1">
+            <div className="flex flex-col gap-3">
+              {materials.map((mat) => (
+                <div 
+                  key={mat.id} 
+                  onClick={() => setEditingMaterial(mat)}
+                  className="flex justify-between items-center p-4 rounded-xl cursor-pointer transition-all"
+                  style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}
+                  onMouseOver={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+                  onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
+                >
+                  <div className="flex items-center gap-4 overflow-hidden">
+                    <div style={{ backgroundColor: 'rgba(79, 70, 229, 0.1)', padding: '0.75rem', borderRadius: '10px', flexShrink: 0 }}>
+                      <FileText size={20} className="text-primary" />
+                    </div>
+                    <div className="overflow-hidden">
+                      <h3 className="font-bold text-main m-0 truncate text-sm sm:text-base">{mat.title}</h3>
+                      <p className="text-xs text-muted m-0 mt-1">{mat.file_type} • {formatClassDate(mat.created_at)}</p>
+                    </div>
+                  </div>
+                  <div className="text-muted flex-shrink-0" style={{ paddingLeft: '1rem' }}>
+                    <ArrowLeft size={16} style={{ transform: 'rotate(180deg)', opacity: 0.5 }} />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center p-12 text-center text-muted">
@@ -234,6 +241,79 @@ const StudentMaterials = () => {
                 <button type="submit" className="btn btn-primary" disabled={isSubmitting} style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 'bold' }}>
                   {isSubmitting ? 'Enviando...' : 'Enviar para o Professor'}
                 </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Material Modal */}
+      {editingMaterial && (
+        <div className="modal-overlay flex items-center justify-center" style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
+        }}>
+          <div className="card glass w-full animate-fade-in-up" style={{maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem', borderRadius: '24px'}}>
+            <div className="flex justify-between items-center mb-6">
+              <h2 style={{margin: 0}} className="text-xl font-bold text-main">Detalhes do Material</h2>
+              <button onClick={() => setEditingMaterial(null)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+                <X size={24} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleEditMaterialSubmit}>
+              <div className="input-group mb-4">
+                <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>Título do Material</label>
+                <input type="text" className="input w-full" required
+                  value={editingMaterial.title} onChange={(e) => setEditingMaterial({...editingMaterial, title: e.target.value})}
+                  style={{ borderRadius: '12px' }}
+                />
+              </div>
+              
+              <div className="input-group mb-4">
+                <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>Tipo de Arquivo</label>
+                <select className="input w-full" value={editingMaterial.file_type} onChange={(e) => setEditingMaterial({...editingMaterial, file_type: e.target.value})} style={{ borderRadius: '12px' }}>
+                  <option>PDF</option>
+                  <option>DOCX</option>
+                  <option>Link</option>
+                  <option>Áudio</option>
+                  <option>Vídeo</option>
+                  <option>Feedback</option>
+                </select>
+              </div>
+
+              <div className="input-group mb-6">
+                <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>URL</label>
+                <input type="url" className="input w-full" required
+                  value={editingMaterial.file_url} onChange={(e) => setEditingMaterial({...editingMaterial, file_url: e.target.value})}
+                  style={{ borderRadius: '12px' }}
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <a 
+                    href={editingMaterial.file_url.startsWith('http') ? editingMaterial.file_url : `https://${editingMaterial.file_url}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="btn btn-primary flex-1 sm:flex-none flex justify-center items-center gap-2"
+                    style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 'bold', textDecoration: 'none' }}
+                  >
+                    <ExternalLink size={18} /> Abrir
+                  </a>
+                  <button type="button" className="btn text-danger flex-1 sm:flex-none flex justify-center items-center" 
+                    onClick={() => handleDeleteMaterial(editingMaterial.id)}
+                    disabled={isSubmitting}
+                    style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', backgroundColor: 'rgba(239, 68, 68, 0.1)', border: 'none' }}
+                  >
+                    <Trash size={18} />
+                  </button>
+                </div>
+                
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <button type="submit" className="btn w-full sm:w-auto" disabled={isSubmitting} style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 'bold', backgroundColor: 'var(--text-main)', color: 'var(--surface)' }}>
+                    {isSubmitting ? 'Salvando...' : 'Salvar'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
