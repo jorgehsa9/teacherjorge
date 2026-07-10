@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
-import { Play, Download, Book, Award, Calendar } from 'lucide-react';
+import { Play, Download, Book, Award, Calendar, MessageSquare } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import './StudentDashboard.css';
 
 const StudentDashboard = () => {
@@ -97,6 +98,16 @@ const StudentDashboard = () => {
         .ilike('email', user.email);
         
       if (error) throw error;
+      
+      // Gamification: Trigger confetti when reaching 100% or completing milestones (every 4 lessons)
+      if (newLessons.length > currentLessons.length) {
+        if (newProgress === 100) {
+          confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+        } else if (newLessons.length % 4 === 0) {
+          confetti({ particleCount: 80, spread: 50, origin: { y: 0.7 } });
+        }
+      }
+      
     } catch (err) {
       console.error("Error updating checklist", err);
       alert("Erro ao salvar progresso.");
@@ -141,6 +152,18 @@ const StudentDashboard = () => {
       </div>
     );
   }
+
+  const getBadgeInfo = () => {
+    const lessons = studentData?.completed_lessons?.length || 0;
+    if (lessons >= 12) return { color: '#fbbf24', bg: 'rgba(251, 191, 36, 0.1)', label: 'Mestre (Ouro)' };
+    if (lessons >= 6) return { color: '#94a3b8', bg: 'rgba(148, 163, 184, 0.1)', label: 'Avançado (Prata)' };
+    if (lessons >= 1) return { color: '#b45309', bg: 'rgba(180, 83, 9, 0.1)', label: 'Iniciante (Bronze)' };
+    return { color: 'var(--text-muted)', bg: 'rgba(0,0,0,0.05)', label: 'Nenhuma' };
+  };
+  const badgeInfo = getBadgeInfo();
+
+  const standardMaterials = materials.filter(m => m.file_type !== 'Feedback');
+  const classFeedbacks = materials.filter(m => m.file_type === 'Feedback');
 
   return (
     <div className="dashboard-wrapper">
@@ -228,13 +251,13 @@ const StudentDashboard = () => {
               </div>
               
               <div className="level-badge-elegant">
-                <div className="badge-icon-elegant" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)' }}>
-                  <Book size={24} className="text-warning" />
+                <div className="badge-icon-elegant" style={{ backgroundColor: badgeInfo.bg }}>
+                  <Award size={24} color={badgeInfo.color} />
                 </div>
-                <div className="badge-value-elegant" style={{ color: 'var(--warning)' }}>
-                  {studentData?.badges_earned || 0}
+                <div className="badge-value-elegant" style={{ color: badgeInfo.color, fontSize: '1.25rem' }}>
+                  {badgeInfo.label}
                 </div>
-                <div className="text-xs text-muted uppercase font-medium">Medalhas</div>
+                <div className="text-xs text-muted uppercase font-medium">Medalha</div>
               </div>
             </div>
 
@@ -288,7 +311,7 @@ const StudentDashboard = () => {
             <h3 className="mb-4 flex items-center gap-2"><Book className="text-primary" /> Meus Materiais</h3>
             
             <div className="materials-grid">
-              {materials.length > 0 ? materials.map((mat) => (
+              {standardMaterials.length > 0 ? standardMaterials.slice(0, 3).map((mat) => (
                 <a 
                   key={mat.id} 
                   href={mat.file_url.startsWith('http') ? mat.file_url : `https://${mat.file_url}`} 
@@ -311,9 +334,26 @@ const StudentDashboard = () => {
                 </div>
               )}
             </div>
-            {materials.length > 0 && (
+            {standardMaterials.length > 0 && (
               <button className="btn btn-outline w-full mt-4 text-sm" onClick={() => navigate('/dashboard/student/materials')}>Ver Todos os Materiais</button>
             )}
+
+            <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--border)' }}>
+              <h3 className="mb-4 flex items-center gap-2"><MessageSquare className="text-primary" /> Histórico de Aulas</h3>
+              <div className="flex flex-col gap-3">
+                {classFeedbacks.length > 0 ? classFeedbacks.slice(0, 5).map((log) => (
+                  <div key={log.id} className="p-3 rounded-xl" style={{ backgroundColor: 'rgba(0,0,0,0.02)', border: '1px solid var(--border)' }}>
+                    <div className="font-bold text-sm" style={{ color: 'var(--primary)' }}>{log.title}</div>
+                    <div className="text-xs text-muted mt-1 whitespace-pre-line">{log.file_url}</div>
+                    <div className="text-xs text-muted mt-2 opacity-60 text-right">{formatShortDate(log.created_at)}</div>
+                  </div>
+                )) : (
+                  <div className="text-center text-muted p-4 text-sm">
+                    Nenhum diário de aula registrado.
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

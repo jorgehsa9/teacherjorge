@@ -234,7 +234,7 @@ const Calendar = () => {
     setSelectedClassId(null);
     setClassForm({ 
       student_email: '', date: dateStr, startHour, startMinute, duration: 60, status: 'Scheduled', type: 'Aula',
-      isRecurring: false, repeatDays: [], repeatUntil: ''
+      isRecurring: false, repeatDays: [], repeatUntil: '', feedback: ''
     });
     setIsModalOpen(true);
   };
@@ -251,7 +251,7 @@ const Calendar = () => {
     setClassForm({ 
       student_email: cls.student_email, date: dateStr, startHour: hourStr, startMinute: minStr, 
       duration: cls.duration, status: cls.status, type: cls.type || 'Aula',
-      isRecurring: false, repeatDays: [], repeatUntil: ''
+      isRecurring: false, repeatDays: [], repeatUntil: '', feedback: ''
     });
     setIsModalOpen(true);
   };
@@ -281,6 +281,17 @@ const Calendar = () => {
     if (editMode) {
       const { error: updateError } = await supabase.from('Classes').update(classData).eq('id', selectedClassId);
       error = updateError;
+      
+      // Save feedback if class is completed and feedback is provided
+      if (!updateError && classForm.status === 'Completed' && classForm.feedback?.trim() !== '') {
+        const { error: fbError } = await supabase.from('Materials').insert([{
+          student_email: classForm.student_email,
+          title: `Diário de Aula (${new Date(classForm.date).toLocaleDateString('pt-BR', { timeZone: 'UTC' })})`,
+          file_type: 'Feedback',
+          file_url: classForm.feedback
+        }]);
+        if (fbError) console.error("Error saving feedback:", fbError);
+      }
     } else {
       // Logic for new class (single or recurring)
       if (classForm.isRecurring && classForm.repeatUntil && classForm.repeatDays.length > 0) {
@@ -747,6 +758,21 @@ const Calendar = () => {
                   </div>
                 )}
               </div>
+
+              {editMode && classForm.status === 'Completed' && (
+                <div className="input-group mt-4 animate-fade-in-up">
+                  <label className="text-primary font-bold flex items-center gap-2 mb-2">Diário de Aula & Feedback</label>
+                  <textarea 
+                    className="input w-full" 
+                    rows="3" 
+                    placeholder="O que foi ensinado, vocabulário novo, pontos de melhoria..."
+                    value={classForm.feedback}
+                    onChange={(e) => setClassForm({...classForm, feedback: e.target.value})}
+                    style={{ borderRadius: '12px', resize: 'vertical' }}
+                  ></textarea>
+                  <p className="text-xs text-muted mt-1">Este feedback ficará salvo no Histórico do aluno.</p>
+                </div>
+              )}
 
               {!editMode && (
                 <div className="mt-4 p-4 border rounded-lg bg-bg">
