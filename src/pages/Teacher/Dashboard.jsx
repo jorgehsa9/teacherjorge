@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Video, Clock, DollarSign, UploadCloud, Play, FileText, CheckCircle } from 'lucide-react';
+import { Users, Video, Clock, DollarSign, UploadCloud, Play, FileText, CheckCircle, Calendar } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import './TeacherDashboard.css';
 
 const TeacherDashboard = () => {
@@ -10,6 +11,7 @@ const TeacherDashboard = () => {
   const [nextClass, setNextClass] = useState(null);
   const [timeToNextClass, setTimeToNextClass] = useState('');
   const [meetLink, setMeetLink] = useState('');
+  const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,6 +46,20 @@ const TeacherDashboard = () => {
         // Only count distinct students
         const distinctStudentsWithClasses = new Set(monthClasses.map(c => c.student_email));
         setPendingPayments(distinctStudentsWithClasses.size);
+
+        // Prepare chart data (classes per day for the current month)
+        const daysInMonth = new Date(endOfMonth).getDate();
+        const data = Array.from({length: daysInMonth}, (_, i) => ({
+           day: String(i + 1).padStart(2, '0'),
+           Aulas: 0
+        }));
+        
+        actualClasses.forEach(c => {
+           const d = new Date(c.scheduled_at);
+           const dayIdx = d.getDate() - 1;
+           if (data[dayIdx]) data[dayIdx].Aulas += 1;
+        });
+        setChartData(data);
       }
 
       // 3. Fetch Next Class
@@ -165,6 +181,28 @@ const TeacherDashboard = () => {
             <span className="stat-value">{loading ? '-' : (nextClass ? timeToNextClass : '--')}</span>
             <span className="stat-label">Próxima Aula</span>
           </div>
+        </div>
+      </div>
+
+      {/* Activity Chart */}
+      <div className="card glass mb-6 animate-fade-in-up delay-200">
+        <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Calendar className="text-primary"/> Frequência de Aulas (Mês Atual)</h2>
+        <div style={{ height: '220px', width: '100%' }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <XAxis dataKey="day" stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+              <RechartsTooltip 
+                contentStyle={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', borderRadius: '8px', color: 'var(--text-main)' }}
+                itemStyle={{ color: 'var(--primary)', fontWeight: 'bold' }}
+                labelStyle={{ color: 'var(--text-muted)' }}
+                formatter={(value) => [`${value} Aulas`, '']}
+                labelFormatter={(label) => `Dia ${label}`}
+              />
+              <Line type="monotone" dataKey="Aulas" stroke="var(--primary)" strokeWidth={3} dot={{ r: 3, fill: 'var(--primary)' }} activeDot={{ r: 5 }} />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </div>
 

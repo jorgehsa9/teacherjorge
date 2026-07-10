@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Copy, QrCode, FileText, CheckCircle, Clock, Edit2 } from 'lucide-react';
+import { Copy, QrCode, FileText, CheckCircle, Clock, Edit2, DollarSign } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { generatePixPayload } from '../../utils/pix';
 import { QRCodeSVG } from 'qrcode.react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const Financial = () => {
   const { user } = useAuth();
@@ -266,8 +267,41 @@ const TeacherFinancial = () => {
     return <div className="text-center p-8 text-muted">Carregando histórico financeiro...</div>;
   }
 
+  const chartData = monthsData.slice().reverse().map(m => ({
+    name: m.monthLabel.split(' ')[0].substring(0, 3).toUpperCase(),
+    'Recebido': m.totalRevenue - m.pendingRevenue,
+    'Pendente': m.pendingRevenue
+  }));
+
   return (
     <div>
+      {/* Financial Chart */}
+      <div className="card glass mb-12">
+        <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><DollarSign className="text-primary"/> Evolução do Faturamento</h2>
+        <div style={{ height: '300px', width: '100%' }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis 
+                stroke="var(--text-muted)" 
+                fontSize={12} 
+                tickLine={false} 
+                axisLine={false}
+                tickFormatter={(value) => `R$ ${value}`}
+              />
+              <RechartsTooltip 
+                contentStyle={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', borderRadius: '8px', color: 'var(--text-main)' }}
+                itemStyle={{ color: 'var(--text-main)' }}
+                formatter={(value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)}
+              />
+              <Legend wrapperStyle={{ paddingTop: '20px' }} />
+              <Bar dataKey="Recebido" stackId="a" fill="var(--success)" radius={[0, 0, 4, 4]} />
+              <Bar dataKey="Pendente" stackId="a" fill="var(--warning)" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
       {monthsData.map((monthData, index) => (
         <div key={monthData.refMonthStr} className="mb-12">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
