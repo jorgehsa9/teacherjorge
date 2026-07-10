@@ -233,14 +233,20 @@ const Calendar = () => {
     setEditMode(false);
     setSelectedClassId(null);
     setClassForm({ 
-      student_email: '', date: dateStr, startHour, startMinute, duration: 60, status: 'Scheduled', type: 'Aula',
+      student_email: isTeacher ? '' : user.email, 
+      date: dateStr, 
+      startHour, 
+      startMinute, 
+      duration: 60, 
+      status: isTeacher ? 'Scheduled' : 'Requested', 
+      type: isTeacher ? 'Aula' : 'Solicitação de Aula',
       isRecurring: false, repeatDays: [], repeatUntil: '', feedback: ''
     });
     setIsModalOpen(true);
   };
 
   const openEditClassModal = (cls) => {
-    if (!isTeacher) return; 
+    if (!isTeacher && cls.student_email !== user.email) return; 
     const d = new Date(cls.scheduled_at);
     const dateStr = d.toISOString().split('T')[0];
     const hourStr = d.getHours().toString().padStart(2, '0');
@@ -420,7 +426,7 @@ const Calendar = () => {
 
             return (
               <div key={i} className={`month-cell ${!isCurrentMonth ? 'different-month' : ''} ${isToday ? 'today' : ''}`}
-                   onClick={() => { if(isTeacher) openNewClassModal(day.toISOString().split('T')[0]); }}>
+                   onClick={() => { openNewClassModal(day.toISOString().split('T')[0]); }}>
                 <div className="month-date">{day.getDate()}</div>
                 {dayClasses.map(cls => {
                   const colorClass = COLORS[cls.student_email.length % COLORS.length];
@@ -611,18 +617,16 @@ const Calendar = () => {
             Agenda
           </h1>
           <p className="text-xs md:text-sm m-0 mt-1 font-semibold" style={{ color: '#64748b' }}>
-            {isTeacher ? 'Arraste horários ou clique nas aulas.' : 'Acompanhe seu cronograma diário.'}
+            {isTeacher ? 'Arraste horários ou clique nas aulas.' : 'Solicite aulas ou acompanhe seu cronograma.'}
           </p>
         </div>
-        {isTeacher && (
-          <button 
-            className="btn btn-primary w-full sm:w-auto flex items-center justify-center gap-2 transition-all duration-300 text-sm py-2 px-4" 
-            style={{ borderRadius: '12px', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)', fontWeight: 'bold' }} 
-            onClick={() => openNewClassModal()}
-          >
-            <Plus size={16} strokeWidth={3} /> Nova Aula
-          </button>
-        )}
+        <button 
+          className="btn btn-primary w-full sm:w-auto flex items-center justify-center gap-2 transition-all duration-300 text-sm py-2 px-4" 
+          style={{ borderRadius: '12px', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)', fontWeight: 'bold' }} 
+          onClick={() => openNewClassModal()}
+        >
+          <Plus size={16} strokeWidth={3} /> {isTeacher ? 'Nova Aula' : 'Novo Evento'}
+        </button>
       </div>
 
       <div className="card glass flex-1 flex flex-col p-0 overflow-hidden relative shadow-lg" style={{ borderRadius: '20px', borderColor: 'var(--border)' }}>
@@ -695,31 +699,43 @@ const Calendar = () => {
       </div>
 
       {/* Modal Adicionar/Editar Aula */}
-      {isModalOpen && isTeacher && (
+      {isModalOpen && (
         <div className="modal-overlay flex items-center justify-center bottom-sheet-modal" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)' }}>
           <div className="card glass w-full" style={{maxWidth: '450px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
             <div className="flex justify-between items-center mb-6">
-              <h2 style={{margin: 0}}>{editMode ? 'Editar Aula' : 'Agendar Aula'}</h2>
+              <h2 style={{margin: 0}}>{editMode ? (isTeacher ? 'Editar Aula' : 'Detalhes do Evento') : (isTeacher ? 'Agendar Aula' : 'Novo Evento')}</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
                 <X size={24} />
               </button>
             </div>
             
             <form onSubmit={handleSaveClass}>
-              <div className="input-group">
-                <label>Aluno</label>
-                <select className="input w-full" required value={classForm.student_email} onChange={(e) => setClassForm({...classForm, student_email: e.target.value})}>
-                  <option value="">Selecione um aluno...</option>
-                  {students.map(s => <option key={s.email} value={s.email}>{s.name} ({s.email})</option>)}
-                </select>
-              </div>
+              {isTeacher && (
+                <div className="input-group">
+                  <label>Aluno</label>
+                  <select className="input w-full" required value={classForm.student_email} onChange={(e) => setClassForm({...classForm, student_email: e.target.value})}>
+                    <option value="">Selecione um aluno...</option>
+                    {students.map(s => <option key={s.email} value={s.email}>{s.name} ({s.email})</option>)}
+                  </select>
+                </div>
+              )}
 
               <div className="input-group">
                 <label>Tipo de Evento</label>
-                <select className="input w-full" required value={classForm.type} onChange={(e) => setClassForm({...classForm, type: e.target.value})}>
-                  <option value="Aula">Aula (Será cobrada)</option>
-                  <option value="Reunião">Reunião / Outro (Não será cobrado)</option>
-                </select>
+                {isTeacher ? (
+                  <select className="input w-full" required value={classForm.type} onChange={(e) => setClassForm({...classForm, type: e.target.value})}>
+                    <option value="Aula">Aula (Será cobrada)</option>
+                    <option value="Reunião">Reunião / Outro (Não será cobrado)</option>
+                  </select>
+                ) : (
+                  <select className="input w-full" required value={classForm.type} onChange={(e) => {
+                    const t = e.target.value;
+                    setClassForm({...classForm, type: t, status: t === 'Evento Particular' ? 'Scheduled' : 'Requested'});
+                  }}>
+                    <option value="Solicitação de Aula">Solicitar Aula com o Professor</option>
+                    <option value="Evento Particular">Evento Particular (Apenas Lembrete)</option>
+                  </select>
+                )}
               </div>
 
               <div className="input-group">
@@ -765,7 +781,7 @@ const Calendar = () => {
                 )}
               </div>
 
-              {editMode && classForm.status === 'Completed' && (
+              {editMode && classForm.status === 'Completed' && classForm.type === 'Aula' && isTeacher && (
                 <div className="input-group mt-4 animate-fade-in-up">
                   <label className="text-primary font-bold flex items-center gap-2 mb-2">Diário de Aula & Feedback</label>
                   <textarea 
@@ -780,7 +796,7 @@ const Calendar = () => {
                 </div>
               )}
 
-              {!editMode && (
+              {!editMode && isTeacher && (
                 <div className="mt-4 p-4 border rounded-lg bg-bg">
                   <label className="flex items-center gap-2 cursor-pointer mb-2 font-medium">
                     <input type="checkbox" checked={classForm.isRecurring} onChange={(e) => setClassForm({...classForm, isRecurring: e.target.checked})} />
