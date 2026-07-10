@@ -389,31 +389,53 @@ const Calendar = () => {
       d.setDate(d.getDate() + i);
       return d;
     });
+    const isMobile = window.innerWidth <= 768;
 
     return (
-      <div className="calendar-month-grid">
-        {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(d => <div key={d} className="calendar-month-day-header">{d}</div>)}
-        {days.map((day, i) => {
-          const isToday = new Date().toDateString() === day.toDateString();
-          const isCurrentMonth = day.getMonth() === currentDate.getMonth();
-          const dayClasses = classes.filter(c => new Date(c.scheduled_at).toDateString() === day.toDateString());
+      <div className="flex flex-col h-full w-full">
+        <div className="calendar-month-grid">
+          {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(d => <div key={d} className="calendar-month-day-header">{d}</div>)}
+          {days.map((day, i) => {
+            const isToday = new Date().toDateString() === day.toDateString();
+            const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+            const dayClasses = classes.filter(c => new Date(c.scheduled_at).toDateString() === day.toDateString());
 
-          return (
-            <div key={i} className={`month-cell ${!isCurrentMonth ? 'different-month' : ''} ${isToday ? 'today' : ''}`}
-                 onClick={() => { if(isTeacher) openNewClassModal(day.toISOString().split('T')[0]); }}>
-              <div className="month-date">{day.getDate()}</div>
-              {dayClasses.map(cls => {
-                const colorClass = COLORS[cls.student_email.length % COLORS.length];
-                const timeStr = new Date(cls.scheduled_at).toTimeString().substring(0,5);
-                return (
-                  <div key={cls.id} className={`month-event ${colorClass}`} onClick={(e) => { e.stopPropagation(); openEditClassModal(cls); }}>
-                    {timeStr} {getStudentName(cls.student_email)}
+            if (isMobile) {
+              const isSelected = currentDate.toDateString() === day.toDateString();
+              return (
+                <div key={i} className={`month-cell-mobile ${!isCurrentMonth ? 'different-month' : ''} ${isToday ? 'today' : ''} ${isSelected ? 'selected-day' : ''}`}
+                     onClick={() => setCurrentDate(day)}>
+                  <div className="month-date">{day.getDate()}</div>
+                  <div className="flex flex-wrap justify-center mt-1 w-full px-1">
+                    {dayClasses.map(cls => {
+                      const colorClass = COLORS[cls.student_email.length % COLORS.length];
+                      const dotColor = colorClass === 'bg-primary' ? 'var(--primary)' : colorClass === 'bg-warning' ? 'var(--warning)' : colorClass === 'bg-success' ? 'var(--success)' : '#8b5cf6';
+                      return <span key={cls.id} className="apple-dot" style={{ backgroundColor: dotColor }}></span>;
+                    }).slice(0, 3)}
+                    {dayClasses.length > 3 && <span className="apple-dot" style={{ backgroundColor: 'var(--text-muted)' }}></span>}
                   </div>
-                )
-              })}
-            </div>
-          );
-        })}
+                </div>
+              );
+            }
+
+            return (
+              <div key={i} className={`month-cell ${!isCurrentMonth ? 'different-month' : ''} ${isToday ? 'today' : ''}`}
+                   onClick={() => { if(isTeacher) openNewClassModal(day.toISOString().split('T')[0]); }}>
+                <div className="month-date">{day.getDate()}</div>
+                {dayClasses.map(cls => {
+                  const colorClass = COLORS[cls.student_email.length % COLORS.length];
+                  const timeStr = new Date(cls.scheduled_at).toTimeString().substring(0,5);
+                  return (
+                    <div key={cls.id} className={`month-event ${colorClass}`} onClick={(e) => { e.stopPropagation(); openEditClassModal(cls); }}>
+                      {timeStr} {getStudentName(cls.student_email)}
+                    </div>
+                  )
+                })}
+              </div>
+            );
+          })}
+        </div>
+        {isMobile && renderAgendaEventsList()}
       </div>
     );
   };
@@ -470,6 +492,70 @@ const Calendar = () => {
     );
   };
 
+  const renderAgendaEventsList = () => {
+    const selectedDateStr = currentDate.toDateString();
+    const dayClasses = classes
+      .filter(c => new Date(c.scheduled_at).toDateString() === selectedDateStr)
+      .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+
+    return (
+      <div className="agenda-events-list flex-1 overflow-y-auto flex flex-col p-4 md:p-8" style={{ backgroundColor: 'var(--bg-color)' }}>
+        <h3 className="text-xs md:text-sm font-extrabold uppercase tracking-widest mb-6 flex items-center gap-2" style={{ color: 'var(--text-muted)', letterSpacing: '2px' }}>
+          {currentDate.toLocaleDateString('pt-BR', { weekday: 'long' })}
+        </h3>
+        
+        {dayClasses.length === 0 ? (
+          <div className="flex flex-col items-center justify-center opacity-80" style={{ padding: '4rem 0' }}>
+            <div className="flex items-center justify-center mb-6" style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'var(--surface)', border: '1px solid var(--border)' }}>
+              <CalendarIcon size={32} style={{ opacity: 0.6 }} />
+            </div>
+            <p className="font-extrabold text-lg" style={{ color: 'var(--text-main)' }}>Nenhuma aula agendada</p>
+            <p className="text-sm mt-2 text-center max-w-xs font-semibold" style={{ color: '#64748b' }}>Aproveite o tempo livre para preparar materiais ou descansar!</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {dayClasses.map((cls, index) => {
+              const classTime = new Date(cls.scheduled_at);
+              const colorClass = COLORS[cls.student_email.length % COLORS.length];
+              const dotColor = colorClass === 'bg-primary' ? 'var(--primary)' : 
+                               colorClass === 'bg-warning' ? 'var(--warning)' : 
+                               colorClass === 'bg-success' ? 'var(--success)' : 
+                               '#8b5cf6'; // purple
+
+              return (
+                <div key={cls.id} className="ios-event-card flex gap-4 w-full cursor-pointer p-4" style={{ borderLeftColor: dotColor }} onClick={() => openEditClassModal(cls)}>
+                  {/* Left Column: Time */}
+                  <div className="flex flex-col items-end justify-start w-12 flex-shrink-0">
+                    <span className="font-extrabold text-sm" style={{ color: 'var(--text-main)' }}>
+                      {classTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}
+                    </span>
+                    <span className="text-xs font-semibold mt-1" style={{ color: 'var(--text-muted)' }}>
+                      {cls.duration}m
+                    </span>
+                  </div>
+
+                  {/* Right Column: Event Details */}
+                  <div className="flex-1 flex flex-col justify-center border-l pl-4" style={{ borderColor: 'var(--border-light)' }}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-bold text-base" style={{ color: 'var(--text-main)' }}>
+                        {getStudentName(cls.student_email)}
+                      </span>
+                      {cls.type === 'Reunião' && <span>🤝</span>}
+                      {!cls.type || cls.type === 'Aula' ? <span>📚</span> : null}
+                    </div>
+                    <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
+                      {cls.status === 'Completed' ? '✅ Concluída' : cls.status === 'Cancelled' ? '❌ Cancelada' : '📍 Online / Local'}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const renderAgendaView = () => {
     const stripDays = Array.from({ length: 14 }, (_, i) => {
       const d = new Date(currentDate);
@@ -478,9 +564,6 @@ const Calendar = () => {
     });
 
     const selectedDateStr = currentDate.toDateString();
-    const dayClasses = classes
-      .filter(c => new Date(c.scheduled_at).toDateString() === selectedDateStr)
-      .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
 
     return (
       <div className="agenda-view flex flex-col h-full w-full bg-bg">
@@ -488,112 +571,35 @@ const Calendar = () => {
         <div className="agenda-date-strip flex justify-between md:justify-center md:gap-8 items-center px-4 py-6 md:px-8 border-b" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
           {stripDays.slice(0, 7).map((day, i) => {
             const isSelected = day.toDateString() === selectedDateStr;
-            const isToday = day.toDateString() === new Date().toDateString();
             const dayLetter = day.toLocaleString('pt-BR', { weekday: 'narrow' }).toUpperCase();
+            const dateNumber = day.getDate();
+            const dayClasses = classes.filter(c => new Date(c.scheduled_at).toDateString() === day.toDateString());
+            const hasEvent = dayClasses.length > 0;
             
             return (
               <div 
                 key={i} 
                 className="flex flex-col items-center justify-center cursor-pointer transition-all duration-300 flex-shrink-0"
                 style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  background: isSelected ? 'transparent' : 'transparent',
-                  color: isSelected ? 'var(--success)' : 'var(--text-muted)',
-                  border: isSelected ? '2px solid var(--success)' : isToday ? '1px dashed var(--primary)' : 'none',
-                  fontWeight: isSelected ? '900' : '600',
-                  fontSize: '1rem',
-                  margin: '0 4px'
+                  width: '44px',
+                  height: '54px',
+                  borderRadius: '22px',
+                  background: isSelected ? 'var(--primary)' : 'transparent',
+                  color: isSelected ? '#fff' : 'var(--text-muted)',
+                  border: isSelected ? 'none' : '1px solid transparent',
+                  margin: '0 2px'
                 }}
                 onClick={() => setCurrentDate(day)}
               >
-                {dayLetter}
+                <span style={{ fontSize: '0.65rem', fontWeight: '800' }}>{dayLetter}</span>
+                <span style={{ fontSize: '1.1rem', fontWeight: '900', marginTop: '-2px' }}>{dateNumber}</span>
+                <div style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: isSelected ? '#fff' : hasEvent ? 'var(--primary)' : 'transparent', marginTop: '2px' }} />
               </div>
             );
           })}
         </div>
 
-        {/* Events List (Timeline Layout) */}
-        <div className="agenda-events-list flex-1 overflow-y-auto flex flex-col p-4 md:p-8" style={{ backgroundColor: 'var(--bg-color)' }}>
-          <h3 className="text-xs md:text-sm font-extrabold uppercase tracking-widest mb-6 flex items-center gap-2" style={{ color: 'var(--text-muted)', letterSpacing: '2px' }}>
-            {currentDate.toLocaleDateString('pt-BR', { weekday: 'long' })}
-          </h3>
-          
-          {dayClasses.length === 0 ? (
-            <div className="flex flex-col items-center justify-center opacity-80" style={{ padding: '4rem 0' }}>
-              <div className="flex items-center justify-center mb-6" style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'var(--surface)', border: '1px solid var(--border)' }}>
-                <CalendarIcon size={32} style={{ opacity: 0.6 }} />
-              </div>
-              <p className="font-extrabold text-lg" style={{ color: 'var(--text-main)' }}>Nenhuma aula agendada</p>
-              <p className="text-sm mt-2 text-center max-w-xs font-semibold" style={{ color: '#64748b' }}>Aproveite o tempo livre para preparar materiais ou descansar!</p>
-            </div>
-          ) : (
-            <div className="relative pt-2 pb-4">
-              <div className="flex flex-col gap-4 md:gap-6">
-                {dayClasses.map((cls, index) => {
-                  const classTime = new Date(cls.scheduled_at);
-                  const endTime = new Date(classTime.getTime() + cls.duration * 60000);
-                  const colorClass = COLORS[cls.student_email.length % COLORS.length];
-                  
-                  const dotColor = colorClass === 'bg-primary' ? 'var(--primary)' : 
-                                      colorClass === 'bg-warning' ? 'var(--warning)' : 
-                                      colorClass === 'bg-success' ? 'var(--success)' : 
-                                      '#f97316'; // Fallback orange
-                  
-                  return (
-                    <div key={cls.id} className="flex gap-3 md:gap-4 w-full cursor-pointer group" onClick={() => openEditClassModal(cls)}>
-                      {/* Left Column: Timeline Spine & Dot */}
-                      <div className="relative flex flex-col items-center w-6 flex-shrink-0">
-                        {/* Spine */}
-                        <div className="absolute top-0 bottom-[-16px] md:bottom-[-24px]" style={{ width: '2px', backgroundColor: 'var(--border)', opacity: 0.6 }}></div>
-                        {/* Dot Container (creates gap in spine) */}
-                        <div className="w-5 h-5 rounded-full mt-4 z-10 flex items-center justify-center" style={{ backgroundColor: 'var(--bg-color)' }}>
-                          <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: dotColor, boxShadow: `0 0 10px ${dotColor}` }}></div>
-                        </div>
-                      </div>
-
-                      {/* Right Column: Event Card */}
-                      <div 
-                        className="flex-1 transition-all duration-300 p-4 md:p-5 card glass"
-                        style={{ 
-                          borderRadius: '20px',
-                          background: 'linear-gradient(135deg, rgba(var(--surface-rgb), 0.8) 0%, rgba(var(--surface-rgb), 0.4) 100%)',
-                          border: `1px solid ${dotColor}40`,
-                          boxShadow: '0 8px 32px rgba(0,0,0,0.04)',
-                          maxWidth: '600px'
-                        }}
-                      >
-                        <div className="flex justify-between items-start mb-3">
-                          <div className="flex items-center gap-2">
-                            <span className="font-extrabold text-base md:text-lg" style={{ color: 'var(--text-main)' }}>
-                              {getStudentName(cls.student_email)}
-                            </span>
-                            {cls.type === 'Reunião' && <span>🤝</span>}
-                            {!cls.type || cls.type === 'Aula' ? <span>📚</span> : null}
-                          </div>
-                          <span className="font-bold text-sm" style={{ color: 'var(--text-muted)' }}>
-                            {classTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}
-                          </span>
-                        </div>
-                        
-                        <div className="flex justify-between items-center">
-                          <span className="text-xs font-semibold flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
-                            {cls.status === 'Completed' ? '✅ Concluída' : cls.status === 'Cancelled' ? '❌ Cancelada' : '📍 Online / Local'}
-                          </span>
-                          <span className="text-xs font-semibold flex items-center gap-1.5 px-2 py-1" style={{ backgroundColor: 'rgba(0,0,0,0.04)', borderRadius: '8px', color: 'var(--text-muted)' }}>
-                            <Clock size={12} />
-                            {cls.duration} min
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
+        {renderAgendaEventsList()}
       </div>
     );
   };
@@ -690,7 +696,7 @@ const Calendar = () => {
 
       {/* Modal Adicionar/Editar Aula */}
       {isModalOpen && isTeacher && (
-        <div className="modal-overlay flex items-center justify-center" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)' }}>
+        <div className="modal-overlay flex items-center justify-center bottom-sheet-modal" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)' }}>
           <div className="card glass w-full" style={{maxWidth: '450px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
             <div className="flex justify-between items-center mb-6">
               <h2 style={{margin: 0}}>{editMode ? 'Editar Aula' : 'Agendar Aula'}</h2>
