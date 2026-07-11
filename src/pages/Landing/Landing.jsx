@@ -8,8 +8,8 @@ const Landing = () => {
   const { scrollYProgress, scrollY } = useScroll();
 
   // Hero section parallax & fade (using pixels for precise hero tracking)
-  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
-  const heroY = useTransform(scrollY, [0, 300], [0, 100]);
+  const heroOpacity = useTransform(scrollY, [0, 600], [1, 0]);
+  const heroY = useTransform(scrollY, [0, 600], [0, 150]);
   const heroImageY = useTransform(scrollY, [0, 500], [0, -150]); // Parallax moving up faster
 
   // Background Orbs parallax (using progress for whole page)
@@ -103,20 +103,20 @@ const Landing = () => {
             transition={{ delay: 0.3, duration: 1 }}
             className="hero-image-wrapper"
           >
-            <img src="/landing_hero.png" alt="Aulas interativas online" className="hero-image" />
+            <img src="/teacher_jorge.jpg" alt="Teacher Jorge" className="hero-image" style={{ objectFit: 'cover' }} />
           </motion.div>
         </section>
 
         {/* Features Section */}
         <section className="features-section">
           <motion.h2 
-            initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={fadeInUp}
+            initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }} variants={fadeInUp}
             className="section-title"
           >
             O Futuro do Seu Aprendizado
           </motion.h2>
           <motion.div 
-            variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}
             className="features-grid"
           >
             <motion.div variants={fadeInUp} className="hyper-glass-card">
@@ -152,13 +152,13 @@ const Landing = () => {
         {/* Reviews Section */}
         <section className="reviews-section">
           <motion.h2 
-            initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={fadeInUp}
+            initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }} variants={fadeInUp}
             className="section-title"
           >
             Aprovado por Líderes
           </motion.h2>
           <motion.div 
-            variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}
             className="reviews-grid"
           >
             <motion.div variants={fadeInUp} className="hyper-glass-card">
@@ -223,7 +223,7 @@ const Landing = () => {
 
         {/* Call to Action Section */}
         <motion.section 
-          initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}
+          initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }} variants={staggerContainer}
           className="cta-section"
         >
           <motion.h2 variants={fadeInUp} className="cta-title">Eleve o Nível do seu Inglês.</motion.h2>
