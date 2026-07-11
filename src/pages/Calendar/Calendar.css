@@ -345,12 +345,12 @@
   }
 
   .calendar-wrapper {
-    overflow-x: auto;
+    overflow-x: hidden;
   }
   
   .calendar-month-grid {
-    grid-template-columns: repeat(7, minmax(50px, 1fr));
-    min-width: 500px; /* Allow scrolling for month view too if needed */
+    grid-template-columns: repeat(7, 1fr);
+    min-width: 100%;
   }
 
   .calendar-weekly-grid.week-view {

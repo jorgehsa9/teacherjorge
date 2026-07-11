@@ -516,10 +516,15 @@ const Calendar = () => {
       .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
 
     return (
-      <div className="agenda-events-list flex-1 overflow-y-auto flex flex-col p-4 md:p-8" style={{ backgroundColor: 'var(--bg-color)' }}>
-        <h3 className="text-xs md:text-sm font-extrabold uppercase tracking-widest mb-6 flex items-center gap-2" style={{ color: 'var(--text-muted)', letterSpacing: '2px' }}>
-          {currentDate.toLocaleDateString('pt-BR', { weekday: 'long' })}
-        </h3>
+      <div className={`agenda-events-list flex flex-col p-4 md:p-8 ${isMobileScreen ? '' : 'flex-1 overflow-y-auto'}`} style={{ backgroundColor: 'var(--bg-color)' }}>
+        <div className="flex flex-col mb-6 border-b pb-4" style={{ borderColor: 'var(--border-light)' }}>
+          <h3 className="text-xs md:text-sm font-extrabold uppercase tracking-widest flex items-center gap-2" style={{ color: 'var(--text-muted)', letterSpacing: '2px' }}>
+            {currentDate.toLocaleDateString('pt-BR', { weekday: 'long' })}
+          </h3>
+          <h2 className="text-2xl md:text-3xl font-black mt-1" style={{ color: 'var(--text-main)' }}>
+            {currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })}
+          </h2>
+        </div>
         
         {dayClasses.length === 0 ? (
           <div className="flex flex-col items-center justify-center opacity-80" style={{ padding: '4rem 0' }}>
