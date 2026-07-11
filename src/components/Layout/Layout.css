@@ -1,14 +1,16 @@
 /* Sidebar Desktop */
 .sidebar {
   width: 80px;
-  margin: 1.5rem 0 1.5rem 1.5rem;
-  border-radius: 40px;
+  height: calc(100dvh - 2rem);
+  margin: 1rem 0 1rem 1rem;
+  border-radius: 30px;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 1rem;
+  padding: 1rem 0.75rem;
   z-index: 40;
   transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   white-space: nowrap;
 }
 
@@ -21,10 +23,10 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding-bottom: 2rem;
-  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
   border-bottom: 1px solid var(--border);
-  height: 60px;
+  height: 50px;
   padding-left: 10px;
 }
 
@@ -54,12 +56,12 @@
 .nav-item {
   display: flex;
   align-items: center;
-  height: 48px;
+  height: 44px;
   border-radius: 12px;
   color: var(--text-muted);
   font-weight: 600;
   transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
-  padding-left: 14px;
+  padding-left: 10px;
   gap: 1rem;
   flex-shrink: 0;
 }
