@@ -214,7 +214,7 @@
 /* Month View Styles */
 .calendar-month-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   background-color: var(--border);
   gap: 1px;
   flex: 1;
@@ -237,6 +237,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  overflow: hidden;
 }
 
 .month-cell.different-month {
@@ -377,7 +378,7 @@
   }
   
   .calendar-month-grid {
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     min-width: 100%;
   }
 
