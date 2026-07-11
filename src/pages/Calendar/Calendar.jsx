@@ -526,27 +526,27 @@ const Calendar = () => {
                                '#8b5cf6'; // purple
 
               return (
-                <div key={cls.id} className="ios-event-card flex gap-4 w-full cursor-pointer p-4" style={{ borderLeftColor: dotColor }} onClick={() => openEditClassModal(cls)}>
+                <div key={cls.id} className="glass-event-card flex gap-4 w-full cursor-pointer p-4 md:p-5" style={{ '--event-color': dotColor }} onClick={() => openEditClassModal(cls)}>
                   {/* Left Column: Time */}
-                  <div className="flex flex-col items-end justify-start w-12 flex-shrink-0">
+                  <div className="flex flex-col items-center justify-center w-16 flex-shrink-0" style={{ backgroundColor: 'rgba(0,0,0,0.02)', borderRadius: '12px', padding: '8px 4px' }}>
                     <span className="font-extrabold text-sm" style={{ color: 'var(--text-main)' }}>
                       {classTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}
                     </span>
-                    <span className="text-xs font-semibold mt-1" style={{ color: 'var(--text-muted)' }}>
+                    <span className="text-xs font-bold mt-1" style={{ color: 'var(--text-muted)' }}>
                       {cls.duration}m
                     </span>
                   </div>
 
                   {/* Right Column: Event Details */}
-                  <div className="flex-1 flex flex-col justify-center border-l pl-4" style={{ borderColor: 'var(--border-light)' }}>
+                  <div className="flex-1 flex flex-col justify-center pl-2">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-bold text-base" style={{ color: 'var(--text-main)' }}>
+                      <span className="font-bold text-base md:text-lg" style={{ color: 'var(--text-main)' }}>
                         {getStudentName(cls.student_email)}
                       </span>
                       {cls.type === 'Reunião' && <span>🤝</span>}
-                      {!cls.type || cls.type === 'Aula' ? <span>📚</span> : null}
+                      {(!cls.type || cls.type === 'Aula') && <span>📚</span>}
                     </div>
-                    <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
+                    <span className="text-xs font-bold px-2 py-1 rounded-md inline-block w-max" style={{ backgroundColor: `${dotColor}15`, color: dotColor }}>
                       {cls.status === 'Completed' ? '✅ Concluída' : cls.status === 'Cancelled' ? '❌ Cancelada' : cls.status === 'Requested' ? '⏳ Pendente' : '📍 Online / Local'}
                     </span>
                   </div>
@@ -632,14 +632,14 @@ const Calendar = () => {
         
         {/* CONTROLS */}
         <div className="flex flex-col gap-4 p-3 md:p-5" style={{ background: 'linear-gradient(180deg, rgba(var(--surface-rgb), 0.9) 0%, rgba(var(--surface-rgb), 0.5) 100%)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)' }}>
-            <div className="flex w-full p-1" style={{ borderRadius: '14px', backgroundColor: 'rgba(0,0,0,0.04)', border: '1px solid var(--border)' }}>
+            <div className="flex w-full p-1 mb-2" style={{ borderRadius: '16px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-light)', backdropFilter: 'blur(10px)' }}>
               <button 
                 className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
                 style={{
-                  borderRadius: '10px',
-                  backgroundColor: currentView === 'month' ? 'var(--surface)' : 'transparent',
-                  color: currentView === 'month' ? 'var(--text-main)' : 'var(--text-muted)',
-                  boxShadow: currentView === 'month' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none',
+                  borderRadius: '12px',
+                  backgroundColor: currentView === 'month' ? 'var(--primary)' : 'transparent',
+                  color: currentView === 'month' ? 'white' : 'var(--text-muted)',
+                  boxShadow: currentView === 'month' ? '0 4px 15px rgba(79, 70, 229, 0.3)' : 'none',
                   border: 'none'
                 }}
                 onClick={() => setCurrentView('month')}
@@ -649,10 +649,10 @@ const Calendar = () => {
               <button 
                 className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
                 style={{
-                  borderRadius: '10px',
-                  backgroundColor: currentView === 'week' ? 'var(--surface)' : 'transparent',
-                  color: currentView === 'week' ? 'var(--text-main)' : 'var(--text-muted)',
-                  boxShadow: currentView === 'week' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none',
+                  borderRadius: '12px',
+                  backgroundColor: currentView === 'week' ? 'var(--primary)' : 'transparent',
+                  color: currentView === 'week' ? 'white' : 'var(--text-muted)',
+                  boxShadow: currentView === 'week' ? '0 4px 15px rgba(79, 70, 229, 0.3)' : 'none',
                   border: 'none'
                 }}
                 onClick={() => setCurrentView('week')}
@@ -662,10 +662,10 @@ const Calendar = () => {
               <button 
                 className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
                 style={{
-                  borderRadius: '10px',
-                  backgroundColor: currentView === 'agenda' ? 'var(--surface)' : 'transparent',
-                  color: currentView === 'agenda' ? 'var(--text-main)' : 'var(--text-muted)',
-                  boxShadow: currentView === 'agenda' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none',
+                  borderRadius: '12px',
+                  backgroundColor: currentView === 'agenda' ? 'var(--primary)' : 'transparent',
+                  color: currentView === 'agenda' ? 'white' : 'var(--text-muted)',
+                  boxShadow: currentView === 'agenda' ? '0 4px 15px rgba(79, 70, 229, 0.3)' : 'none',
                   border: 'none'
                 }}
                 onClick={() => setCurrentView('agenda')}
@@ -673,14 +673,14 @@ const Calendar = () => {
                 Agenda
               </button>
             </div>
-            <div className="flex items-center justify-between gap-3 w-full">
+            <div className="flex items-center justify-between gap-3 w-full mt-2">
               <span className="font-extrabold text-lg md:text-2xl capitalize tracking-tight whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: 'var(--text-main)' }}>
                 {getHeaderTitle()}
               </span>
-              <div className="flex items-center gap-1 p-1 flex-shrink-0" style={{ borderRadius: '12px', backgroundColor: 'rgba(0,0,0,0.03)', border: '1px solid var(--border)' }}>
-                <button className="flex items-center justify-center transition-all duration-200" style={{ width: '32px', height: '32px', borderRadius: '8px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={() => navigate(-1)}><ChevronLeft size={18}/></button>
-                <button className="font-black text-xs md:text-sm transition-all duration-200 px-2 py-1" style={{ borderRadius: '8px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={goToToday}>HOJE</button>
-                <button className="flex items-center justify-center transition-all duration-200" style={{ width: '32px', height: '32px', borderRadius: '8px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={() => navigate(1)}><ChevronRight size={18}/></button>
+              <div className="flex items-center gap-1 p-1 flex-shrink-0" style={{ borderRadius: '14px', backgroundColor: 'var(--bg-color)', border: '1px solid var(--border)' }}>
+                <button className="flex items-center justify-center transition-all duration-200" style={{ width: '36px', height: '36px', borderRadius: '10px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={() => navigate(-1)}><ChevronLeft size={20}/></button>
+                <button className="font-black text-xs md:text-sm transition-all duration-200 px-3 py-1" style={{ borderRadius: '10px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={goToToday}>HOJE</button>
+                <button className="flex items-center justify-center transition-all duration-200" style={{ width: '36px', height: '36px', borderRadius: '10px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={() => navigate(1)}><ChevronRight size={20}/></button>
               </div>
             </div>
           </div>
