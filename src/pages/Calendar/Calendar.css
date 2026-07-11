@@ -283,6 +283,34 @@
 .month-event.bg-success { background-color: rgba(16, 185, 129, 0.15); color: var(--success); border-left: 2px solid var(--success); }
 .month-event.bg-purple { background-color: rgba(139, 92, 246, 0.15); color: #8b5cf6; border-left: 2px solid #8b5cf6; }
 
+/* Glass Event Card for Agenda */
+.glass-event-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.glass-event-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background-color: var(--event-color, var(--primary));
+}
+
+.glass-event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  border-color: var(--primary);
+}
+
 /* Enhanced Modal Styles */
 .day-selector {
   display: flex;
@@ -351,6 +379,11 @@
   .calendar-month-grid {
     grid-template-columns: repeat(7, 1fr);
     min-width: 100%;
+  }
+
+  .month-cell {
+    min-height: 70px;
+    padding: 0.15rem;
   }
 
   .calendar-weekly-grid.week-view {

@@ -560,9 +560,10 @@ const Calendar = () => {
   };
 
   const renderAgendaView = () => {
-    const stripDays = Array.from({ length: 14 }, (_, i) => {
-      const d = new Date(currentDate);
-      d.setDate(d.getDate() - 3 + i);
+    const start = getStartOfWeek(currentDate);
+    const stripDays = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(start);
+      d.setDate(d.getDate() + i);
       return d;
     });
 
