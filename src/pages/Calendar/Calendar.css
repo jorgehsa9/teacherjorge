@@ -29,6 +29,85 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* Glassmorphism Premium Controls */
+.view-selector-container {
+  display: flex;
+  width: 100%;
+  padding: 6px;
+  border-radius: 16px;
+  background-color: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(12px);
+  gap: 8px;
+}
+
+.view-selector-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 10px 16px;
+  border-radius: 12px;
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+}
+
+.view-selector-btn:hover {
+  background-color: rgba(255,255,255,0.05);
+  color: var(--text-main);
+}
+
+.view-selector-btn.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+  border-color: rgba(255,255,255,0.1);
+}
+
+.calendar-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.calendar-nav-btn:hover {
+  background: var(--bg-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.calendar-today-btn {
+  font-weight: 900;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  padding: 0 20px;
+  border-radius: 12px;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+.calendar-today-btn:hover {
+  background: var(--bg-color);
+  color: var(--primary);
+}
+
 /* Day/Week View Styles */
 .calendar-weekly-grid {
   display: grid;
@@ -234,12 +313,17 @@
 
 .month-cell {
   background-color: var(--surface);
-  min-height: 120px;
-  padding: 0.25rem;
+  min-height: 140px;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   overflow: hidden;
+  transition: background-color 0.2s ease;
+}
+
+.month-cell:hover {
+  background-color: var(--bg-color);
 }
 
 .month-cell.different-month {
@@ -250,12 +334,13 @@
 .month-cell.today .month-date {
   background-color: var(--primary);
   color: white;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .month-date {

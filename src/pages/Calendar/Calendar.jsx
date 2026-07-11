@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { ChevronLeft, ChevronRight, Plus, X, Trash2, Repeat, Calendar as CalendarIcon, Clock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, X, Trash2, Repeat, Calendar as CalendarIcon, Clock, LayoutGrid, Columns, List } from 'lucide-react';
 import './Calendar.css';
 
 const START_HOUR = 6;
@@ -636,56 +636,35 @@ const Calendar = () => {
       <div className="card glass flex-1 flex flex-col p-0 overflow-hidden relative shadow-lg" style={{ borderRadius: '20px', borderColor: 'var(--border)' }}>
         
         {/* CONTROLS */}
-        <div className="flex flex-col gap-4 p-3 md:p-5" style={{ background: 'linear-gradient(180deg, rgba(var(--surface-rgb), 0.9) 0%, rgba(var(--surface-rgb), 0.5) 100%)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)' }}>
-            <div className="flex w-full p-1 mb-2" style={{ borderRadius: '16px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-light)', backdropFilter: 'blur(10px)' }}>
+        <div className="flex flex-col gap-5 p-4 md:p-6" style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)', zIndex: 10 }}>
+            <div className="view-selector-container">
               <button 
-                className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
-                style={{
-                  borderRadius: '12px',
-                  backgroundColor: currentView === 'month' ? 'var(--primary)' : 'transparent',
-                  color: currentView === 'month' ? 'white' : 'var(--text-muted)',
-                  boxShadow: currentView === 'month' ? '0 4px 15px rgba(79, 70, 229, 0.3)' : 'none',
-                  border: 'none'
-                }}
+                className={`view-selector-btn ${currentView === 'month' ? 'active' : ''}`}
                 onClick={() => setCurrentView('month')}
               >
-                Mês
+                <LayoutGrid size={18} /> Mês
               </button>
               <button 
-                className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
-                style={{
-                  borderRadius: '12px',
-                  backgroundColor: currentView === 'week' ? 'var(--primary)' : 'transparent',
-                  color: currentView === 'week' ? 'white' : 'var(--text-muted)',
-                  boxShadow: currentView === 'week' ? '0 4px 15px rgba(79, 70, 229, 0.3)' : 'none',
-                  border: 'none'
-                }}
+                className={`view-selector-btn ${currentView === 'week' ? 'active' : ''}`}
                 onClick={() => setCurrentView('week')}
               >
-                Semana
+                <Columns size={18} /> Semana
               </button>
               <button 
-                className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
-                style={{
-                  borderRadius: '12px',
-                  backgroundColor: currentView === 'agenda' ? 'var(--primary)' : 'transparent',
-                  color: currentView === 'agenda' ? 'white' : 'var(--text-muted)',
-                  boxShadow: currentView === 'agenda' ? '0 4px 15px rgba(79, 70, 229, 0.3)' : 'none',
-                  border: 'none'
-                }}
+                className={`view-selector-btn ${currentView === 'agenda' ? 'active' : ''}`}
                 onClick={() => setCurrentView('agenda')}
               >
-                Agenda
+                <List size={18} /> Agenda
               </button>
             </div>
-            <div className="flex items-center justify-between gap-3 w-full mt-2">
-              <span className="font-extrabold text-lg md:text-2xl capitalize tracking-tight whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: 'var(--text-main)' }}>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full mt-2">
+              <span className="font-black text-xl md:text-2xl capitalize tracking-tight" style={{ color: 'var(--text-main)' }}>
                 {getHeaderTitle()}
               </span>
-              <div className="flex items-center gap-1 p-1 flex-shrink-0" style={{ borderRadius: '14px', backgroundColor: 'var(--bg-color)', border: '1px solid var(--border)' }}>
-                <button className="flex items-center justify-center transition-all duration-200" style={{ width: '36px', height: '36px', borderRadius: '10px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={() => navigate(-1)}><ChevronLeft size={20}/></button>
-                <button className="font-black text-xs md:text-sm transition-all duration-200 px-3 py-1" style={{ borderRadius: '10px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={goToToday}>HOJE</button>
-                <button className="flex items-center justify-center transition-all duration-200" style={{ width: '36px', height: '36px', borderRadius: '10px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={() => navigate(1)}><ChevronRight size={20}/></button>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button className="calendar-nav-btn" onClick={() => navigate(-1)}><ChevronLeft size={20}/></button>
+                <button className="calendar-today-btn" onClick={goToToday}>HOJE</button>
+                <button className="calendar-nav-btn" onClick={() => navigate(1)}><ChevronRight size={20}/></button>
               </div>
             </div>
           </div>
