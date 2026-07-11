@@ -34,7 +34,7 @@
   font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.03em;
-  background: linear-gradient(to right, #fff, var(--primary));
+  background: linear-gradient(to right, var(--text-main), var(--primary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   opacity: 0;
