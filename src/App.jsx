@@ -11,6 +11,7 @@ import Materials from './pages/Teacher/Materials';
 import Financial from './pages/Financial/Financial';
 import Calendar from './pages/Calendar/Calendar';
 import Profile from './pages/Profile/Profile';
+import Landing from './pages/Landing/Landing';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
@@ -103,7 +104,7 @@ function App() {
             <Route path="calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
           </Route>
 
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Landing />} />
         </Routes>
       </Router>
     </AuthProvider>
