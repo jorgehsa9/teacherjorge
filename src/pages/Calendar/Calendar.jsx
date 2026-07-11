@@ -172,8 +172,8 @@ const Calendar = () => {
     // Calcular nova hora baseada na posição Y do mouse relativa à coluna
     const rect = e.currentTarget.getBoundingClientRect();
     const y = e.clientY - rect.top;
-    let newHour = Math.floor(y / 60) + START_HOUR;
-    let newMinute = Math.floor((y % 60) / 15) * 15; // snap to 15 mins
+    let newHour = Math.floor(y / 40) + START_HOUR;
+    let newMinute = Math.floor((y % 40) / 10) * 15; // 15 mins = 10px
 
     if (newHour < START_HOUR) newHour = START_HOUR;
     if (newHour > END_HOUR) newHour = END_HOUR;
@@ -209,7 +209,8 @@ const Calendar = () => {
 
     const handleMouseMove = (e) => {
       const deltaY = e.clientY - resizingClass.startY;
-      let newDuration = resizingClass.initialDuration + deltaY;
+      const deltaMinutes = deltaY * (60 / 40);
+      let newDuration = resizingClass.initialDuration + deltaMinutes;
       // Snap to 15 min intervals (min 15)
       newDuration = Math.max(15, Math.round(newDuration / 15) * 15);
       
@@ -218,7 +219,8 @@ const Calendar = () => {
 
     const handleMouseUp = async (e) => {
       const deltaY = e.clientY - resizingClass.startY;
-      let newDuration = resizingClass.initialDuration + deltaY;
+      const deltaMinutes = deltaY * (60 / 40);
+      let newDuration = resizingClass.initialDuration + deltaMinutes;
       newDuration = Math.max(15, Math.round(newDuration / 15) * 15);
 
       setResizingClass(null);
@@ -358,10 +360,12 @@ const Calendar = () => {
   };
 
   // --- Render Helpers ---
+  const PIXELS_PER_MINUTE = 40 / 60; // 40px per hour
+
   const renderTimeIndicator = () => {
     const currentHour = now.getHours();
     if (currentHour < START_HOUR || currentHour > END_HOUR) return null;
-    const top = (currentHour - START_HOUR) * 60 + now.getMinutes();
+    const top = ((currentHour - START_HOUR) * 60 + now.getMinutes()) * PIXELS_PER_MINUTE;
     return <div className="current-time-indicator" style={{ top: `${top}px` }} />;
   };
 
@@ -372,8 +376,8 @@ const Calendar = () => {
     
     if (hour < START_HOUR) return null;
 
-    const topPosition = (hour - START_HOUR) * 60 + minutes;
-    const height = cls.duration || 60;
+    const topPosition = ((hour - START_HOUR) * 60 + minutes) * PIXELS_PER_MINUTE;
+    const height = (cls.duration || 60) * PIXELS_PER_MINUTE;
     const colorClass = COLORS[cls.student_email.length % COLORS.length];
 
     const isDragging = resizingClass?.id === cls.id;
