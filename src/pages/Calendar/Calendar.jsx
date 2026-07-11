@@ -566,7 +566,7 @@ const Calendar = () => {
                       {!cls.type || cls.type === 'Aula' ? <span>📚</span> : null}
                     </div>
                     <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
-                      {cls.status === 'Completed' ? '✅ Concluída' : cls.status === 'Cancelled' ? '❌ Cancelada' : '📍 Online / Local'}
+                      {cls.status === 'Completed' ? '✅ Concluída' : cls.status === 'Cancelled' ? '❌ Cancelada' : cls.status === 'Requested' ? '⏳ Pendente' : '📍 Online / Local'}
                     </span>
                   </div>
                 </div>
@@ -748,6 +748,22 @@ const Calendar = () => {
             </div>
             
             <form onSubmit={handleSaveClass}>
+              {editMode && classForm.status === 'Requested' && classForm.type === 'Solicitação de Aula' && isTeacher && (
+                <div className="mb-4 p-4 rounded-lg flex items-center justify-between" style={{ backgroundColor: 'rgba(234, 179, 8, 0.1)', border: '1px solid var(--warning)' }}>
+                   <div>
+                     <p className="font-bold text-warning m-0">Solicitação de Aula</p>
+                     <p className="text-sm text-muted m-0">O aluno solicitou este horário. Confirme para agendar e faturar.</p>
+                   </div>
+                   <button 
+                     type="button" 
+                     className="btn btn-sm" 
+                     style={{ backgroundColor: 'var(--warning)', color: 'white', fontWeight: 'bold' }}
+                     onClick={() => setClassForm({...classForm, status: 'Scheduled', type: 'Aula'})}
+                   >
+                     Confirmar Aula
+                   </button>
+                </div>
+              )}
               {isTeacher && (
                 <div className="input-group">
                   <label>Aluno</label>
@@ -762,6 +778,7 @@ const Calendar = () => {
                 <label>Tipo de Evento</label>
                 {isTeacher ? (
                   <select className="input w-full" required value={classForm.type} onChange={(e) => setClassForm({...classForm, type: e.target.value})}>
+                    {classForm.type === 'Solicitação de Aula' && <option value="Solicitação de Aula">Solicitação de Aula (Pendente)</option>}
                     <option value="Aula">Aula (Será cobrada)</option>
                     <option value="Reunião">Reunião / Outro (Não será cobrado)</option>
                   </select>
@@ -811,6 +828,7 @@ const Calendar = () => {
                   <div className="input-group" style={{marginBottom: 0}}>
                     <label>Status</label>
                     <select className="input w-full" value={classForm.status} onChange={(e) => setClassForm({...classForm, status: e.target.value})}>
+                      {classForm.status === 'Requested' && <option value="Requested">Pendente (Solicitada)</option>}
                       <option value="Scheduled">Agendada</option>
                       <option value="Completed">Concluída</option>
                       <option value="Cancelled">Cancelada</option>
