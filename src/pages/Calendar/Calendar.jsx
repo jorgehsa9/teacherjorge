@@ -409,31 +409,13 @@ const Calendar = () => {
     const isMobile = window.innerWidth <= 768;
 
     return (
-      <div className="flex flex-col h-full w-full" style={isMobile ? {backgroundColor: 'var(--bg-color)'} : {}}>
+      <div className="flex flex-col h-full w-full">
         <div className="calendar-month-grid">
           {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(d => <div key={d} className="calendar-month-day-header">{d}</div>)}
           {days.map((day, i) => {
             const isToday = new Date().toDateString() === day.toDateString();
             const isCurrentMonth = day.getMonth() === currentDate.getMonth();
             const dayClasses = classes.filter(c => new Date(c.scheduled_at).toDateString() === day.toDateString());
-
-            if (isMobile) {
-              const isSelected = currentDate.toDateString() === day.toDateString();
-              return (
-                <div key={i} className={`month-cell-mobile ${!isCurrentMonth ? 'different-month' : ''} ${isToday ? 'today' : ''} ${isSelected ? 'selected-day' : ''}`}
-                     onClick={() => setCurrentDate(day)}>
-                  <div className="month-date">{day.getDate()}</div>
-                  <div className="flex flex-wrap justify-center mt-1 w-full px-1">
-                    {dayClasses.map(cls => {
-                      const colorClass = COLORS[cls.student_email.length % COLORS.length];
-                      const dotColor = colorClass === 'bg-primary' ? 'var(--primary)' : colorClass === 'bg-warning' ? 'var(--warning)' : colorClass === 'bg-success' ? 'var(--success)' : '#8b5cf6';
-                      return <span key={cls.id} className="apple-dot" style={{ backgroundColor: dotColor }}></span>;
-                    }).slice(0, 3)}
-                    {dayClasses.length > 3 && <span className="apple-dot" style={{ backgroundColor: 'var(--text-muted)' }}></span>}
-                  </div>
-                </div>
-              );
-            }
 
             return (
               <div key={i} className={`month-cell ${!isCurrentMonth ? 'different-month' : ''} ${isToday ? 'today' : ''}`}
@@ -452,7 +434,6 @@ const Calendar = () => {
             );
           })}
         </div>
-        {isMobile && renderAgendaEventsList()}
       </div>
     );
   };
@@ -516,7 +497,7 @@ const Calendar = () => {
       .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
 
     return (
-      <div className={`agenda-events-list flex flex-col p-4 md:p-8 ${isMobileScreen ? '' : 'flex-1 overflow-y-auto'}`} style={{ backgroundColor: 'var(--bg-color)' }}>
+      <div className="agenda-events-list flex flex-col p-4 md:p-8 flex-1 overflow-y-auto" style={{ backgroundColor: 'var(--bg-color)' }}>
         <div className="flex flex-col mb-6 border-b pb-4" style={{ borderColor: 'var(--border-light)' }}>
           <h3 className="text-xs md:text-sm font-extrabold uppercase tracking-widest flex items-center gap-2" style={{ color: 'var(--text-muted)', letterSpacing: '2px' }}>
             {currentDate.toLocaleDateString('pt-BR', { weekday: 'long' })}
@@ -626,53 +607,31 @@ const Calendar = () => {
     );
   };
   return (
-    <div className={isMobileScreen ? "flex flex-col h-full w-full" : "dashboard-wrapper flex flex-col h-full p-2 md:p-4"} style={isMobileScreen ? { backgroundColor: 'var(--bg-color)', position: 'absolute', top: 0, left: 0, right: 0, bottom: '70px', zIndex: 10 } : {}}>
+    <div className="dashboard-wrapper flex flex-col h-full p-2 md:p-4 animate-fade-in-up">
       
-      {/* HEADER DESKTOP */}
-      {!isMobileScreen && (
-        <div className="card glass mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 md:p-6" style={{ borderLeft: '6px solid var(--primary)', borderRadius: '20px' }}>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-black m-0 tracking-tight" style={{ background: 'linear-gradient(90deg, var(--primary) 0%, #a855f7 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              Agenda
-            </h1>
-            <p className="text-xs md:text-sm m-0 mt-1 font-semibold" style={{ color: '#64748b' }}>
-              {isTeacher ? 'Arraste horários ou clique nas aulas.' : 'Solicite aulas ou acompanhe seu cronograma.'}
-            </p>
-          </div>
-          <button 
-            className="btn btn-primary w-full sm:w-auto flex items-center justify-center gap-2 transition-all duration-300 text-sm py-2 px-4" 
-            style={{ borderRadius: '12px', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)', fontWeight: 'bold' }} 
-            onClick={() => openNewClassModal()}
-          >
-            <Plus size={16} strokeWidth={3} /> {isTeacher ? 'Nova Aula' : 'Novo Evento'}
-          </button>
+      {/* HEADER */}
+      <div className="card glass mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 md:p-6" style={{ borderLeft: '6px solid var(--primary)', borderRadius: '20px' }}>
+        <div>
+          <h1 className="text-2xl md:text-3xl font-black m-0 tracking-tight" style={{ background: 'linear-gradient(90deg, var(--primary) 0%, #a855f7 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Agenda
+          </h1>
+          <p className="text-xs md:text-sm m-0 mt-1 font-semibold" style={{ color: '#64748b' }}>
+            {isTeacher ? 'Arraste horários ou clique nas aulas.' : 'Solicite aulas ou acompanhe seu cronograma.'}
+          </p>
         </div>
-      )}
+        <button 
+          className="btn btn-primary w-full sm:w-auto flex items-center justify-center gap-2 transition-all duration-300 text-sm py-2 px-4" 
+          style={{ borderRadius: '12px', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)', fontWeight: 'bold' }} 
+          onClick={() => openNewClassModal()}
+        >
+          <Plus size={16} strokeWidth={3} /> {isTeacher ? 'Nova Aula' : 'Novo Evento'}
+        </button>
+      </div>
 
-      {/* HEADER MOBILE NATIVO */}
-      {isMobileScreen && (
-        <div className="flex justify-between items-center px-4 py-3 sticky top-0 z-40 w-full" style={{ backgroundColor: 'var(--bg-color)', borderBottom: 'none' }}>
-          <div className="flex items-center gap-1">
-            <button className="p-2 -ml-2 text-primary" onClick={() => navigate(-1)} style={{ background: 'none', border: 'none' }}><ChevronLeft size={28} strokeWidth={2.5}/></button>
-            <span className="font-extrabold text-2xl capitalize tracking-tight" style={{ color: 'var(--text-main)', marginTop: '2px' }}>
-              {getHeaderTitle()}
-            </span>
-            <button className="p-2 text-primary" onClick={() => navigate(1)} style={{ background: 'none', border: 'none' }}><ChevronRight size={28} strokeWidth={2.5}/></button>
-          </div>
-          <div className="flex items-center gap-3">
-            <button onClick={goToToday} className="font-extrabold text-lg" style={{ color: 'var(--primary)', background: 'none', border: 'none' }}>Hoje</button>
-            <button onClick={() => openNewClassModal()} className="p-1 text-primary" style={{ background: 'none', border: 'none' }}>
-              <Plus size={30} strokeWidth={3} />
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className={isMobileScreen ? "flex-1 flex flex-col p-0 overflow-y-auto w-full" : "card glass flex-1 flex flex-col p-0 overflow-hidden relative shadow-lg"} style={!isMobileScreen ? { borderRadius: '20px', borderColor: 'var(--border)' } : {}}>
+      <div className="card glass flex-1 flex flex-col p-0 overflow-hidden relative shadow-lg" style={{ borderRadius: '20px', borderColor: 'var(--border)' }}>
         
-        {/* CONTROLS DESKTOP */}
-        {!isMobileScreen && (
-          <div className="flex flex-col gap-4 p-3 md:p-5" style={{ background: 'linear-gradient(180deg, rgba(var(--surface-rgb), 0.9) 0%, rgba(var(--surface-rgb), 0.5) 100%)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)' }}>
+        {/* CONTROLS */}
+        <div className="flex flex-col gap-4 p-3 md:p-5" style={{ background: 'linear-gradient(180deg, rgba(var(--surface-rgb), 0.9) 0%, rgba(var(--surface-rgb), 0.5) 100%)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)' }}>
             <div className="flex w-full p-1" style={{ borderRadius: '14px', backgroundColor: 'rgba(0,0,0,0.04)', border: '1px solid var(--border)' }}>
               <button 
                 className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
@@ -725,12 +684,11 @@ const Calendar = () => {
               </div>
             </div>
           </div>
-        )}
 
         {loading ? (
           <div className="flex-1 flex justify-center items-center text-muted">Carregando agenda...</div>
         ) : (
-          <div className="calendar-wrapper" style={isMobileScreen ? {overflowY: 'visible'} : {}}>
+          <div className="calendar-wrapper">
             {currentView === 'month' ? renderMonthView() : currentView === 'agenda' ? renderAgendaView() : renderWeekOrDayView()}
           </div>
         )}
