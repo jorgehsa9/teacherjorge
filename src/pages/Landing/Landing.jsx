@@ -1,28 +1,61 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Star, Target, Users, Calendar, ArrowRight } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import './Landing.css';
 
 const Landing = () => {
+  const { scrollYProgress, scrollY } = useScroll();
+
+  // Hero section parallax & fade (using pixels for precise hero tracking)
+  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const heroY = useTransform(scrollY, [0, 300], [0, 100]);
+  const heroImageY = useTransform(scrollY, [0, 500], [0, -150]); // Parallax moving up faster
+
+  // Background Orbs parallax (using progress for whole page)
+  const orb1Y = useTransform(scrollYProgress, [0, 1], [0, 400]);
+  const orb2Y = useTransform(scrollYProgress, [0, 1], [0, -300]);
+  const orb3Y = useTransform(scrollYProgress, [0, 1], [0, 200]);
+
   useEffect(() => {
-    // Adiciona uma classe ao body caso precise, mas o CSS já cuida de tudo
     document.body.style.backgroundColor = '#030014';
     return () => {
       document.body.style.backgroundColor = '';
     }
   }, []);
 
+  // Standard stagger settings
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+  };
+
   return (
     <div className="landing-page">
       {/* Background Orbs */}
       <div className="bg-orbs">
-        <div className="orb orb-1"></div>
-        <div className="orb orb-2"></div>
-        <div className="orb orb-3"></div>
+        <motion.div style={{ y: orb1Y }} className="orb orb-1"></motion.div>
+        <motion.div style={{ y: orb2Y }} className="orb orb-2"></motion.div>
+        <motion.div style={{ y: orb3Y }} className="orb orb-3"></motion.div>
       </div>
 
       {/* Navigation */}
-      <nav className="landing-nav animate-in">
+      <motion.nav 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="landing-nav"
+      >
         <Link to="/" className="landing-nav-logo">
           <BookOpen className="text-primary" size={28} />
           Teacher Jorge
@@ -30,35 +63,63 @@ const Landing = () => {
         <Link to="/login" className="landing-nav-btn">
           Portal do Aluno
         </Link>
-      </nav>
+      </motion.nav>
 
       <div className="landing-content">
         {/* Hero Section */}
         <section className="hero-section">
-          <div className="hero-content">
-            <span className="hero-tag animate-in delay-100">Inteligência & Personalização</span>
-            <h1 className="hero-title animate-in delay-200">Domine o Inglês no Seu Ritmo.</h1>
-            <p className="hero-subtitle animate-in delay-300">
+          <motion.div style={{ opacity: heroOpacity, y: heroY }} className="hero-content">
+            <motion.span 
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }}
+              className="hero-tag"
+            >
+              Inteligência & Personalização
+            </motion.span>
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }}
+              className="hero-title"
+            >
+              Domine o Inglês no Seu Ritmo.
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}
+              className="hero-subtitle"
+            >
               Aulas desenhadas milimetricamente para os seus objetivos. Ganhe fluência real, 
               prepare-se para exames e desbloqueie o mundo.
-            </p>
-            <div className="animate-in delay-400">
+            </motion.p>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.8 }}>
               <Link to="/login" className="hero-cta">
                 Começar Jornada
                 <ArrowRight size={20} />
               </Link>
-            </div>
-          </div>
-          <div className="hero-image-wrapper animate-in delay-300">
+            </motion.div>
+          </motion.div>
+          
+          <motion.div 
+            style={{ y: heroImageY }}
+            initial={{ opacity: 0, scale: 0.9 }} 
+            animate={{ opacity: 1, scale: 1 }} 
+            transition={{ delay: 0.3, duration: 1 }}
+            className="hero-image-wrapper"
+          >
             <img src="/landing_hero.png" alt="Aulas interativas online" className="hero-image" />
-          </div>
+          </motion.div>
         </section>
 
         {/* Features Section */}
         <section className="features-section">
-          <h2 className="section-title animate-in">O Futuro do Seu Aprendizado</h2>
-          <div className="features-grid">
-            <div className="hyper-glass-card animate-in delay-100">
+          <motion.h2 
+            initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={fadeInUp}
+            className="section-title"
+          >
+            O Futuro do Seu Aprendizado
+          </motion.h2>
+          <motion.div 
+            variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }}
+            className="features-grid"
+          >
+            <motion.div variants={fadeInUp} className="hyper-glass-card">
               <div className="feature-icon">
                 <Target size={32} />
               </div>
@@ -66,8 +127,8 @@ const Landing = () => {
               <p className="feature-desc">
                 Não perca tempo com genéricos. Cada módulo é adaptado para o seu momento de vida, seja Business, Viagens ou Certificações Internacionais.
               </p>
-            </div>
-            <div className="hyper-glass-card animate-in delay-200">
+            </motion.div>
+            <motion.div variants={fadeInUp} className="hyper-glass-card">
               <div className="feature-icon">
                 <Calendar size={32} />
               </div>
@@ -75,8 +136,8 @@ const Landing = () => {
               <p className="feature-desc">
                 Sua agenda, suas regras. Cancele, remarque ou adicione aulas em uma plataforma ultra-responsiva e sem burocracias.
               </p>
-            </div>
-            <div className="hyper-glass-card animate-in delay-300">
+            </motion.div>
+            <motion.div variants={fadeInUp} className="hyper-glass-card">
               <div className="feature-icon">
                 <Users size={32} />
               </div>
@@ -84,15 +145,23 @@ const Landing = () => {
               <p className="feature-desc">
                 Receba feedback instantâneo, acesse o histórico de evolução e mantenha o foco total na fluência com ferramentas premium.
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </section>
 
         {/* Reviews Section */}
         <section className="reviews-section">
-          <h2 className="section-title animate-in">Aprovado por Líderes</h2>
-          <div className="reviews-grid">
-            <div className="hyper-glass-card animate-in delay-100">
+          <motion.h2 
+            initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={fadeInUp}
+            className="section-title"
+          >
+            Aprovado por Líderes
+          </motion.h2>
+          <motion.div 
+            variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }}
+            className="reviews-grid"
+          >
+            <motion.div variants={fadeInUp} className="hyper-glass-card">
               <div className="review-stars">
                 <Star fill="currentColor" size={20} />
                 <Star fill="currentColor" size={20} />
@@ -110,8 +179,8 @@ const Landing = () => {
                   <span className="review-role">Head of Product</span>
                 </div>
               </div>
-            </div>
-            <div className="hyper-glass-card animate-in delay-200">
+            </motion.div>
+            <motion.div variants={fadeInUp} className="hyper-glass-card">
               <div className="review-stars">
                 <Star fill="currentColor" size={20} />
                 <Star fill="currentColor" size={20} />
@@ -129,8 +198,8 @@ const Landing = () => {
                   <span className="review-role">Software Engineer</span>
                 </div>
               </div>
-            </div>
-            <div className="hyper-glass-card animate-in delay-300">
+            </motion.div>
+            <motion.div variants={fadeInUp} className="hyper-glass-card">
               <div className="review-stars">
                 <Star fill="currentColor" size={20} />
                 <Star fill="currentColor" size={20} />
@@ -148,17 +217,20 @@ const Landing = () => {
                   <span className="review-role">CFO</span>
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </section>
 
         {/* Call to Action Section */}
-        <section className="cta-section">
-          <h2 className="cta-title animate-in">Eleve o Nível do seu Inglês.</h2>
-          <p className="cta-subtitle animate-in delay-100">
+        <motion.section 
+          initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}
+          className="cta-section"
+        >
+          <motion.h2 variants={fadeInUp} className="cta-title">Eleve o Nível do seu Inglês.</motion.h2>
+          <motion.p variants={fadeInUp} className="cta-subtitle">
             Junte-se à elite de alunos que aceleraram suas carreiras e vivências através de uma metodologia de alto impacto.
-          </p>
-          <div className="cta-buttons animate-in delay-200">
+          </motion.p>
+          <motion.div variants={fadeInUp} className="cta-buttons">
             <Link to="/login" className="hero-cta">
               Acessar a Plataforma
               <ArrowRight size={20} />
@@ -166,12 +238,15 @@ const Landing = () => {
             <a href="mailto:contato@teacherjorge.com" className="cta-outline-btn">
               Falar com o Professor
             </a>
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
         
-        <footer className="landing-footer animate-in delay-300">
+        <motion.footer 
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.5, duration: 1 }} viewport={{ once: true }}
+          className="landing-footer"
+        >
           <p>&copy; {new Date().getFullYear()} Teacher Jorge. Aulas de Alto Desempenho.</p>
-        </footer>
+        </motion.footer>
       </div>
     </div>
   );

@@ -169,7 +169,7 @@ const StudentDashboard = () => {
     <div className="dashboard-wrapper">
       
       {/* Welcome Hero */}
-      <div className="hero-section card glass mb-6">
+      <div className="dashboard-welcome-hero card glass mb-6">
         <div className="flex justify-between items-center flex-wrap gap-4">
           <div>
             <h1 className="mb-2 text-primary">Olá, {user?.name?.split(' ')[0] || 'Aluno'}!</h1>
