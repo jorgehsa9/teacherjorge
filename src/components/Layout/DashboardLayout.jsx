@@ -97,7 +97,10 @@ const DashboardLayout = () => {
           </div>
           <div className="user-info">
             <span className="user-name">{user?.name}</span>
-            <span className="user-role badge primary" style={{ marginLeft: '0.5rem' }}>{user?.role}</span>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="user-role badge primary">{user?.role}</span>
+              <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 'bold', opacity: 0.6 }}>v1.64</span>
+            </div>
           </div>
         </NavLink>
 
