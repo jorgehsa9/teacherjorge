@@ -5,6 +5,8 @@ import { supabase } from '../../lib/supabase';
 import { BookOpen, Calendar, DollarSign, LogOut, LayoutDashboard, Users, Moon, Sun, Folder, User } from 'lucide-react';
 import AnimatedBackground from './AnimatedBackground';
 import './Layout.css';
+import packageJson from '../../../package.json';
+
 
 const themes = [
   { name: 'Purple', hex: '#A855F7', glow: 'rgba(168, 85, 247, 0.5)' },
@@ -99,7 +101,7 @@ const DashboardLayout = () => {
             <span className="user-name">{user?.name}</span>
             <div className="flex items-center gap-2 mt-1">
               <span className="user-role badge primary">{user?.role}</span>
-              <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 'bold', opacity: 0.6 }}>v1.64</span>
+              <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 'bold', opacity: 0.6 }}>v{packageJson.version}</span>
             </div>
           </div>
         </NavLink>
