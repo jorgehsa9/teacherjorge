@@ -17,8 +17,19 @@ const Calendar = () => {
   const { user } = useAuth();
   const isTeacher = user?.role === 'teacher';
 
-  const [currentView, setCurrentView] = useState(window.innerWidth <= 768 ? 'agenda' : 'week'); // 'month', 'week', 'agenda'
+  const [currentView, setCurrentView] = useState(window.innerWidth <= 768 ? 'month' : 'week'); // 'month', 'week', 'agenda'
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [isMobileScreen, setIsMobileScreen] = useState(window.innerWidth <= 768);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth <= 768;
+      setIsMobileScreen(isMobile);
+      if (isMobile) setCurrentView('month');
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   const [classes, setClasses] = useState([]);
   const [students, setStudents] = useState([]);
@@ -398,7 +409,7 @@ const Calendar = () => {
     const isMobile = window.innerWidth <= 768;
 
     return (
-      <div className="flex flex-col h-full w-full">
+      <div className="flex flex-col h-full w-full" style={isMobile ? {backgroundColor: 'var(--bg-color)'} : {}}>
         <div className="calendar-month-grid">
           {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(d => <div key={d} className="calendar-month-day-header">{d}</div>)}
           {days.map((day, i) => {
@@ -609,90 +620,111 @@ const Calendar = () => {
       </div>
     );
   };
-  return (
-    <div className="dashboard-wrapper flex flex-col h-full p-2 md:p-4">
-      <div className="card glass mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 md:p-6" style={{ borderLeft: '6px solid var(--primary)', borderRadius: '20px' }}>
-        <div>
-          <h1 className="text-2xl md:text-3xl font-black m-0 tracking-tight" style={{ background: 'linear-gradient(90deg, var(--primary) 0%, #a855f7 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            Agenda
-          </h1>
-          <p className="text-xs md:text-sm m-0 mt-1 font-semibold" style={{ color: '#64748b' }}>
-            {isTeacher ? 'Arraste horários ou clique nas aulas.' : 'Solicite aulas ou acompanhe seu cronograma.'}
-          </p>
-        </div>
-        <button 
-          className="btn btn-primary w-full sm:w-auto flex items-center justify-center gap-2 transition-all duration-300 text-sm py-2 px-4" 
-          style={{ borderRadius: '12px', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)', fontWeight: 'bold' }} 
-          onClick={() => openNewClassModal()}
-        >
-          <Plus size={16} strokeWidth={3} /> {isTeacher ? 'Nova Aula' : 'Novo Evento'}
-        </button>
-      </div>
-
-      <div className="card glass flex-1 flex flex-col p-0 overflow-hidden relative shadow-lg" style={{ borderRadius: '20px', borderColor: 'var(--border)' }}>
-        <div className="flex flex-col gap-4 p-3 md:p-5" style={{ background: 'linear-gradient(180deg, rgba(var(--surface-rgb), 0.9) 0%, rgba(var(--surface-rgb), 0.5) 100%)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)' }}>
-          
-          {/* Top Controls: View Tabs - Segmented Control (Full width on mobile) */}
-          <div className="flex w-full p-1" style={{ borderRadius: '14px', backgroundColor: 'rgba(0,0,0,0.04)', border: '1px solid var(--border)' }}>
-            <button 
-              className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
-              style={{
-                borderRadius: '10px',
-                backgroundColor: currentView === 'month' ? 'var(--surface)' : 'transparent',
-                color: currentView === 'month' ? 'var(--text-main)' : 'var(--text-muted)',
-                boxShadow: currentView === 'month' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none',
-                border: 'none'
-              }}
-              onClick={() => setCurrentView('month')}
-            >
-              Mês
-            </button>
-            <button 
-              className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
-              style={{
-                borderRadius: '10px',
-                backgroundColor: currentView === 'week' ? 'var(--surface)' : 'transparent',
-                color: currentView === 'week' ? 'var(--text-main)' : 'var(--text-muted)',
-                boxShadow: currentView === 'week' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none',
-                border: 'none'
-              }}
-              onClick={() => setCurrentView('week')}
-            >
-              Semana
-            </button>
-            <button 
-              className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
-              style={{
-                borderRadius: '10px',
-                backgroundColor: currentView === 'agenda' ? 'var(--surface)' : 'transparent',
-                color: currentView === 'agenda' ? 'var(--text-main)' : 'var(--text-muted)',
-                boxShadow: currentView === 'agenda' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none',
-                border: 'none'
-              }}
-              onClick={() => setCurrentView('agenda')}
-            >
+    <div className={isMobileScreen ? "flex flex-col h-full w-full" : "dashboard-wrapper flex flex-col h-full p-2 md:p-4"} style={isMobileScreen ? { backgroundColor: 'var(--bg-color)', position: 'absolute', top: 0, left: 0, right: 0, bottom: '70px', zIndex: 10 } : {}}>
+      
+      {/* HEADER DESKTOP */}
+      {!isMobileScreen && (
+        <div className="card glass mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 md:p-6" style={{ borderLeft: '6px solid var(--primary)', borderRadius: '20px' }}>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-black m-0 tracking-tight" style={{ background: 'linear-gradient(90deg, var(--primary) 0%, #a855f7 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               Agenda
-            </button>
+            </h1>
+            <p className="text-xs md:text-sm m-0 mt-1 font-semibold" style={{ color: '#64748b' }}>
+              {isTeacher ? 'Arraste horários ou clique nas aulas.' : 'Solicite aulas ou acompanhe seu cronograma.'}
+            </p>
           </div>
+          <button 
+            className="btn btn-primary w-full sm:w-auto flex items-center justify-center gap-2 transition-all duration-300 text-sm py-2 px-4" 
+            style={{ borderRadius: '12px', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)', fontWeight: 'bold' }} 
+            onClick={() => openNewClassModal()}
+          >
+            <Plus size={16} strokeWidth={3} /> {isTeacher ? 'Nova Aula' : 'Novo Evento'}
+          </button>
+        </div>
+      )}
 
-          {/* Bottom Controls: Nav & Title */}
-          <div className="flex items-center justify-between gap-3 w-full">
-            <span className="font-extrabold text-lg md:text-2xl capitalize tracking-tight whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: 'var(--text-main)' }}>
+      {/* HEADER MOBILE NATIVO */}
+      {isMobileScreen && (
+        <div className="flex justify-between items-center px-4 py-3 sticky top-0 z-40 w-full" style={{ backgroundColor: 'var(--bg-color)', borderBottom: 'none' }}>
+          <div className="flex items-center gap-1">
+            <button className="p-2 -ml-2 text-primary" onClick={() => navigate(-1)} style={{ background: 'none', border: 'none' }}><ChevronLeft size={28} strokeWidth={2.5}/></button>
+            <span className="font-extrabold text-2xl capitalize tracking-tight" style={{ color: 'var(--text-main)', marginTop: '2px' }}>
               {getHeaderTitle()}
             </span>
-            
-            <div className="flex items-center gap-1 p-1 flex-shrink-0" style={{ borderRadius: '12px', backgroundColor: 'rgba(0,0,0,0.03)', border: '1px solid var(--border)' }}>
-              <button className="flex items-center justify-center transition-all duration-200" style={{ width: '32px', height: '32px', borderRadius: '8px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={() => navigate(-1)}><ChevronLeft size={18}/></button>
-              <button className="font-black text-xs md:text-sm transition-all duration-200 px-2 py-1" style={{ borderRadius: '8px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={goToToday}>HOJE</button>
-              <button className="flex items-center justify-center transition-all duration-200" style={{ width: '32px', height: '32px', borderRadius: '8px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={() => navigate(1)}><ChevronRight size={18}/></button>
-            </div>
+            <button className="p-2 text-primary" onClick={() => navigate(1)} style={{ background: 'none', border: 'none' }}><ChevronRight size={28} strokeWidth={2.5}/></button>
+          </div>
+          <div className="flex items-center gap-3">
+            <button onClick={goToToday} className="font-extrabold text-lg" style={{ color: 'var(--primary)', background: 'none', border: 'none' }}>Hoje</button>
+            <button onClick={() => openNewClassModal()} className="p-1 text-primary" style={{ background: 'none', border: 'none' }}>
+              <Plus size={30} strokeWidth={3} />
+            </button>
           </div>
         </div>
+      )}
+
+      <div className={isMobileScreen ? "flex-1 flex flex-col p-0 overflow-y-auto w-full" : "card glass flex-1 flex flex-col p-0 overflow-hidden relative shadow-lg"} style={!isMobileScreen ? { borderRadius: '20px', borderColor: 'var(--border)' } : {}}>
+        
+        {/* CONTROLS DESKTOP */}
+        {!isMobileScreen && (
+          <div className="flex flex-col gap-4 p-3 md:p-5" style={{ background: 'linear-gradient(180deg, rgba(var(--surface-rgb), 0.9) 0%, rgba(var(--surface-rgb), 0.5) 100%)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)' }}>
+            <div className="flex w-full p-1" style={{ borderRadius: '14px', backgroundColor: 'rgba(0,0,0,0.04)', border: '1px solid var(--border)' }}>
+              <button 
+                className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
+                style={{
+                  borderRadius: '10px',
+                  backgroundColor: currentView === 'month' ? 'var(--surface)' : 'transparent',
+                  color: currentView === 'month' ? 'var(--text-main)' : 'var(--text-muted)',
+                  boxShadow: currentView === 'month' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none',
+                  border: 'none'
+                }}
+                onClick={() => setCurrentView('month')}
+              >
+                Mês
+              </button>
+              <button 
+                className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
+                style={{
+                  borderRadius: '10px',
+                  backgroundColor: currentView === 'week' ? 'var(--surface)' : 'transparent',
+                  color: currentView === 'week' ? 'var(--text-main)' : 'var(--text-muted)',
+                  boxShadow: currentView === 'week' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none',
+                  border: 'none'
+                }}
+                onClick={() => setCurrentView('week')}
+              >
+                Semana
+              </button>
+              <button 
+                className="flex-1 text-xs md:text-sm font-extrabold transition-all duration-300 py-2 px-2 md:px-5"
+                style={{
+                  borderRadius: '10px',
+                  backgroundColor: currentView === 'agenda' ? 'var(--surface)' : 'transparent',
+                  color: currentView === 'agenda' ? 'var(--text-main)' : 'var(--text-muted)',
+                  boxShadow: currentView === 'agenda' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none',
+                  border: 'none'
+                }}
+                onClick={() => setCurrentView('agenda')}
+              >
+                Agenda
+              </button>
+            </div>
+            <div className="flex items-center justify-between gap-3 w-full">
+              <span className="font-extrabold text-lg md:text-2xl capitalize tracking-tight whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: 'var(--text-main)' }}>
+                {getHeaderTitle()}
+              </span>
+              <div className="flex items-center gap-1 p-1 flex-shrink-0" style={{ borderRadius: '12px', backgroundColor: 'rgba(0,0,0,0.03)', border: '1px solid var(--border)' }}>
+                <button className="flex items-center justify-center transition-all duration-200" style={{ width: '32px', height: '32px', borderRadius: '8px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={() => navigate(-1)}><ChevronLeft size={18}/></button>
+                <button className="font-black text-xs md:text-sm transition-all duration-200 px-2 py-1" style={{ borderRadius: '8px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={goToToday}>HOJE</button>
+                <button className="flex items-center justify-center transition-all duration-200" style={{ width: '32px', height: '32px', borderRadius: '8px', color: 'var(--text-main)', border: 'none', background: 'transparent' }} onClick={() => navigate(1)}><ChevronRight size={18}/></button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {loading ? (
           <div className="flex-1 flex justify-center items-center text-muted">Carregando agenda...</div>
         ) : (
-          <div className="calendar-wrapper">
+          <div className="calendar-wrapper" style={isMobileScreen ? {overflowY: 'visible'} : {}}>
             {currentView === 'month' ? renderMonthView() : currentView === 'agenda' ? renderAgendaView() : renderWeekOrDayView()}
           </div>
         )}
