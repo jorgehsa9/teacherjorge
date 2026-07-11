@@ -625,6 +625,7 @@ const Calendar = () => {
       </div>
     );
   };
+  return (
     <div className={isMobileScreen ? "flex flex-col h-full w-full" : "dashboard-wrapper flex flex-col h-full p-2 md:p-4"} style={isMobileScreen ? { backgroundColor: 'var(--bg-color)', position: 'absolute', top: 0, left: 0, right: 0, bottom: '70px', zIndex: 10 } : {}}>
       
       {/* HEADER DESKTOP */}
