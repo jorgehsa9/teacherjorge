@@ -3,34 +3,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { supabase } from '../../../lib/supabase';
 import { CheckCircle, Clock, QrCode, Copy } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-
-// Função auxiliar para PIX Copia e Cola
-const generatePixPayload = (pixKey, name, city, amount) => {
-  const formatLength = (val) => String(val.length).padStart(2, '0');
-  const payloadFormat = '000201';
-  const merchantAccountInfo = `26330014br.gov.bcb.pix0111${pixKey}`;
-  const merchantCategoryCode = '52040000';
-  const transactionCurrency = '5303986';
-  const transactionAmount = `54${formatLength(amount.toFixed(2))}${amount.toFixed(2)}`;
-  const countryCode = '5802BR';
-  const merchantName = `59${formatLength(name)}${name}`;
-  const merchantCity = `60${formatLength(city)}${city}`;
-  const additionalDataFieldTemplate = '62070503***';
-  const payloadBeforeCRC = `${payloadFormat}${merchantAccountInfo}${merchantCategoryCode}${transactionCurrency}${transactionAmount}${countryCode}${merchantName}${merchantCity}${additionalDataFieldTemplate}6304`;
-  
-  const crc16 = (str) => {
-    let crc = 0xFFFF;
-    for (let i = 0; i < str.length; i++) {
-      crc ^= str.charCodeAt(i) << 8;
-      for (let j = 0; j < 8; j++) {
-        if ((crc & 0x8000) > 0) crc = (crc << 1) ^ 0x1021;
-        else crc <<= 1;
-      }
-    }
-    return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
-  };
-  return payloadBeforeCRC + crc16(payloadBeforeCRC);
-};
+import { generatePixPayload } from '../../../utils/pix';
 
 const StudentFinancial = () => {
   const { user } = useAuth();

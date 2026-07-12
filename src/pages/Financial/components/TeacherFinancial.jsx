@@ -4,6 +4,7 @@ import { Copy, QrCode, FileText, CheckCircle, Clock, Edit2, DollarSign } from 'l
 import { supabase } from '../../../lib/supabase';
 import { QRCodeSVG } from 'qrcode.react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from 'recharts';
+import './TeacherFinancial.css';
 
 const TeacherFinancial = () => {
   const [monthsData, setMonthsData] = useState([]);
@@ -287,7 +288,7 @@ const TeacherFinancial = () => {
       </div>
       {monthsData.map((monthData, index) => (
         <div key={monthData.refMonthStr} className="mb-12">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+          <div className="tf-month-header">
             {index === 0 ? (
                <h2 className="text-2xl font-bold text-white m-0">MÃªs Atual: {monthData.monthLabel}</h2>
             ) : (
@@ -325,7 +326,7 @@ const TeacherFinancial = () => {
 
           <div className="card glass main-col mb-6" style={{ gridColumn: 'span 3' }}>
             <h3 className="mb-4 font-bold text-white uppercase text-sm tracking-wider">Tabela de CobranÃ§as</h3>
-            <table className="w-full text-left border-collapse" style={{width: '100%'}}>
+            <table className="w-full text-left border-collapse tf-billing-table">
               <thead>
                 <tr className="text-muted" style={{borderBottom: '1px solid var(--border)'}}>
                   <th className="pb-3" style={{paddingBottom: '1rem'}}>Aluno</th>
@@ -376,21 +377,21 @@ const TeacherFinancial = () => {
 
       {/* Billing Details Modal */}
       {isBillingModalOpen && activeStudent && (
-        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.75)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backdropFilter: 'blur(5px)' }}>
-          <div className="card glass" style={{ width: '100%', maxWidth: '600px', maxHeight: 'calc(100vh - 2rem)', display: 'flex', flexDirection: 'column', padding: 0, margin: 0, overflow: 'hidden', border: '1px solid var(--border)', background: 'var(--bg-color)' }}>
+        <div className="tf-modal-overlay">
+          <div className="card glass tf-modal-card">
             
             {/* Header - Fixed */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border)', flexShrink: 0, background: 'var(--surface)' }}>
-              <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 'bold' }}>Detalhes da CobranÃ§a</h2>
-              <button onClick={() => setIsBillingModalOpen(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%' }} onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'} onMouseOut={e => e.currentTarget.style.backgroundColor = 'transparent'}>
+            <div className="tf-modal-header">
+              <h2>Detalhes da CobranÃ§a</h2>
+              <button onClick={() => setIsBillingModalOpen(false)} className="tf-modal-close-btn">
                 âœ•
               </button>
             </div>
             
             {/* Scrollable Content */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', minHeight: 0 }}>
+            <div className="tf-modal-content">
               
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', marginBottom: '1.5rem' }}>
+              <div className="tf-student-summary">
                 <div>
                   <h3 style={{ margin: '0 0 0.25rem 0', fontSize: '1.1rem', fontWeight: 'bold' }}>{activeStudent.name}</h3>
                   <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-muted)' }}>{activeStudent.email}</p>
@@ -510,7 +511,7 @@ const TeacherFinancial = () => {
             </div>
 
             {/* Footer - Fixed */}
-            <div style={{ padding: '1.25rem 1.5rem', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', gap: '1rem', flexShrink: 0, background: 'var(--surface)' }}>
+            <div className="tf-modal-footer">
               <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setIsBillingModalOpen(false)}>Fechar</button>
               <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => { setIsBillingModalOpen(false); setIsReceiptModalOpen(true); }}>
                 <FileText size={16} className="mr-2" style={{display: 'inline'}} />
@@ -523,9 +524,9 @@ const TeacherFinancial = () => {
 
       {/* Receipt Modal */}
       {isReceiptModalOpen && activeStudent && (
-        <div className="modal-overlay flex items-center justify-center print-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', zIndex: 100, backdropFilter: 'blur(4px)' }}>
-          <div className="card w-full flex flex-col receipt-card relative" style={{maxWidth: '450px', backgroundColor: '#fff', color: '#000', margin: '1rem', borderRadius: '12px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)'}}>
-            <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200" style={{padding: '1.5rem 1.5rem 0'}}>
+        <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay">
+          <div className="card w-full flex flex-col receipt-card relative tf-receipt-card">
+            <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200 tf-receipt-header">
               <h2 className="text-black font-bold m-0 text-xl">Comprovante</h2>
               <button onClick={() => setIsReceiptModalOpen(false)} className="text-gray-500 hover:text-black transition-colors" style={{background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem'}}>
                 âœ•
@@ -595,9 +596,9 @@ const TeacherFinancial = () => {
       )}
       {/* General Receipt Modal */}
       {isGeneralReceiptModalOpen && activeMonthData && (
-        <div className="modal-overlay flex items-center justify-center print-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', zIndex: 100, backdropFilter: 'blur(4px)', padding: '1rem' }}>
-          <div className="card w-full flex flex-col receipt-card relative" style={{maxWidth: '700px', backgroundColor: '#fff', color: '#000', margin: '1rem', borderRadius: '12px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)', maxHeight: '90vh', overflow: 'hidden'}}>
-            <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200" style={{padding: '1.5rem 1.5rem 0', flexShrink: 0}}>
+        <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay">
+          <div className="card w-full flex flex-col receipt-card relative tf-receipt-card general">
+            <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200 tf-receipt-header">
               <h2 className="text-black font-bold m-0 text-xl">RelatÃ³rio Mensal</h2>
               <button onClick={() => setIsGeneralReceiptModalOpen(false)} className="text-gray-500 hover:text-black transition-colors" style={{background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem'}}>
                 âœ•

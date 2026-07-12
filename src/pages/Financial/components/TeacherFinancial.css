@@ -1,0 +1,210 @@
+.tf-month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tf-billing-table {
+  width: 100%;
+}
+
+.tf-billing-table th {
+  padding-bottom: 1rem;
+}
+
+.tf-billing-table tr.table-row {
+  border-bottom: 1px solid var(--border);
+}
+
+.tf-billing-table td {
+  padding: 1rem 0;
+}
+
+.tf-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  backdrop-filter: blur(5px);
+}
+
+.tf-modal-card {
+  width: 100%;
+  max-width: 600px;
+  max-height: calc(100vh - 2rem);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-color);
+}
+
+.tf-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--surface);
+}
+
+.tf-modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.tf-modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.tf-modal-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tf-modal-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  min-height: 0;
+}
+
+.tf-student-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.tf-modal-footer {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-shrink: 0;
+  background: var(--surface);
+}
+
+.tf-add-class-form {
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--primary);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.tf-class-item {
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.tf-status-btn {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tf-status-btn.warning {
+  border: 2px solid var(--warning);
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning);
+}
+
+.tf-status-btn.warning.inactive {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-main);
+}
+
+.tf-status-btn.success {
+  border: 2px solid var(--success);
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+}
+
+.tf-status-btn.success.inactive {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-main);
+}
+
+/* Print Overlays for Receipts */
+.tf-receipt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.8);
+  z-index: 100;
+  backdrop-filter: blur(4px);
+  padding: 1rem;
+}
+
+.tf-receipt-card {
+  max-width: 450px;
+  background-color: #fff;
+  color: #000;
+  margin: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.tf-receipt-card.general {
+  max-width: 700px;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+.tf-receipt-header {
+  padding: 1.5rem 1.5rem 0;
+  flex-shrink: 0;
+}
+
+.tf-receipt-content {
+  font-family: monospace;
+}
+
+.tf-receipt-card.general .tf-receipt-content {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.tf-receipt-footer {
+  padding: 0 1.5rem 1.5rem;
+  flex-shrink: 0;
+}

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Star, Target, Users, Calendar, ArrowRight, Youtube } from 'lucide-react';
+import { BookOpen, Star, Target, Users, Calendar, ArrowRight, MonitorPlay } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import './Landing.css';
 
@@ -62,7 +62,7 @@ const Landing = () => {
         </Link>
         <div className="landing-nav-actions">
           <a href="https://www.youtube.com/@teacherjorgetoday" target="_blank" rel="noopener noreferrer" className="landing-nav-icon" title="YouTube Channel">
-            <Youtube size={24} />
+            <MonitorPlay size={24} />
           </a>
           <a href="https://book-8uu.pages.dev" target="_blank" rel="noopener noreferrer" className="landing-nav-icon" title="Meu Livro de Inglês">
             <BookOpen size={24} />
@@ -188,7 +188,7 @@ const Landing = () => {
               variants={fadeInUp} className="hyper-glass-card ecosystem-card"
             >
               <div className="feature-icon" style={{ color: '#ff0000' }}>
-                <Youtube size={32} />
+                <MonitorPlay size={32} />
               </div>
               <h3 className="feature-title">Teacher Jorge Today</h3>
               <p className="feature-desc">

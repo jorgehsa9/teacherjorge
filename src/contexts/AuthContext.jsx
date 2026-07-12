@@ -66,6 +66,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     login,
     logout,
+    isTeacher: user?.role === 'teacher',
   };
 
   return (
