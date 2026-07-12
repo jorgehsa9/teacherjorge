@@ -119,6 +119,24 @@
   box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
 }
 
+.landing-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.landing-nav-icon {
+  color: #a78bfa;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.landing-nav-icon:hover {
+  color: #d8b4fe;
+  transform: translateY(-2px);
+}
+
 /* Hero Section */
 .hero-section {
   padding: 10rem 5% 6rem;

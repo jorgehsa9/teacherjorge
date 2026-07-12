@@ -60,9 +60,17 @@ const Landing = () => {
           <BookOpen className="text-primary" size={28} />
           Teacher Jorge
         </Link>
-        <Link to="/login" className="landing-nav-btn">
-          Portal do Aluno
-        </Link>
+        <div className="landing-nav-actions">
+          <a href="https://www.youtube.com/@teacherjorgetoday" target="_blank" rel="noopener noreferrer" className="landing-nav-icon" title="YouTube Channel">
+            <Youtube size={24} />
+          </a>
+          <a href="https://book-8uu.pages.dev" target="_blank" rel="noopener noreferrer" className="landing-nav-icon" title="Meu Livro de Inglês">
+            <BookOpen size={24} />
+          </a>
+          <Link to="/login" className="landing-nav-btn">
+            Portal do Aluno
+          </Link>
+        </div>
       </motion.nav>
 
       <div className="landing-content">
