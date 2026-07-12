@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { FileText, Trash, Download, Plus, X } from 'lucide-react';
+import { FileText, Trash, Download, Plus, X, Edit2 } from 'lucide-react';
 import '../Teacher/TeacherDashboard.css';
 
 const Materials = () => {
@@ -13,6 +13,10 @@ const Materials = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newMaterial, setNewMaterial] = useState({ title: '', file_type: 'PDF', file_url: '' });
+
+  // Edit Material State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingMaterial, setEditingMaterial] = useState(null);
 
   // 1. Fetch Students on load
   useEffect(() => {
@@ -81,6 +85,36 @@ const Materials = () => {
       
       setNewMaterial({ title: '', file_type: 'PDF', file_url: '' });
       setIsAdding(false);
+    }
+    setIsSubmitting(false);
+  };
+
+  const openEditModal = (material) => {
+    setEditingMaterial(material);
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateMaterial = async (e) => {
+    e.preventDefault();
+    if (!editingMaterial) return;
+
+    setIsSubmitting(true);
+    const { error } = await supabase
+      .from('Materials')
+      .update({
+        title: editingMaterial.title,
+        file_type: editingMaterial.file_type,
+        file_url: editingMaterial.file_url
+      })
+      .eq('id', editingMaterial.id);
+
+    if (error) {
+      console.error('Error updating material:', error);
+      alert('Falha ao atualizar material.');
+    } else {
+      setMaterials(materials.map(m => m.id === editingMaterial.id ? editingMaterial : m));
+      setIsEditModalOpen(false);
+      setEditingMaterial(null);
     }
     setIsSubmitting(false);
   };
@@ -154,9 +188,14 @@ const Materials = () => {
                     {materials.map((mat) => (
                       <tr key={mat.id}>
                         <td>
-                          <span className="font-medium text-main flex items-center gap-2">
+                          <button 
+                            className="font-medium text-main flex items-center gap-2 hover:text-primary transition-colors text-left"
+                            onClick={() => openEditModal(mat)}
+                            style={{background: 'none', border: 'none', cursor: 'pointer', padding: 0}}
+                            title="Editar Material"
+                          >
                             <FileText size={16} className="text-primary"/> {mat.title}
-                          </span>
+                          </button>
                         </td>
                         {selectedStudentEmail === 'ALL' && (
                           <td className="text-muted text-sm">{mat.student_email}</td>
@@ -175,11 +214,14 @@ const Materials = () => {
                             target="_blank" 
                             rel="noopener noreferrer" 
                             className="btn-icon text-muted hover:text-primary flex items-center justify-center" 
-                            title="Open Material"
+                            title="Abrir Material"
                             style={{padding: '4px', background: 'none', border: 'none', marginRight: '8px', display: 'inline-flex'}}
                           >
                             <Download size={16} />
                           </a>
+                          <button onClick={() => openEditModal(mat)} title="Editar Material" className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}>
+                            <Edit2 size={16} />
+                          </button>
                           <button onClick={() => handleDeleteMaterial(mat.id)} title="Excluir Material" className="btn-icon text-muted hover:text-danger" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none'}}>
                             <Trash size={16} />
                           </button>
@@ -247,6 +289,66 @@ const Materials = () => {
                 <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
                   {isSubmitting ? 'Salvando...' : 'Compartilhar Material'}
                 </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Material Modal */}
+      {isEditModalOpen && editingMaterial && (
+        <div className="modal-overlay flex items-center justify-center" style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
+        }}>
+          <div className="card glass w-full" style={{maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
+            <div className="flex justify-between items-center mb-6">
+              <h2 style={{margin: 0}}>Editar Material</h2>
+              <button onClick={() => { setIsEditModalOpen(false); setEditingMaterial(null); }} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+                <X size={24} />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateMaterial}>
+              <div className="input-group">
+                <label>Título do Material</label>
+                <input type="text" className="input w-full" required
+                  value={editingMaterial.title} onChange={(e) => setEditingMaterial({...editingMaterial, title: e.target.value})}
+                />
+              </div>
+              
+              <div className="input-group">
+                <label>Tipo de Arquivo</label>
+                <select className="input w-full" value={editingMaterial.file_type} onChange={(e) => setEditingMaterial({...editingMaterial, file_type: e.target.value})}>
+                  <option>PDF</option>
+                  <option>DOCX</option>
+                  <option>Link</option>
+                  <option>Áudio</option>
+                  <option>Vídeo</option>
+                </select>
+              </div>
+
+              <div className="input-group">
+                <label>URL do Google Drive (ou link externo)</label>
+                <input type="url" className="input w-full" required
+                  value={editingMaterial.file_url} onChange={(e) => setEditingMaterial({...editingMaterial, file_url: e.target.value})}
+                />
+              </div>
+
+              <div className="flex justify-between items-center mt-6">
+                <button 
+                  type="button" 
+                  className="btn btn-outline hover:text-danger hover:border-danger transition-colors" 
+                  onClick={() => { handleDeleteMaterial(editingMaterial.id); setIsEditModalOpen(false); }}
+                >
+                  <Trash size={16} className="mr-2" style={{display: 'inline'}} /> Excluir
+                </button>
+                <div className="flex gap-2">
+                  <button type="button" className="btn btn-outline" onClick={() => { setIsEditModalOpen(false); setEditingMaterial(null); }}>Cancelar</button>
+                  <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                    {isSubmitting ? 'Salvando...' : 'Salvar Alterações'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
