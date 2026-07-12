@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
+  color-scheme: dark;
   /* Dark Mode Default Theme */
   --primary: #A855F7;
   --primary-hover: #9333EA;
@@ -31,6 +32,7 @@
 }
 
 body.light {
+  color-scheme: light;
   --bg-color: #F8FAFC;
   --bg-gradient: linear-gradient(to bottom right, #F8FAFC, #E2E8F0);
   --surface: rgba(255, 255, 255, 0.7);
@@ -113,7 +115,7 @@ body::after {
 }
 
 a { color: inherit; text-decoration: none; }
-button { font-family: inherit; cursor: pointer; border: none; background: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 
 /* Premium Glassmorphism Utilities */
 .glass {
