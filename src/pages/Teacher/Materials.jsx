@@ -22,7 +22,7 @@ const Materials = () => {
       if (data) {
         setStudents(data);
         if (data.length > 0 && !selectedStudentEmail) {
-          setSelectedStudentEmail(data[0].email);
+          setSelectedStudentEmail('ALL');
         }
       } else {
         console.error('Error fetching students:', error);
@@ -37,11 +37,13 @@ const Materials = () => {
     const fetchMaterials = async () => {
       if (!selectedStudentEmail) return;
       setLoading(true);
-      const { data, error } = await supabase
-        .from('Materials')
-        .select('*')
-        .eq('student_email', selectedStudentEmail)
-        .order('created_at', { ascending: false });
+      
+      let query = supabase.from('Materials').select('*').order('created_at', { ascending: false });
+      if (selectedStudentEmail !== 'ALL') {
+        query = query.ilike('student_email', selectedStudentEmail);
+      }
+      
+      const { data, error } = await query;
         
       if (data) setMaterials(data);
       else console.error('Error fetching materials:', error);
@@ -70,11 +72,11 @@ const Materials = () => {
       alert('Falha ao adicionar material. Verifique suas permissões.');
     } else {
       // Refresh materials list
-      const { data } = await supabase
-        .from('Materials')
-        .select('*')
-        .eq('student_email', selectedStudentEmail)
-        .order('created_at', { ascending: false });
+      let query = supabase.from('Materials').select('*').order('created_at', { ascending: false });
+      if (selectedStudentEmail !== 'ALL') {
+        query = query.ilike('student_email', selectedStudentEmail);
+      }
+      const { data } = await query;
       if (data) setMaterials(data);
       
       setNewMaterial({ title: '', file_type: 'PDF', file_url: '' });
@@ -113,6 +115,7 @@ const Materials = () => {
               disabled={loading || students.length === 0}
             >
               {students.length === 0 && <option value="">Nenhum aluno encontrado</option>}
+              {students.length > 0 && <option value="ALL">Todos os Alunos (Visão Geral)</option>}
               {students.map(s => (
                 <option key={s.email} value={s.email}>{s.name} ({s.email})</option>
               ))}
@@ -121,7 +124,8 @@ const Materials = () => {
           <button 
             className="btn btn-primary" 
             onClick={() => setIsAdding(true)}
-            disabled={!selectedStudentEmail}
+            disabled={!selectedStudentEmail || selectedStudentEmail === 'ALL'}
+            title={selectedStudentEmail === 'ALL' ? 'Selecione um aluno específico para atribuir' : ''}
           >
             <Plus size={18} /> Atribuir Novo Material
           </button>
@@ -140,6 +144,7 @@ const Materials = () => {
                   <thead>
                     <tr>
                       <th>Título</th>
+                      {selectedStudentEmail === 'ALL' && <th>Aluno</th>}
                       <th>Tipo</th>
                       <th>Data de Adição</th>
                       <th className="text-right">Ações</th>
@@ -153,6 +158,9 @@ const Materials = () => {
                             <FileText size={16} className="text-primary"/> {mat.title}
                           </span>
                         </td>
+                        {selectedStudentEmail === 'ALL' && (
+                          <td className="text-muted text-sm">{mat.student_email}</td>
+                        )}
                         <td>
                           <span className="badge" style={{backgroundColor: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)'}}>
                             {mat.file_type}
