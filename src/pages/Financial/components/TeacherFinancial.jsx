@@ -232,7 +232,7 @@ const TeacherFinancial = () => {
 
   const handleSaveNotes = async () => {
     if (!activeStudent?.paymentRecord) {
-      alert("Altere o status do pagamento pelo menos uma vez para poder salvar observaÃ§Ãµes.");
+      alert("Altere o status do pagamento pelo menos uma vez para poder salvar observações.");
       return;
     }
     setIsSubmitting(true);
@@ -242,13 +242,13 @@ const TeacherFinancial = () => {
       alert("Erro ao salvar notas. Dica: verifique se a coluna 'notes' (tipo text) existe na tabela 'Payments' no Supabase.");
     } else {
       await fetchFinancialData();
-      alert("ObservaÃ§Ãµes salvas!");
+      alert("Observações salvas!");
     }
     setIsSubmitting(false);
   };
 
   if (loading) {
-    return <div className="text-center p-8 text-muted">Carregando histÃ³rico financeiro...</div>;
+    return <div className="text-center p-8 text-muted">Carregando histórico financeiro...</div>;
   }
 
   const chartData = monthsData.slice().reverse().map(m => ({
@@ -261,7 +261,7 @@ const TeacherFinancial = () => {
     <div>
       {/* Financial Chart */}
       <div className="card glass mb-12">
-        <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><DollarSign className="text-primary"/> EvoluÃ§Ã£o do Faturamento</h2>
+        <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><DollarSign className="text-primary"/> Evolução do Faturamento</h2>
         <div style={{ height: '300px', width: '100%' }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
@@ -290,13 +290,13 @@ const TeacherFinancial = () => {
         <div key={monthData.refMonthStr} className="mb-12">
           <div className="tf-month-header">
             {index === 0 ? (
-               <h2 className="text-2xl font-bold text-white m-0">MÃªs Atual: {monthData.monthLabel}</h2>
+               <h2 className="text-2xl font-bold text-white m-0">Mês Atual: {monthData.monthLabel}</h2>
             ) : (
                <h2 className="text-xl font-bold text-muted m-0 capitalize">{monthData.monthLabel}</h2>
             )}
             <button className="btn btn-outline btn-sm" onClick={() => openGeneralReceipt(monthData.refMonthStr)}>
               <FileText size={14} className="mr-2" style={{display: 'inline'}} />
-              Gerar RelatÃ³rio
+              Gerar Relatório
             </button>
           </div>
 
@@ -313,7 +313,7 @@ const TeacherFinancial = () => {
               <div className="text-3xl font-bold text-main mb-2">
                 {monthData.totalClasses}
               </div>
-              <p className="text-sm text-muted">Aulas agendadas no mÃªs</p>
+              <p className="text-sm text-muted">Aulas agendadas no mês</p>
             </div>
             <div className="card glass col-span-1">
               <h2 className="mb-4 text-muted text-sm uppercase">Falta Receber</h2>
@@ -325,7 +325,7 @@ const TeacherFinancial = () => {
           </div>
 
           <div className="card glass main-col mb-6" style={{ gridColumn: 'span 3' }}>
-            <h3 className="mb-4 font-bold text-white uppercase text-sm tracking-wider">Tabela de CobranÃ§as</h3>
+            <h3 className="mb-4 font-bold text-white uppercase text-sm tracking-wider">Tabela de Cobranças</h3>
             <table className="w-full text-left border-collapse tf-billing-table">
               <thead>
                 <tr className="text-muted" style={{borderBottom: '1px solid var(--border)'}}>
@@ -333,7 +333,7 @@ const TeacherFinancial = () => {
                   <th className="pb-3" style={{paddingBottom: '1rem'}}>Qtd. Aulas</th>
                   <th className="pb-3" style={{paddingBottom: '1rem'}}>Valor Total</th>
                   <th className="pb-3" style={{paddingBottom: '1rem'}}>Status</th>
-                  <th className="pb-3 text-right" style={{paddingBottom: '1rem'}}>AÃ§Ãµes</th>
+                  <th className="pb-3 text-right" style={{paddingBottom: '1rem'}}>Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -367,7 +367,7 @@ const TeacherFinancial = () => {
                     </tr>
                   ))
                 ) : (
-                  <tr><td colSpan="5" className="py-4 text-center text-muted">Nenhuma aula agendada neste mÃªs.</td></tr>
+                  <tr><td colSpan="5" className="py-4 text-center text-muted">Nenhuma aula agendada neste mês.</td></tr>
                 )}
               </tbody>
             </table>
@@ -382,9 +382,9 @@ const TeacherFinancial = () => {
             
             {/* Header - Fixed */}
             <div className="tf-modal-header">
-              <h2>Detalhes da CobranÃ§a</h2>
+              <h2>Detalhes da Cobrança</h2>
               <button onClick={() => setIsBillingModalOpen(false)} className="tf-modal-close-btn">
-                âœ•
+                ✕
               </button>
             </div>
             
@@ -404,7 +404,7 @@ const TeacherFinancial = () => {
 
               <div style={{ marginBottom: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <h3 style={{ margin: 0, fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Aulas no MÃªs ({activeStudent.classesCount})</h3>
+                  <h3 style={{ margin: 0, fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Aulas no Mês ({activeStudent.classesCount})</h3>
                   <button className="btn btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }} onClick={() => setIsAddingClass(!isAddingClass)}>
                     + Adicionar Manual
                   </button>
@@ -416,7 +416,7 @@ const TeacherFinancial = () => {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
                       <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Data</label><input type="date" required className="input" style={{ padding: '0.5rem' }} value={manualClassForm.date} onChange={e => setManualClassForm({...manualClassForm, date: e.target.value})} /></div>
                       <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Hora</label><input type="time" required className="input" style={{ padding: '0.5rem' }} value={manualClassForm.time} onChange={e => setManualClassForm({...manualClassForm, time: e.target.value})} /></div>
-                      <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>DuraÃ§Ã£o</label><select className="input" required style={{ padding: '0.5rem' }} value={manualClassForm.duration} onChange={e => setManualClassForm({...manualClassForm, duration: e.target.value})}>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Duração</label><select className="input" required style={{ padding: '0.5rem' }} value={manualClassForm.duration} onChange={e => setManualClassForm({...manualClassForm, duration: e.target.value})}>
                         <option value="30">30 min</option>
                         <option value="45">45 min</option>
                         <option value="60">60 min</option>
@@ -437,7 +437,7 @@ const TeacherFinancial = () => {
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
                             <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Data</label><input type="date" required className="input" style={{ padding: '0.5rem' }} value={editClassForm.date} onChange={e => setEditClassForm({...editClassForm, date: e.target.value})} /></div>
                             <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Hora</label><input type="time" required className="input" style={{ padding: '0.5rem' }} value={editClassForm.time} onChange={e => setEditClassForm({...editClassForm, time: e.target.value})} /></div>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>DuraÃ§Ã£o</label><select className="input" required style={{ padding: '0.5rem' }} value={editClassForm.duration} onChange={e => setEditClassForm({...editClassForm, duration: e.target.value})}>
+                            <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Duração</label><select className="input" required style={{ padding: '0.5rem' }} value={editClassForm.duration} onChange={e => setEditClassForm({...editClassForm, duration: e.target.value})}>
                               <option value="30">30 min</option>
                               <option value="45">45 min</option>
                               <option value="60">60 min</option>
@@ -454,7 +454,7 @@ const TeacherFinancial = () => {
                             <Clock size={16} color="var(--primary)" />
                             <div>
                               <div style={{ fontWeight: 'bold', fontSize: '0.95rem' }}>{new Date(cls.scheduled_at).toLocaleDateString('pt-BR')}</div>
-                              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{new Date(cls.scheduled_at).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})} â€¢ {cls.duration} min</div>
+                              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{new Date(cls.scheduled_at).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})} • {cls.duration} min</div>
                             </div>
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -463,14 +463,14 @@ const TeacherFinancial = () => {
                               <Edit2 size={14} />
                             </button>
                             <button style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => handleRemoveClass(cls.id)} disabled={isSubmitting} title="Remover aula">
-                              âœ•
+                              ✕
                             </button>
                           </div>
                         </div>
                       )}
                     </div>
                   )) : (
-                    <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)', border: '1px dashed var(--border)', borderRadius: '8px' }}>Nenhuma aula registrada neste mÃªs.</div>
+                    <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)', border: '1px dashed var(--border)', borderRadius: '8px' }}>Nenhuma aula registrada neste mês.</div>
                   )}
                 </div>
               </div>
@@ -496,7 +496,7 @@ const TeacherFinancial = () => {
               </div>
 
               <div style={{ marginTop: '1.5rem' }}>
-                <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>ObservaÃ§Ãµes da Fatura</h3>
+                <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Observações da Fatura</h3>
                 <textarea 
                   className="input" 
                   style={{ width: '100%', minHeight: '80px', padding: '0.75rem', fontSize: '0.9rem', resize: 'vertical' }}
@@ -505,7 +505,7 @@ const TeacherFinancial = () => {
                   onChange={(e) => setNotes(e.target.value)}
                 />
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                  <button className="btn btn-outline btn-sm" onClick={handleSaveNotes} disabled={isSubmitting}>Salvar ObservaÃ§Ã£o</button>
+                  <button className="btn btn-outline btn-sm" onClick={handleSaveNotes} disabled={isSubmitting}>Salvar Observação</button>
                 </div>
               </div>
             </div>
@@ -529,14 +529,14 @@ const TeacherFinancial = () => {
             <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200 tf-receipt-header">
               <h2 className="text-black font-bold m-0 text-xl">Comprovante</h2>
               <button onClick={() => setIsReceiptModalOpen(false)} className="text-gray-500 hover:text-black transition-colors" style={{background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem'}}>
-                âœ•
+                ✕
               </button>
             </div>
 
             <div id="receipt-content" className="p-6 receipt-content" style={{fontFamily: 'monospace'}}>
               <div className="text-center mb-6">
                 <h1 className="text-2xl font-bold uppercase tracking-widest mb-1 text-black">Teacher Jorge</h1>
-                <p className="text-sm text-gray-500">Recibo de Pagamento - Aulas de InglÃªs</p>
+                <p className="text-sm text-gray-500">Recibo de Pagamento - Aulas de Inglês</p>
               </div>
 
               <div className="mb-6 border-y py-4 border-gray-200">
@@ -549,11 +549,11 @@ const TeacherFinancial = () => {
                   <span className="text-black">{activeStudent.email}</span>
                 </div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-gray-500">ReferÃªncia:</span>
+                  <span className="text-gray-500">Referência:</span>
                   <span className="capitalize text-black">{activeMonthData?.monthLabel}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Data de EmissÃ£o:</span>
+                  <span className="text-gray-500">Data de Emissão:</span>
                   <span className="text-black">{new Date().toLocaleDateString('pt-BR')}</span>
                 </div>
               </div>
@@ -580,8 +580,8 @@ const TeacherFinancial = () => {
               </div>
               
               <div className="text-center text-sm text-gray-400 mt-8">
-                <p>Obrigado pela preferÃªncia!</p>
-                <p>Este recibo serve como comprovante de prestaÃ§Ã£o de serviÃ§os.</p>
+                <p>Obrigado pela preferência!</p>
+                <p>Este recibo serve como comprovante de prestação de serviços.</p>
               </div>
             </div>
 
@@ -599,21 +599,21 @@ const TeacherFinancial = () => {
         <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay">
           <div className="card w-full flex flex-col receipt-card relative tf-receipt-card general">
             <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200 tf-receipt-header">
-              <h2 className="text-black font-bold m-0 text-xl">RelatÃ³rio Mensal</h2>
+              <h2 className="text-black font-bold m-0 text-xl">Relatório Mensal</h2>
               <button onClick={() => setIsGeneralReceiptModalOpen(false)} className="text-gray-500 hover:text-black transition-colors" style={{background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem'}}>
-                âœ•
+                ✕
               </button>
             </div>
 
             <div id="receipt-content" className="p-6 receipt-content" style={{fontFamily: 'monospace', overflowY: 'auto', flex: 1}}>
               <div className="text-center mb-6">
                 <h1 className="text-2xl font-bold uppercase tracking-widest mb-1 text-black">Teacher Jorge</h1>
-                <p className="text-sm text-gray-500">RelatÃ³rio Geral de Fechamento - {activeMonthData.monthLabel}</p>
+                <p className="text-sm text-gray-500">Relatório Geral de Fechamento - {activeMonthData.monthLabel}</p>
               </div>
 
               <div className="mb-6 border-y py-4 border-gray-200">
                 <div className="flex justify-between mb-2">
-                  <span className="text-gray-500">Data de EmissÃ£o:</span>
+                  <span className="text-gray-500">Data de Emissão:</span>
                   <span className="text-black">{new Date().toLocaleDateString('pt-BR')}</span>
                 </div>
               </div>
@@ -658,7 +658,7 @@ const TeacherFinancial = () => {
               </div>
               
               <div className="text-center text-sm text-gray-400 mt-8">
-                <p>RelatÃ³rio gerado automaticamente pelo sistema TeacherJorge.</p>
+                <p>Relatório gerado automaticamente pelo sistema TeacherJorge.</p>
               </div>
             </div>
 
