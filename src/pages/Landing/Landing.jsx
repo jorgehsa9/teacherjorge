@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Star, Target, Users, Calendar, ArrowRight } from 'lucide-react';
+import { BookOpen, Star, Target, Users, Calendar, ArrowRight, Youtube } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import './Landing.css';
 
@@ -146,6 +146,48 @@ const Landing = () => {
                 Receba feedback instantâneo, acesse o histórico de evolução e mantenha o foco total na fluência com ferramentas premium.
               </p>
             </motion.div>
+          </motion.div>
+        </section>
+
+        {/* Ecosystem Section */}
+        <section className="ecosystem-section">
+          <motion.h2 
+            initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }} variants={fadeInUp}
+            className="section-title"
+          >
+            Além das Aulas: O Ecossistema
+          </motion.h2>
+          <motion.div 
+            variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}
+            className="ecosystem-grid features-grid"
+          >
+            <motion.a 
+              href="https://book-8uu.pages.dev" target="_blank" rel="noopener noreferrer"
+              variants={fadeInUp} className="hyper-glass-card ecosystem-card"
+            >
+              <div className="feature-icon">
+                <BookOpen size={32} />
+              </div>
+              <h3 className="feature-title">Meu Livro de Inglês</h3>
+              <p className="feature-desc">
+                Acesse gratuitamente lições completas de gramática, exercícios, minigames e simulados interativos em nosso portal de estudos aberto.
+              </p>
+              <div className="ecosystem-cta">Acessar o Livro <ArrowRight size={16} /></div>
+            </motion.a>
+
+            <motion.a 
+              href="https://www.youtube.com/@teacherjorgetoday" target="_blank" rel="noopener noreferrer"
+              variants={fadeInUp} className="hyper-glass-card ecosystem-card"
+            >
+              <div className="feature-icon" style={{ color: '#ff0000' }}>
+                <Youtube size={32} />
+              </div>
+              <h3 className="feature-title">Teacher Jorge Today</h3>
+              <p className="feature-desc">
+                Dicas rápidas, pronúncia e cultura. Inscreva-se para consumir conteúdo diário de alto impacto e manter o inglês sempre ativo.
+              </p>
+              <div className="ecosystem-cta">Inscrever-se no Canal <ArrowRight size={16} /></div>
+            </motion.a>
           </motion.div>
         </section>
 
