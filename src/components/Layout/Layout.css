@@ -29,7 +29,7 @@
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--border);
   height: 50px;
-  padding-left: 10px;
+  padding-left: 14px;
 }
 
 .brand h2 {
@@ -63,12 +63,13 @@
   color: var(--text-muted);
   font-weight: 600;
   transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
-  padding-left: 10px;
+  padding: 0;
   gap: 1rem;
   flex-shrink: 0;
 }
 
 .nav-item svg {
+  margin-left: 18px;
   flex-shrink: 0;
   min-width: 20px;
 }
@@ -101,20 +102,29 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.5rem;
+  padding: 0.5rem 0;
   border-radius: var(--radius-lg);
   background: rgba(0,0,0,0.2);
   border: 1px solid var(--border);
   margin-bottom: 1rem;
   flex-shrink: 0;
   overflow: hidden;
-  transition: padding 0.3s ease;
+  transition: padding 0.3s ease, background 0.3s ease;
   text-decoration: none;
   color: inherit;
 }
 
+.user-profile .avatar {
+  margin-left: 12px;
+  transition: margin 0.3s ease;
+}
+
 .sidebar:hover .user-profile {
-  padding: 0.75rem;
+  padding: 0.5rem;
+}
+
+.sidebar:hover .user-profile .avatar {
+  margin-left: 4px;
 }
 
 .user-info {

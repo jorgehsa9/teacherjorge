@@ -157,12 +157,19 @@ const TeacherDashboard = () => {
     return () => clearInterval(interval);
   }, [nextClass]);
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Bom dia,';
+    if (hour < 18) return 'Boa tarde,';
+    return 'Boa noite,';
+  };
+
   return (
     <div className="dashboard-wrapper animate-fade-in-up">
       <div className="dashboard-header mb-8 flex justify-between items-end">
         <div>
           <h1 style={{fontSize: '3.5rem', fontWeight: 600, letterSpacing: '-0.02em', marginBottom: '0.25rem', lineHeight: 1.1}}>
-            Bom dia,
+            {getGreeting()}
             <br/>
             <span style={{
               background: 'linear-gradient(to right, var(--primary), #4F46E5)',

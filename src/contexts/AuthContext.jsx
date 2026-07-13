@@ -12,13 +12,30 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+    const processSession = async (session) => {
       if (session?.user) {
-        const role = session.user.email === 'teacher@email.com' ? 'teacher' : 'student';
-        const displayName = session.user.user_metadata?.name || (session.user.email === 'teacher@email.com' ? 'Jorge' : session.user.email.split('@')[0]);
+        let role = 'student';
+        let defaultName = session.user.email.split('@')[0];
+        
+        try {
+          const { data: teacher } = await supabase
+            .from('Teachers')
+            .select('name')
+            .ilike('email', session.user.email)
+            .maybeSingle();
+            
+          if (teacher) {
+            role = 'teacher';
+            defaultName = teacher.name || 'Professor';
+          }
+        } catch (err) {
+          console.error("Erro ao checar permissões:", err);
+        }
+
+        const displayName = session.user.user_metadata?.name || defaultName;
         const theme = session.user.user_metadata?.theme;
         const isDarkMode = session.user.user_metadata?.isDarkMode;
+        
         setUser({ ...session.user, role, name: displayName, theme, isDarkMode });
       } else {
         setUser(null);
@@ -26,19 +43,15 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     };
 
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      await processSession(session);
+    };
+
     checkSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        const role = session.user.email === 'teacher@email.com' ? 'teacher' : 'student';
-        const displayName = session.user.user_metadata?.name || (session.user.email === 'teacher@email.com' ? 'Jorge' : session.user.email.split('@')[0]);
-        const theme = session.user.user_metadata?.theme;
-        const isDarkMode = session.user.user_metadata?.isDarkMode;
-        setUser({ ...session.user, role, name: displayName, theme, isDarkMode });
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
+      processSession(session);
     });
 
     return () => subscription.unsubscribe();
