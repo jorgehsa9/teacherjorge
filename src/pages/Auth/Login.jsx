@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, LogIn } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 import './Auth.css';
 
 const Login = () => {
@@ -25,6 +26,27 @@ const Login = () => {
       }
       
       await login(loginEmail, password);
+
+      // Record login history
+      try {
+        const { data: student } = await supabase
+          .from('Students')
+          .select('login_history')
+          .ilike('email', loginEmail)
+          .single();
+          
+        if (student) {
+          const currentHistory = Array.isArray(student.login_history) ? student.login_history : [];
+          const newHistory = [new Date().toISOString(), ...currentHistory].slice(0, 50); // Keep last 50 logins
+          await supabase
+            .from('Students')
+            .update({ login_history: newHistory })
+            .ilike('email', loginEmail);
+        }
+      } catch (historyErr) {
+        console.error("Error updating login history:", historyErr);
+      }
+
       navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Falha ao entrar');

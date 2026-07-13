@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Users, Video, Clock, DollarSign, UploadCloud, Play, FileText, CheckCircle, Calendar } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import './TeacherDashboard.css';
 
 const TeacherDashboard = () => {
+  const navigate = useNavigate();
   const [students, setStudents] = useState([]);
+  const [pendingRequests, setPendingRequests] = useState([]);
   const [classesThisMonth, setClassesThisMonth] = useState(0);
   const [pendingPayments, setPendingPayments] = useState(0);
   const [nextClass, setNextClass] = useState(null);
@@ -84,11 +87,46 @@ const TeacherDashboard = () => {
         }
       }
 
+      // 4. Fetch Pending Requests
+      const { data: pendingData } = await supabase
+        .from('Classes')
+        .select('*')
+        .eq('status', 'Requested')
+        .eq('type', 'Solicitação de Aula')
+        .order('scheduled_at', { ascending: true });
+        
+      if (pendingData) {
+        setPendingRequests(pendingData);
+      }
+
       setLoading(false);
     };
 
     fetchDashboardData();
   }, []);
+
+  const handleAcceptRequest = async (id) => {
+    setLoading(true);
+    const { error } = await supabase.from('Classes').update({ status: 'Scheduled', type: 'Aula' }).eq('id', id);
+    if (!error) {
+      window.location.reload();
+    } else {
+      setLoading(false);
+      alert('Erro ao aceitar solicitação.');
+    }
+  };
+
+  const handleRejectRequest = async (id) => {
+    if (!window.confirm('Recusar esta solicitação? Ela será excluída.')) return;
+    setLoading(true);
+    const { error } = await supabase.from('Classes').delete().eq('id', id);
+    if (!error) {
+      window.location.reload();
+    } else {
+      setLoading(false);
+      alert('Erro ao recusar solicitação.');
+    }
+  };
 
   // Update time to next class every minute
   useEffect(() => {
@@ -292,7 +330,7 @@ const TeacherDashboard = () => {
                     </div>
                   </div>
                   <div className="text-sm text-muted">{student.email}</div>
-                  <button className="btn btn-outline" disabled>Perfil</button>
+                  <button className="btn btn-outline" onClick={() => navigate('/dashboard/students')}>Perfil</button>
                 </div>
               )) : (
                 <p className="text-muted text-sm p-4 text-center">Nenhum aluno encontrado.</p>
@@ -303,6 +341,36 @@ const TeacherDashboard = () => {
 
         {/* Side Column - Materials */}
         <div className="side-col">
+          
+          {/* Pending Requests Widget */}
+          <div className="card glass mb-6" style={{ borderTop: '4px solid var(--warning)' }}>
+            <h3 className="mb-4 flex items-center gap-2"><Clock className="text-warning"/> Solicitações Pendentes</h3>
+            <div className="flex flex-col gap-3">
+              {pendingRequests.length > 0 ? pendingRequests.map(req => {
+                const studentName = students.find(s => s.email === req.student_email)?.name || req.student_email;
+                const date = new Date(req.scheduled_at);
+                return (
+                  <div key={req.id} className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                    <div className="font-semibold mb-1">{studentName}</div>
+                    <div className="text-xs text-muted mb-3 flex items-center gap-1">
+                      <Calendar size={12} /> {date.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' })} às {date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} ({req.duration}m)
+                    </div>
+                    <div className="flex gap-2">
+                      <button className="btn btn-sm w-full flex justify-center items-center gap-1" style={{ backgroundColor: 'var(--success)', color: 'white' }} onClick={() => handleAcceptRequest(req.id)}>
+                        <CheckCircle size={14} /> Aceitar
+                      </button>
+                      <button className="btn btn-sm btn-outline w-full hover:text-danger hover:border-danger flex justify-center items-center" onClick={() => handleRejectRequest(req.id)}>
+                        Recusar
+                      </button>
+                    </div>
+                  </div>
+                );
+              }) : (
+                <p className="text-muted text-sm text-center py-2">Nenhuma solicitação no momento.</p>
+              )}
+            </div>
+          </div>
+
           <div className="card glass upload-card">
             <div className="flex justify-between items-center mb-4">
               <h2 className="flex items-center gap-2"><CheckCircle className="text-success"/> Tarefas Rápidas</h2>
@@ -310,11 +378,11 @@ const TeacherDashboard = () => {
             </div>
             
             <div className="quick-actions-grid mt-4">
-              <button className="btn btn-outline flex-col py-4 h-auto" disabled>
+              <button className="btn btn-outline flex-col py-4 h-auto" onClick={() => navigate('/dashboard/materials')}>
                 <UploadCloud size={24} className="mb-2 text-primary" />
                 Compartilhar Material
               </button>
-              <button className="btn btn-outline flex-col py-4 h-auto" disabled>
+              <button className="btn btn-outline flex-col py-4 h-auto" onClick={() => navigate('/dashboard/calendar')}>
                 <Clock size={24} className="mb-2 text-primary" />
                 Agendar Reposição
               </button>
@@ -337,7 +405,7 @@ const TeacherDashboard = () => {
                       <div className="text-xs text-muted">{student.level}</div>
                     </div>
                   </div>
-                  <button className="btn btn-outline btn-sm" disabled>Ver</button>
+                  <button className="btn btn-outline btn-sm" onClick={() => navigate('/dashboard/students')}>Ver</button>
                 </div>
               )) : (
                 <p className="text-muted text-sm text-center pt-2">Nenhum aluno.</p>

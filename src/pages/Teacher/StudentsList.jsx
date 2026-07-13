@@ -409,6 +409,29 @@ const StudentsList = () => {
                 ></textarea>
               </div>
 
+              {/* Login History Section */}
+              <div className="input-group mt-4 p-4 rounded-lg" style={{ backgroundColor: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)' }}>
+                <label className="flex items-center gap-2 mb-3"><Clock size={14}/> Histórico de Login (Últimos acessos)</label>
+                <div className="max-h-32 overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin' }}>
+                  {editingStudent.login_history && Array.isArray(editingStudent.login_history) && editingStudent.login_history.length > 0 ? (
+                    <ul className="flex flex-col gap-2">
+                      {editingStudent.login_history.map((loginDate, idx) => (
+                        <li key={idx} className="text-sm flex items-center justify-between border-b pb-1 last:border-0" style={{ borderColor: 'var(--border-light)' }}>
+                          <span className="text-main font-medium">
+                            {new Date(loginDate).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' })}
+                          </span>
+                          <span className="text-muted text-xs bg-bg px-2 py-1 rounded">
+                            {new Date(loginDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-muted text-sm italic">Nenhum login registrado ainda.</p>
+                  )}
+                </div>
+              </div>
+
               <div className="flex justify-end gap-2 mt-6 border-t pt-4" style={{borderColor: 'var(--border)'}}>
                 <button type="button" className="btn btn-outline" onClick={() => setIsEditModalOpen(false)}>Cancelar</button>
                 <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
