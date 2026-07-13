@@ -235,6 +235,37 @@
          }
 
     </style>
+    <style>
+        /* INJETADO: ISOLAMENTO DO JOGO */
+        .lesson-header, #floating-video, #floating-notepad, #floating-chat, aside, footer {
+            display: none !important;
+        }
+        .container {
+            padding: 0 !important;
+            margin: 0 !important;
+            max-width: 100% !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+        .lesson-content {
+            padding: 0 !important;
+            margin: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-height: 100vh !important;
+        }
+        body {
+            background: transparent !important;
+            overflow: hidden !important;
+        }
+        div[id^="game-container"] {
+            margin: 0 auto !important;
+            max-height: 100vh !important;
+            overflow-y: auto !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -619,3 +650,4 @@
 
 </body>
 </html>
+
