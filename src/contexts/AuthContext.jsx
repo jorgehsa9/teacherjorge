@@ -17,16 +17,19 @@ export const AuthProvider = ({ children }) => {
         let role = 'student';
         let defaultName = session.user.email.split('@')[0];
         
+        let is_admin = false;
+        
         try {
           const { data: teacher } = await supabase
             .from('Teachers')
-            .select('name')
+            .select('name, is_admin')
             .ilike('email', session.user.email)
             .maybeSingle();
             
           if (teacher) {
             role = 'teacher';
             defaultName = teacher.name || 'Professor';
+            is_admin = !!teacher.is_admin;
           }
         } catch (err) {
           console.error("Erro ao checar permissões:", err);
@@ -36,7 +39,7 @@ export const AuthProvider = ({ children }) => {
         const theme = session.user.user_metadata?.theme;
         const isDarkMode = session.user.user_metadata?.isDarkMode;
         
-        setUser({ ...session.user, role, name: displayName, theme, isDarkMode });
+        setUser({ ...session.user, role, is_admin, name: displayName, theme, isDarkMode });
       } else {
         setUser(null);
       }

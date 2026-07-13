@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { supabase, secondarySupabase } from '../../lib/supabase';
 import { Search, Edit, Trash, X, Phone, Clock, FileText, Calendar, UploadCloud } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 
 const StudentsList = () => {
+  const { user } = useAuth();
   const [students, setStudents] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   
   // Modal States
@@ -13,7 +16,7 @@ const StudentsList = () => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const [newStudent, setNewStudent] = useState({ name: '', email: '', level: 'Beginner (A1)', status: 'Active' });
+  const [newStudent, setNewStudent] = useState({ name: '', email: '', level: 'Beginner (A1)', status: 'Active', teacher_email: user?.email || '' });
   const [editingStudent, setEditingStudent] = useState(null);
   const [selectedStudentForAction, setSelectedStudentForAction] = useState(null);
   
@@ -23,15 +26,28 @@ const StudentsList = () => {
 
   const fetchStudents = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('Students').select('*');
+    let query = supabase.from('Students').select('*');
+    
+    if (!user?.is_admin) {
+      query = query.eq('teacher_email', user?.email);
+    }
+    
+    const { data, error } = await query;
     if (data) setStudents(data);
     else console.error('Error fetching students:', error);
     setLoading(false);
   };
 
+  const fetchTeachers = async () => {
+    if (!user?.is_admin) return;
+    const { data } = await supabase.from('Teachers').select('name, email').eq('status', 'Active');
+    if (data) setTeachers(data);
+  };
+
   useEffect(() => {
     fetchStudents();
-  }, []);
+    fetchTeachers();
+  }, [user]);
 
   const handleAddStudent = async (e) => {
     e.preventDefault();
@@ -53,12 +69,18 @@ const StudentsList = () => {
       alert('Aviso: Falha ao criar login de acesso (Supabase Auth) para o aluno: ' + authError.message);
     }
     
+    const selectedTeacher = user?.is_admin ? teachers.find(t => t.email === newStudent.teacher_email) : null;
+    const teacherName = user?.is_admin ? (selectedTeacher?.name || user?.name) : user?.name;
+    const teacherEmailToSave = user?.is_admin ? newStudent.teacher_email : user?.email;
+
     const { error } = await supabase.from('Students').insert([
       { 
         name: newStudent.name, 
         email: studentEmail, 
         level: newStudent.level, 
-        status: newStudent.status 
+        status: newStudent.status,
+        teacher_email: teacherEmailToSave,
+        teacher_name: teacherName
       }
     ]);
 
@@ -67,7 +89,7 @@ const StudentsList = () => {
       alert('Falha ao adicionar aluno no banco de dados. Verifique as permissões.');
     } else {
       await fetchStudents();
-      setNewStudent({ name: '', email: '', level: 'Beginner (A1)', status: 'Active' });
+      setNewStudent({ name: '', email: '', level: 'Beginner (A1)', status: 'Active', teacher_email: user?.email || '' });
       setIsModalOpen(false);
       alert(`Aluno adicionado com sucesso!\n\nDados de Login:\nID/Email: ${studentEmail.replace('@teacherjorge.com', '')}\nSenha Provisória: 123456`);
     }
@@ -92,22 +114,32 @@ const StudentsList = () => {
     const matchColumn = editingStudent.id ? 'id' : 'email';
     const matchValue = editingStudent.id || editingStudent.email;
 
+    let updatePayload = {
+      name: editingStudent.name,
+      email: editingStudent.email,
+      level: editingStudent.level,
+      status: editingStudent.status,
+      phone_number: editingStudent.phone_number || null,
+      timezone: editingStudent.timezone || 'UTC',
+      internal_notes: editingStudent.internal_notes || null,
+      meet_link: editingStudent.meet_link || null,
+      hours_studied: parseInt(editingStudent.hours_studied) || 0,
+      current_module: editingStudent.current_module || null,
+      module_progress: parseInt(editingStudent.module_progress) || 0,
+      badges_earned: parseInt(editingStudent.badges_earned) || 0
+    };
+
+    if (user?.is_admin) {
+      const selectedTeacher = teachers.find(t => t.email === editingStudent.teacher_email);
+      if (selectedTeacher) {
+        updatePayload.teacher_email = selectedTeacher.email;
+        updatePayload.teacher_name = selectedTeacher.name;
+      }
+    }
+
     const { error } = await supabase
       .from('Students')
-      .update({
-        name: editingStudent.name,
-        email: editingStudent.email,
-        level: editingStudent.level,
-        status: editingStudent.status,
-        phone_number: editingStudent.phone_number || null,
-        timezone: editingStudent.timezone || 'UTC',
-        internal_notes: editingStudent.internal_notes || null,
-        meet_link: editingStudent.meet_link || null,
-        hours_studied: parseInt(editingStudent.hours_studied) || 0,
-        current_module: editingStudent.current_module || null,
-        module_progress: parseInt(editingStudent.module_progress) || 0,
-        badges_earned: parseInt(editingStudent.badges_earned) || 0
-      })
+      .update(updatePayload)
       .eq(matchColumn, matchValue);
 
     if (error) {
@@ -205,6 +237,7 @@ const StudentsList = () => {
                 <tr>
                   <th>Nome</th>
                   <th>Email</th>
+                  {user?.is_admin && <th>Professor</th>}
                   <th>Nível</th>
                   <th>Status</th>
                   <th className="text-right">Ações</th>
@@ -219,6 +252,9 @@ const StudentsList = () => {
                       </span>
                     </td>
                     <td className="text-muted">{student.email}</td>
+                    {user?.is_admin && (
+                      <td className="text-muted text-sm">{student.teacher_name || student.teacher_email || '-'}</td>
+                    )}
                     <td>
                       <span className="badge" style={{backgroundColor: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)'}}>
                         {student.level}
@@ -289,6 +325,18 @@ const StudentsList = () => {
                 </div>
               </div>
 
+              {user?.is_admin && (
+                <div className="input-group">
+                  <label>Professor Responsável</label>
+                  <select className="input w-full" value={newStudent.teacher_email} onChange={(e) => setNewStudent({...newStudent, teacher_email: e.target.value})}>
+                    <option value={user.email}>Mim ({user.name})</option>
+                    {teachers.filter(t => t.email !== user.email).map(t => (
+                      <option key={t.email} value={t.email}>{t.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <div className="flex justify-end gap-2 mt-6">
                 <button type="button" className="btn btn-outline" onClick={() => setIsModalOpen(false)}>Cancelar</button>
                 <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
@@ -329,6 +377,18 @@ const StudentsList = () => {
                   />
                 </div>
               </div>
+
+              {user?.is_admin && (
+                <div className="input-group mb-4">
+                  <label>Professor Responsável</label>
+                  <select className="input w-full" value={editingStudent.teacher_email || user.email} onChange={(e) => setEditingStudent({...editingStudent, teacher_email: e.target.value})}>
+                    <option value={user.email}>Mim ({user.name})</option>
+                    {teachers.filter(t => t.email !== user.email).map(t => (
+                      <option key={t.email} value={t.email}>{t.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div className="grid-cols-2">
                 <div className="input-group">

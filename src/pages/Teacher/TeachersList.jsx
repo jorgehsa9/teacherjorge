@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { supabase, secondarySupabase } from '../../lib/supabase';
 import { Search, Edit, Trash, X, Shield } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 
 const TeachersList = () => {
+  const { user } = useAuth();
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -110,6 +112,18 @@ const TeachersList = () => {
     t.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     t.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (!user?.is_admin) {
+    return (
+      <div className="dashboard-wrapper flex justify-center items-center h-full">
+        <div className="text-center">
+          <Shield size={48} className="text-danger mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">Acesso Negado</h2>
+          <p className="text-muted">Apenas super-administradores podem gerenciar a equipe.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-wrapper animate-fade-in-up">
