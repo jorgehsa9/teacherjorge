@@ -7,6 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
 import './TeacherFinancial.css';
 
 const TeacherFinancial = () => {
+  const { user } = useAuth();
   const [monthsData, setMonthsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,17 +20,34 @@ const TeacherFinancial = () => {
     const endOfCurrentMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
     const startOf6MonthsAgo = new Date(today.getFullYear(), today.getMonth() - 5, 1, 0, 0, 0, 0);
 
-    const { data: students } = await supabase.from('Students').select('email, name');
+    let studentsQuery = supabase.from('Students').select('email, name');
+    if (!user?.is_admin) {
+      studentsQuery = studentsQuery.eq('teacher_email', user?.email);
+    }
+    const { data: students } = await studentsQuery;
     
-    const { data: classes } = await supabase
+    const studentEmails = students ? students.map(s => s.email) : [];
+    
+    let classesQuery = supabase
       .from('Classes')
       .select('*')
       .gte('scheduled_at', startOf6MonthsAgo.toISOString())
       .lte('scheduled_at', endOfCurrentMonth.toISOString());
 
-    const { data: payments } = await supabase
-      .from('Payments')
-      .select('*');
+    let paymentsQuery = supabase.from('Payments').select('*');
+
+    if (!user?.is_admin) {
+      if (studentEmails.length > 0) {
+        classesQuery = classesQuery.in('student_email', studentEmails);
+        paymentsQuery = paymentsQuery.in('student_email', studentEmails);
+      } else {
+        classesQuery = classesQuery.eq('student_email', 'nobody@nowhere.com');
+        paymentsQuery = paymentsQuery.eq('student_email', 'nobody@nowhere.com');
+      }
+    }
+
+    const { data: classes } = await classesQuery;
+    const { data: payments } = await paymentsQuery;
 
     if (students && classes) {
       const generatedMonths = [];
@@ -77,7 +95,7 @@ const TeacherFinancial = () => {
 
   useEffect(() => {
     fetchFinancialData();
-  }, []);
+  }, [user]);
 
   const [selectedStudentEmail, setSelectedStudentEmail] = useState(null);
   const [selectedMonthStr, setSelectedMonthStr] = useState(null);

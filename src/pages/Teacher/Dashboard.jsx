@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Users, Video, Clock, DollarSign, UploadCloud, Play, FileText, CheckCircle, Calendar } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import { useAuth } from '../../contexts/AuthContext';
 import './TeacherDashboard.css';
 
 const TeacherDashboard = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [pendingRequests, setPendingRequests] = useState([]);
@@ -22,8 +24,14 @@ const TeacherDashboard = () => {
       setLoading(true);
       
       // 1. Fetch Students
-      const { data: studentsData } = await supabase.from('Students').select('*');
+      let studentsQuery = supabase.from('Students').select('*');
+      if (!user?.is_admin) {
+        studentsQuery = studentsQuery.eq('teacher_email', user?.email);
+      }
+      const { data: studentsData } = await studentsQuery;
       if (studentsData) setStudents(studentsData);
+      
+      const teacherStudentEmails = studentsData ? studentsData.map(s => s.email) : [];
 
       // 2. Fetch Classes for this month
       const startOfMonth = new Date();
@@ -35,11 +43,22 @@ const TeacherDashboard = () => {
       endOfMonth.setDate(0);
       endOfMonth.setHours(23, 59, 59, 999);
 
-      const { data: monthClasses } = await supabase
+      let classesQuery = supabase
         .from('Classes')
         .select('*')
         .gte('scheduled_at', startOfMonth.toISOString())
         .lte('scheduled_at', endOfMonth.toISOString());
+        
+      if (!user?.is_admin) {
+        if (teacherStudentEmails.length > 0) {
+          classesQuery = classesQuery.in('student_email', teacherStudentEmails);
+        } else {
+          // If no students, impossible to have classes
+          classesQuery = classesQuery.eq('student_email', 'nobody@nowhere.com');
+        }
+      }
+
+      const { data: monthClasses } = await classesQuery;
       
       if (monthClasses) {
         const actualClasses = monthClasses.filter(c => !c.type || c.type === 'Aula');
@@ -67,12 +86,22 @@ const TeacherDashboard = () => {
 
       // 3. Fetch Next Class
       const now = new Date().toISOString();
-      const { data: nextClassData } = await supabase
+      let nextClassQuery = supabase
         .from('Classes')
         .select('*')
         .gte('scheduled_at', now)
         .order('scheduled_at', { ascending: true })
         .limit(1);
+        
+      if (!user?.is_admin) {
+        if (teacherStudentEmails.length > 0) {
+          nextClassQuery = nextClassQuery.in('student_email', teacherStudentEmails);
+        } else {
+          nextClassQuery = nextClassQuery.eq('student_email', 'nobody@nowhere.com');
+        }
+      }
+
+      const { data: nextClassData } = await nextClassQuery;
 
       if (nextClassData && nextClassData.length > 0) {
         const upcoming = nextClassData[0];
@@ -88,12 +117,22 @@ const TeacherDashboard = () => {
       }
 
       // 4. Fetch Pending Requests
-      const { data: pendingData } = await supabase
+      let pendingQuery = supabase
         .from('Classes')
         .select('*')
         .eq('status', 'Requested')
         .eq('type', 'Solicitação de Aula')
         .order('scheduled_at', { ascending: true });
+        
+      if (!user?.is_admin) {
+        if (teacherStudentEmails.length > 0) {
+          pendingQuery = pendingQuery.in('student_email', teacherStudentEmails);
+        } else {
+          pendingQuery = pendingQuery.eq('student_email', 'nobody@nowhere.com');
+        }
+      }
+        
+      const { data: pendingData } = await pendingQuery;
         
       if (pendingData) {
         setPendingRequests(pendingData);
@@ -155,7 +194,7 @@ const TeacherDashboard = () => {
     updateTimer();
     const interval = setInterval(updateTimer, 60000);
     return () => clearInterval(interval);
-  }, [nextClass]);
+  }, [nextClass, user]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -177,7 +216,7 @@ const TeacherDashboard = () => {
               WebkitTextFillColor: 'transparent',
               filter: 'drop-shadow(0 0 15px var(--primary-glow))',
               fontWeight: 800
-            }}>Jorge</span>
+            }}>{user?.name?.split(' ')[0] || 'Professor'}</span>
           </h1>
           <p className="text-muted mt-4">Foco • Planejamento • Execução • Sucesso</p>
         </div>

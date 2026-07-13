@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { FileText, Trash, Download, Plus, X, Edit2 } from 'lucide-react';
+import { Folder, FileText, Link as LinkIcon, Trash, Plus, Search, ExternalLink, Gamepad2, Mic, CheckCircle, PenTool, Brain, ArrowRight, Video, File, Type, Layers, MoreHorizontal, Edit, X } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 import '../Teacher/TeacherDashboard.css';
 
 const Materials = () => {
+  const { user } = useAuth();
   const [students, setStudents] = useState([]);
   const [selectedStudentEmail, setSelectedStudentEmail] = useState('');
   const [materials, setMaterials] = useState([]);
@@ -37,7 +39,11 @@ const Materials = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       setLoading(true);
-      const { data, error } = await supabase.from('Students').select('name, email');
+      let query = supabase.from('Students').select('name, email');
+      if (!user?.is_admin) {
+        query = query.eq('teacher_email', user?.email);
+      }
+      const { data, error } = await query;
       if (data) {
         setStudents(data);
         if (data.length > 0 && !selectedStudentEmail) {
@@ -49,7 +55,7 @@ const Materials = () => {
       setLoading(false);
     };
     fetchStudents();
-  }, []);
+  }, [user]);
 
   // 2. Fetch Materials when selected student changes
   useEffect(() => {

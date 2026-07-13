@@ -95,22 +95,39 @@ const Calendar = () => {
 
     const { start, end } = getVisibleRange();
 
+    let studentsData = students;
+    if (isTeacher && students.length === 0) {
+      let studentQuery = supabase.from('Students').select('email, name');
+      if (!user?.is_admin) {
+        studentQuery = studentQuery.eq('teacher_email', user?.email);
+      }
+      const { data } = await studentQuery;
+      if (data) {
+        setStudents(data);
+        studentsData = data;
+      }
+    }
+
     let query = supabase
       .from('Classes')
       .select('*')
       .gte('scheduled_at', start.toISOString())
       .lte('scheduled_at', end.toISOString());
 
-    if (!isTeacher) query = query.ilike('student_email', user.email);
+    if (!isTeacher) {
+      query = query.ilike('student_email', user.email);
+    } else if (!user?.is_admin) {
+      const studentEmails = studentsData.map(s => s.email);
+      if (studentEmails.length > 0) {
+        query = query.in('student_email', studentEmails);
+      } else {
+        query = query.eq('student_email', 'nobody@nowhere.com');
+      }
+    }
 
     const { data: classesData, error: classesError } = await query;
     if (classesData) setClasses(classesData);
     else console.error('Erro ao buscar aulas:', classesError);
-
-    if (isTeacher && students.length === 0) {
-      const { data: studentsData } = await supabase.from('Students').select('email, name');
-      if (studentsData) setStudents(studentsData);
-    }
 
     setLoading(false);
   };
