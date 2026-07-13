@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo: Flashcards - Inglês</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Estilos específicos para os Flashcards, complementando style.css */
+        .lesson-content {
+             padding: 30px 40px;
+             display: flex;
+             flex-direction: column;
+             align-items: center; /* Centraliza o conteúdo do jogo */
+        }
+
+        #game-container-flashcards { /* ID específico */
+            background-color: var(--section-even-bg);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 500px; /* Largura adequada para flashcards */
+            text-align: center;
+            margin: 20px auto;
+            box-shadow: 0 3px 8px var(--shadow-color);
+        }
+
+        /* Seletor de Dificuldade */
+        #difficulty-selector-flashcards {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #difficulty-selector-flashcards h3 {
+             margin-top: 0;
+             margin-bottom: 1rem;
+             font-size: 1.2em;
+             color: var(--primary-color);
+        }
+        body.dark-mode #difficulty-selector-flashcards h3 {
+             color: var(--secondary-color);
+         }
+        .difficulty-button-flashcards { /* Classe específica */
+            padding: 8px 15px;
+            margin: 0 5px 10px 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--white-color);
+            color: var(--text-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+        }
+        body.dark-mode .difficulty-button-flashcards {
+             background-color: var(--section-even-bg);
+             border-color: var(--border-color);
+             color: var(--text-color);
+         }
+        .difficulty-button-flashcards.active {
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+            border-color: var(--primary-color);
+            font-weight: bold;
+            transform: scale(1.05);
+        }
+        body.dark-mode .difficulty-button-flashcards.active {
+            background-color: var(--secondary-color);
+            color: var(--button-text-color);
+            border-color: var(--secondary-color);
+        }
+
+        /* Container do Flashcard */
+        .flashcard-container {
+            perspective: 1000px;
+            width: 320px; /* Largura do card */
+            height: 220px; /* Altura do card */
+            margin: 1.5rem auto; /* Centraliza e adiciona espaço */
+        }
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            border-radius: 8px;
+        }
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            overflow: hidden;
+            word-wrap: break-word;
+            border: 1px solid var(--border-color);
+        }
+        .flashcard-front {
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+            font-size: 1.6em; /* Tamanho da fonte da frente */
+            font-weight: bold;
+        }
+        .flashcard-back {
+            background-color: var(--section-odd-bg);
+            color: var(--text-color);
+            transform: rotateY(180deg);
+            font-size: 1.1em; /* Tamanho da fonte do verso */
+        }
+        .flashcard-back img {
+            max-width: 90%;
+            max-height: 70%;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+        }
+
+        /* Contador e Navegação */
+        #card-counter {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-size: 0.95em;
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem; /* Espaço entre botões */
+            margin-top: 1rem;
+        }
+        .nav-button { /* Estilo baseado em .action-button */
+            padding: 10px 20px;
+            font-size: 0.95em;
+            font-weight: 500;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease, opacity 0.3s ease;
+            background-color: var(--secondary-color);
+            color: var(--button-text-color);
+        }
+        body.dark-mode .nav-button {
+             color: var(--button-text-color);
+         }
+        .nav-button:hover:not(:disabled) {
+            background-color: var(--primary-color);
+        }
+        .nav-button:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+        .nav-button:disabled {
+            background-color: var(--text-muted);
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="floating-video"> <div class="video-container"> <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </div> </div>
+    <div id="floating-notepad"> <textarea id="notepad-area" placeholder="Suas anotações..."></textarea> </div>
+    <div id="floating-chat"> <div id="chatbox"> <div id="chatOutput"> <div class="message bot-message">Olá! Eu sou o George. Como posso ajudar com seu inglês hoje?</div> </div> <div id="chatInputContainer"> <input type="text" id="chatInput" placeholder="Digite sua dúvida aqui..." autocomplete="off"> <button id="sendButton">Enviar</button> </div> </div> </div>
+    <div class="container">
+        <header class="lesson-header">
+            <h1>Jogo: Flashcards</h1>
+            <div class="header-controls">
+                <a href="index.html" id="home-index-btn" title="Voltar ao Índice"><i class="fas fa-home"></i></a>
+                <a href="index.html#games-section" id="prev-lesson-btn" title="Voltar aos Jogos"><i class="fas fa-arrow-left"></i></a>
+                <a href="index.html#games-section" id="next-lesson-btn" title="Voltar aos Jogos"><i class="fas fa-arrow-right"></i></a>
+                <button id="theme-toggle-btn" title="Alternar Modo Claro/Escuro"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+                <button id="video-toggle-btn" title="Mostrar/Esconder Vídeo"><i class="fas fa-video"></i></button>
+                <button id="notepad-toggle-btn" title="Mostrar/Esconder Bloco de Notas"><i class="fas fa-pencil-alt"></i></button>
+                <button id="chat-toggle-btn" title="Abrir Chat"><i class="fas fa-robot"></i></button>
+            </div>
+        </header>
+        <main class="lesson-content">
+
+            <div id="game-container-flashcards">
+
+                 <div id="difficulty-selector-flashcards">
+                    <h3>Escolha a Dificuldade:</h3>
+                    <button class="difficulty-button-flashcards active" data-difficulty="1">Nível 1</button>
+                    <button class="difficulty-button-flashcards" data-difficulty="2">Nível 2</button>
+                    <button class="difficulty-button-flashcards" data-difficulty="3">Nível 3</button>
+                    <button class="difficulty-button-flashcards" data-difficulty="4">Nível 4</button>
+                    <button class="difficulty-button-flashcards" data-difficulty="5">Nível 5</button>
+                </div>
+
+                <div id="flashcard-container" class="flashcard-container">
+                    <div id="flashcard" class="flashcard">
+                        <div id="flashcard-front" class="flashcard-face flashcard-front">
+                            </div>
+                        <div id="flashcard-back" class="flashcard-face flashcard-back">
+                            </div>
+                    </div>
+                </div>
+
+                <div id="card-counter" class="card-counter">
+                    Card 1 / N
+                </div>
+
+                <div class="navigation-buttons">
+                    <button id="prev-button" class="nav-button"><i class="fas fa-chevron-left"></i> Anterior</button>
+                    <button id="next-button" class="nav-button">Próximo <i class="fas fa-chevron-right"></i></button>
+                </div>
+
+            </div> </main> </div> <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Lógica do Tema e Painéis Flutuantes ---
+            // ... (código mantido igual ao anterior) ...
+             const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            const notepadToggleBtn = document.getElementById('notepad-toggle-btn');
+            const videoToggleBtn = document.getElementById('video-toggle-btn');
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            const floatingNotepad = document.getElementById('floating-notepad');
+            const floatingVideo = document.getElementById('floating-video');
+            const floatingChat = document.getElementById('floating-chat');
+            const notepadArea = document.getElementById('notepad-area');
+            const notepadStorageKey = 'notepadContent_flashcards_game'; // Chave específica
+
+            const applyTheme = (theme) => { if (theme === 'dark') { document.body.classList.add('dark-mode'); } else { document.body.classList.remove('dark-mode'); } };
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(currentTheme);
+            if (themeToggleBtn) { themeToggleBtn.addEventListener('click', () => { const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark'; applyTheme(newTheme); localStorage.setItem('theme', newTheme); }); }
+            const savedNotepadContent = localStorage.getItem(notepadStorageKey);
+            if (savedNotepadContent && notepadArea) { notepadArea.value = savedNotepadContent; }
+            if (notepadArea) { notepadArea.addEventListener('input', () => { localStorage.setItem(notepadStorageKey, notepadArea.value); }); }
+            const setupPanelToggle = (button, panelElement, bodyClass) => { if (button && panelElement) { button.addEventListener('click', () => { document.body.classList.toggle(bodyClass); button.classList.toggle('active'); if (bodyClass === 'chat-visible' && document.body.classList.contains(bodyClass)) { const chatInput = document.querySelector('#floating-chat #chatInput'); if (chatInput) setTimeout(() => chatInput.focus(), 50); } }); } };
+            setupPanelToggle(notepadToggleBtn, floatingNotepad, 'notepad-visible');
+            setupPanelToggle(videoToggleBtn, floatingVideo, 'video-visible');
+            setupPanelToggle(chatToggleBtn, floatingChat, 'chat-visible');
+            const chatInput = document.getElementById('chatInput');
+            const chatOutput = document.getElementById('chatOutput');
+            const sendButton = document.getElementById('sendButton');
+            const WORKER_URL = 'https://george.jorgehsantonio.workers.dev/';
+            if (chatInput && chatOutput && sendButton) { function addMessage(message, className) { const messageDiv = document.createElement('div'); messageDiv.classList.add('message', className); messageDiv.textContent = message; chatOutput.appendChild(messageDiv); messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' }); return messageDiv; } async function sendMessageToWorker() { const userMessage = chatInput.value.trim(); if (!userMessage) return; addMessage(userMessage, 'user-message'); chatInput.value = ''; chatInput.focus(); const typingDiv = addMessage("George está digitando...", "typing-indicator"); chatInput.disabled = true; sendButton.disabled = true; try { const response = await fetch(WORKER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ message: userMessage }), }); if (typingDiv && chatOutput.contains(typingDiv)) typingDiv.remove(); if (!response.ok) { let errorText = `Erro ${response.status}: ${response.statusText}`; try { const errorData = await response.json(); errorText = `Erro do George: ${errorData.error || errorText}`; } catch (e) { /* Ignora */ } addMessage(errorText, 'error-message'); } else { const data = await response.json(); if (data.reply) { addMessage(data.reply, 'bot-message'); } else if (data.error) { addMessage(`Erro do George: ${data.error}`, 'error-message'); } else { addMessage(`George: Resposta inesperada.`, 'error-message'); } } } catch (error) { console.error('Erro ao enviar mensagem:', error); if (typingDiv && chatOutput.contains(typingDiv)) { typingDiv.remove(); } addMessage(`Erro de comunicação. Verifique sua conexão.`, 'error-message'); } finally { chatInput.disabled = false; sendButton.disabled = false; chatInput.focus(); } } sendButton.addEventListener('click', sendMessageToWorker); chatInput.addEventListener('keypress', function(event) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessageToWorker(); } }); } else { console.warn("Elementos do chat flutuante não encontrados."); }
+
+
+            // --- Lógica Específica do Jogo Flashcards ---
+
+            // Conjuntos de Flashcards por Dificuldade
+            const flashcardSets = {
+                1: [ // Básico: Saudações, Sim/Não, Cores simples
+                    { frontType: 'text', frontContent: 'Hello', backType: 'text', backContent: 'Olá / Oi' },
+                    { frontType: 'text', frontContent: 'Goodbye', backType: 'text', backContent: 'Adeus / Tchau' },
+                    { frontType: 'text', frontContent: 'Yes', backType: 'text', backContent: 'Sim' },
+                    { frontType: 'text', frontContent: 'No', backType: 'text', backContent: 'Não' },
+                    { frontType: 'text', frontContent: 'Red', backType: 'text', backContent: 'Vermelho' },
+                    { frontType: 'text', frontContent: 'Blue', backType: 'text', backContent: 'Azul' },
+                    { frontType: 'text', frontContent: 'Dog', backType: 'image', backContent: 'https://placehold.co/150x100/aabbcc/000?text=Dog', backDescription: 'Cachorro' },
+                    { frontType: 'text', frontContent: 'Cat', backType: 'image', backContent: 'https://placehold.co/150x100/ccbbaa/000?text=Cat', backDescription: 'Gato' },
+                ],
+                2: [ // Comida, Família, Dias da Semana
+                    { frontType: 'text', frontContent: 'Apple', backType: 'text', backContent: 'Maçã' },
+                    { frontType: 'text', frontContent: 'Bread', backType: 'text', backContent: 'Pão' },
+                    { frontType: 'text', frontContent: 'Water', backType: 'text', backContent: 'Água' },
+                    { frontType: 'text', frontContent: 'Mother', backType: 'text', backContent: 'Mãe' },
+                    { frontType: 'text', frontContent: 'Father', backType: 'text', backContent: 'Pai' },
+                    { frontType: 'text', frontContent: 'Monday', backType: 'text', backContent: 'Segunda-feira' },
+                    { frontType: 'text', frontContent: 'Tuesday', backType: 'text', backContent: 'Terça-feira' },
+                    { frontType: 'text', frontContent: 'House', backType: 'image', backContent: 'https://placehold.co/150x100/d3d3d3/000?text=House', backDescription: 'Casa' },
+                    { frontType: 'text', frontContent: 'Car', backType: 'image', backContent: 'https://placehold.co/150x100/ffccdd/000?text=Car', backDescription: 'Carro' },
+                ],
+                3: [ // Verbos comuns, Lugares, Roupas
+                    { frontType: 'text', frontContent: 'Eat', backType: 'text', backContent: 'Comer' },
+                    { frontType: 'text', frontContent: 'Drink', backType: 'text', backContent: 'Beber' },
+                    { frontType: 'text', frontContent: 'Sleep', backType: 'text', backContent: 'Dormir' },
+                    { frontType: 'text', frontContent: 'School', backType: 'text', backContent: 'Escola' },
+                    { frontType: 'text', frontContent: 'Park', backType: 'text', backContent: 'Parque' },
+                    { frontType: 'text', frontContent: 'Shirt', backType: 'text', backContent: 'Camisa' },
+                    { frontType: 'text', frontContent: 'Shoes', backType: 'text', backContent: 'Sapatos' },
+                    { frontType: 'text', frontContent: 'Tree', backType: 'image', backContent: 'https://placehold.co/150x100/90ee90/000?text=Tree', backDescription: 'Árvore' },
+                    { frontType: 'text', frontContent: 'Book', backType: 'image', backContent: 'https://placehold.co/150x100/deb887/000?text=Book', backDescription: 'Livro' },
+                ],
+                4: [ // Adjetivos, Verbos mais complexos, Meses
+                    { frontType: 'text', frontContent: 'Happy', backType: 'text', backContent: 'Feliz' },
+                    { frontType: 'text', frontContent: 'Sad', backType: 'text', backContent: 'Triste' },
+                    { frontType: 'text', frontContent: 'Big', backType: 'text', backContent: 'Grande' },
+                    { frontType: 'text', frontContent: 'Small', backType: 'text', backContent: 'Pequeno(a)' },
+                    { frontType: 'text', frontContent: 'Study', backType: 'text', backContent: 'Estudar' },
+                    { frontType: 'text', frontContent: 'Write', backType: 'text', backContent: 'Escrever' },
+                    { frontType: 'text', frontContent: 'Listen', backType: 'text', backContent: 'Ouvir / Escutar' },
+                    { frontType: 'text', frontContent: 'January', backType: 'text', backContent: 'Janeiro' },
+                    { frontType: 'text', frontContent: 'February', backType: 'text', backContent: 'Fevereiro' },
+                    { frontType: 'text', frontContent: 'Computer', backType: 'image', backContent: 'https://placehold.co/150x100/d3d3d3/000?text=PC', backDescription: 'Computador' },
+                ],
+                5: [ // Vocabulário mais abstrato, Advérbios, Verbos irregulares
+                    { frontType: 'text', frontContent: 'Beautiful', backType: 'text', backContent: 'Bonito(a)' },
+                    { frontType: 'text', frontContent: 'Interesting', backType: 'text', backContent: 'Interessante' },
+                    { frontType: 'text', frontContent: 'Difficult', backType: 'text', backContent: 'Difícil' },
+                    { frontType: 'text', frontContent: 'Always', backType: 'text', backContent: 'Sempre' },
+                    { frontType: 'text', frontContent: 'Sometimes', backType: 'text', backContent: 'Às vezes' },
+                    { frontType: 'text', frontContent: 'Never', backType: 'text', backContent: 'Nunca' },
+                    { frontType: 'text', frontContent: 'Understand', backType: 'text', backContent: 'Entender' },
+                    { frontType: 'text', frontContent: 'Remember', backType: 'text', backContent: 'Lembrar' },
+                    { frontType: 'text', frontContent: 'Vocabulary', backType: 'text', backContent: 'Vocabulário' },
+                    { frontType: 'text', frontContent: 'Grammar', backType: 'text', backContent: 'Gramática' },
+                    { frontType: 'text', frontContent: 'Language', backType: 'image', backContent: 'https://placehold.co/150x100/87ceeb/000?text=Lang', backDescription: 'Idioma' },
+                ]
+            };
+
+            // Elementos do DOM do Jogo
+            const flashcardContainer = document.getElementById('flashcard-container');
+            const flashcard = document.getElementById('flashcard');
+            const flashcardFront = document.getElementById('flashcard-front');
+            const flashcardBack = document.getElementById('flashcard-back');
+            const prevButton = document.getElementById('prev-button');
+            const nextButton = document.getElementById('next-button');
+            const cardCounter = document.getElementById('card-counter');
+            const difficultyButtonsFlashcards = document.querySelectorAll('.difficulty-button-flashcards'); // Classe específica
+
+            // Variáveis de Estado
+            let currentDifficulty = 1; // Dificuldade inicial
+            let currentCardSet = []; // Conjunto de cards atual
+            let currentCardIndex = 0;
+            let isFlipped = false;
+
+            // Função para renderizar face do card
+            function renderFace(element, type, content, description = '') {
+                element.innerHTML = '';
+                if (type === 'text') {
+                    const textSpan = document.createElement('span');
+                    textSpan.textContent = content;
+                    element.appendChild(textSpan);
+                } else if (type === 'image') {
+                    const img = document.createElement('img');
+                    img.src = content;
+                    img.alt = description || 'Flashcard Image';
+                    img.onerror = () => {
+                        element.innerHTML = '';
+                        const errorSpan = document.createElement('span');
+                        errorSpan.textContent = description || 'Erro Imagem';
+                        errorSpan.style.color = 'var(--danger-color)';
+                        errorSpan.style.fontSize = '0.8em';
+                        element.appendChild(errorSpan);
+                    };
+                    element.appendChild(img);
+                    if (description) {
+                        const descSpan = document.createElement('span');
+                        descSpan.textContent = description;
+                        descSpan.style.fontSize = '0.8em';
+                        descSpan.style.marginTop = '5px';
+                        descSpan.style.color = 'var(--text-muted)';
+                        element.appendChild(descSpan);
+                    }
+                }
+            }
+
+            // Função para exibir um card específico do conjunto atual
+            function showCard(index) {
+                if (!currentCardSet || currentCardSet.length === 0) {
+                    flashcardFront.textContent = 'Nenhum card.';
+                    flashcardBack.textContent = '';
+                    cardCounter.textContent = 'Card 0 / 0';
+                    prevButton.disabled = true;
+                    nextButton.disabled = true;
+                    return;
+                }
+                if (index < 0 || index >= currentCardSet.length) {
+                    return; // Índice inválido
+                }
+                currentCardIndex = index;
+                const cardData = currentCardSet[currentCardIndex];
+
+                renderFace(flashcardFront, cardData.frontType, cardData.frontContent);
+                renderFace(flashcardBack, cardData.backType, cardData.backContent, cardData.backDescription);
+
+                isFlipped = false;
+                flashcard.classList.remove('flipped');
+
+                cardCounter.textContent = `Card ${currentCardIndex + 1} / ${currentCardSet.length}`;
+                prevButton.disabled = currentCardIndex === 0;
+                nextButton.disabled = currentCardIndex === currentCardSet.length - 1;
+            }
+
+            // Função para virar o card
+            function flipCard() {
+                if (!currentCardSet || currentCardSet.length === 0) return; // Não vira se não houver cards
+                isFlipped = !isFlipped;
+                flashcard.classList.toggle('flipped');
+            }
+
+            // Função para ir para o próximo card
+            function nextCard() {
+                if (currentCardIndex < currentCardSet.length - 1) {
+                    showCard(currentCardIndex + 1);
+                }
+            }
+
+            // Função para ir para o card anterior
+            function prevCard() {
+                if (currentCardIndex > 0) {
+                    showCard(currentCardIndex - 1);
+                }
+            }
+
+             // Função para mudar a dificuldade
+             function changeDifficulty(newDifficulty) {
+                 currentDifficulty = parseInt(newDifficulty, 10);
+                 currentCardSet = flashcardSets[currentDifficulty] || flashcardSets[1]; // Pega o conjunto ou padrão
+                 // Atualiza o botão ativo visualmente
+                 difficultyButtonsFlashcards.forEach(btn => {
+                     btn.classList.toggle('active', btn.dataset.difficulty == currentDifficulty);
+                 });
+                 console.log("Dificuldade dos Flashcards alterada para:", currentDifficulty);
+                 showCard(0); // Mostra o primeiro card do novo conjunto
+             }
+
+            // --- Event Listeners ---
+            flashcardContainer.addEventListener('click', flipCard);
+            nextButton.addEventListener('click', nextCard);
+            prevButton.addEventListener('click', prevCard);
+
+            // Adiciona listeners para os botões de dificuldade
+             difficultyButtonsFlashcards.forEach(button => {
+                 button.addEventListener('click', () => {
+                     changeDifficulty(button.dataset.difficulty);
+                 });
+             });
+
+            // --- Inicialização ---
+            changeDifficulty(currentDifficulty); // Exibe o primeiro card do nível padrão ao carregar
+
+        }); // Fim do DOMContentLoaded
+    </script>
+
+</body>
+</html>

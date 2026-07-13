@@ -1,0 +1,2981 @@
+{
+	"i": {
+        "searchKey": "i",
+        "displayKey": "I",
+        "hanzi": "我",
+        "pinyin": "wǒ",
+        "category": "Personal Pronoun",
+        "example": {
+            "en_full_grammatical": "I am a student.",
+            "cn": "我是学生。",
+            "py": "wǒ shì xuésheng.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "student", "cn": "学生", "py": "xuésheng", "color": "bg-red-100", "searchKey": "student" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "we": {
+        "searchKey": "we",
+        "displayKey": "we",
+        "hanzi": "我们",
+        "pinyin": "wǒmen",
+        "category": "Personal Pronoun",
+        "example": {
+            "en_full_grammatical": "We are friends.",
+            "cn": "我们是朋友。",
+            "py": "wǒmen shì péngyǒu.",
+            "segments": [
+                { "en_lit": "we", "cn": "我们", "py": "wǒmen", "color": "bg-yellow-100", "searchKey": "we" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "friend(s)", "cn": "朋友", "py": "péngyǒu", "color": "bg-purple-100", "searchKey": "friend" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "you": {
+        "searchKey": "you",
+        "displayKey": "you (singular)",
+        "hanzi": "你",
+        "pinyin": "nǐ",
+        "category": "Personal Pronoun",
+        "example": {
+            "en_full_grammatical": "How are you?",
+            "cn": "你好吗？",
+            "py": "nǐ hǎo ma?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "good", "cn": "好", "py": "hǎo", "color": "bg-blue-100", "searchKey": "good" },
+                { "en_lit": "(question particle)", "cn": "吗", "py": "ma", "color": "bg-orange-100", "searchKey": "ma_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "he": {
+        "searchKey": "he",
+        "displayKey": "he",
+        "hanzi": "他",
+        "pinyin": "tā",
+        "category": "Personal Pronoun",
+        "example": {
+            "en_full_grammatical": "He is a doctor.",
+            "cn": "他是医生。",
+            "py": "tā shì yīshēng.",
+            "segments": [
+                { "en_lit": "he", "cn": "他", "py": "tā", "color": "bg-teal-100", "searchKey": "he" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "doctor", "cn": "医生", "py": "yīshēng", "color": "bg-indigo-100", "searchKey": "doctor" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "she": {
+        "searchKey": "she",
+        "displayKey": "she",
+        "hanzi": "她",
+        "pinyin": "tā",
+        "category": "Personal Pronoun",
+        "example": {
+            "en_full_grammatical": "She likes cats.",
+            "cn": "她喜欢猫。",
+            "py": "tā xǐhuan māo.",
+            "segments": [
+                { "en_lit": "she", "cn": "她", "py": "tā", "color": "bg-sky-100", "searchKey": "she" },
+                { "en_lit": "like", "cn": "喜欢", "py": "xǐhuan", "color": "bg-green-100", "searchKey": "like" },
+                { "en_lit": "cat(s)", "cn": "猫", "py": "māo", "color": "bg-red-100", "searchKey": "cat" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "this": {
+        "searchKey": "this",
+        "displayKey": "this",
+        "hanzi": "这",
+        "pinyin": "zhè",
+        "category": "Demonstrative Pronoun",
+        "example": {
+            "en_full_grammatical": "This is an apple.",
+            "cn": "这是苹果。",
+            "py": "zhè shì píngguǒ.",
+            "segments": [
+                { "en_lit": "this", "cn": "这", "py": "zhè", "color": "bg-yellow-100", "searchKey": "this" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "apple", "cn": "苹果", "py": "píngguǒ", "color": "bg-purple-100", "searchKey": "apple" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "here": {
+        "searchKey": "here",
+        "displayKey": "here",
+        "hanzi": "这儿",
+        "pinyin": "zhèr",
+        "category": "Demonstrative Pronoun",
+        "example": {
+            "en_full_grammatical": "I am here.",
+            "cn": "我在这儿。",
+            "py": "wǒ zài zhèr.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "be at/in/on", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "at_in_on" },
+                { "en_lit": "here", "cn": "这儿", "py": "zhèr", "color": "bg-blue-100", "searchKey": "here" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "that": {
+        "searchKey": "that",
+        "displayKey": "that",
+        "hanzi": "那",
+        "pinyin": "nà",
+        "category": "Demonstrative Pronoun",
+        "example": {
+            "en_full_grammatical": "That is a book.",
+            "cn": "那是书。",
+            "py": "nà shì shū.",
+            "segments": [
+                { "en_lit": "that", "cn": "那", "py": "nà", "color": "bg-orange-100", "searchKey": "that" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "book", "cn": "书", "py": "shū", "color": "bg-teal-100", "searchKey": "book" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "there": {
+        "searchKey": "there",
+        "displayKey": "there",
+        "hanzi": "那儿",
+        "pinyin": "nàr",
+        "category": "Demonstrative Pronoun",
+        "example": {
+            "en_full_grammatical": "He is there.",
+            "cn": "他在那儿。",
+            "py": "tā zài nàr.",
+            "segments": [
+                { "en_lit": "he", "cn": "他", "py": "tā", "color": "bg-teal-100", "searchKey": "he" },
+                { "en_lit": "be at/in/on", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "at_in_on" },
+                { "en_lit": "there", "cn": "那儿", "py": "nàr", "color": "bg-indigo-100", "searchKey": "there" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "which": {
+        "searchKey": "which",
+        "displayKey": "which",
+        "hanzi": "哪",
+        "pinyin": "nǎ",
+        "category": "Interrogative Pronoun",
+        "example": {
+            "en_full_grammatical": "Which country are you from?",
+            "cn": "你是哪国人？",
+            "py": "nǐ shì nǎ guó rén?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "which", "cn": "哪", "py": "nǎ", "color": "bg-sky-100", "searchKey": "which" },
+                { "en_lit": "country", "cn": "国", "py": "guó", "color": "bg-red-100", "searchKey": "country" },
+                { "en_lit": "person", "cn": "人", "py": "rén", "color": "bg-yellow-100", "searchKey": "person" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "where": {
+        "searchKey": "where",
+        "displayKey": "where",
+        "hanzi": "哪儿",
+        "pinyin": "nǎr",
+        "category": "Interrogative Pronoun",
+        "example": {
+            "en_full_grammatical": "Where are you?",
+            "cn": "你在哪儿？",
+            "py": "nǐ zài nǎr?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "be at/in/on", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "at_in_on" },
+                { "en_lit": "where", "cn": "哪儿", "py": "nǎr", "color": "bg-purple-100", "searchKey": "where" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "who": {
+        "searchKey": "who",
+        "displayKey": "who",
+        "hanzi": "谁",
+        "pinyin": "shéi",
+        "category": "Interrogative Pronoun",
+        "example": {
+            "en_full_grammatical": "Who is he?",
+            "cn": "他是谁？",
+            "py": "tā shì shéi?",
+            "segments": [
+                { "en_lit": "he", "cn": "他", "py": "tā", "color": "bg-teal-100", "searchKey": "he" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "who", "cn": "谁", "py": "shéi", "color": "bg-blue-100", "searchKey": "who" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "what": {
+        "searchKey": "what",
+        "displayKey": "what",
+        "hanzi": "什么",
+        "pinyin": "shénme",
+        "category": "Interrogative Pronoun",
+        "example": {
+            "en_full_grammatical": "What is this?",
+            "cn": "这是什么？",
+            "py": "zhè shì shénme?",
+            "segments": [
+                { "en_lit": "this", "cn": "这", "py": "zhè", "color": "bg-yellow-100", "searchKey": "this" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "what", "cn": "什么", "py": "shénme", "color": "bg-orange-100", "searchKey": "what" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "how_many_much": {
+        "searchKey": "how_many_much",
+        "displayKey": "how many/how much",
+        "hanzi": "多少",
+        "pinyin": "duōshao",
+        "category": "Interrogative Pronoun",
+        "example": {
+            "en_full_grammatical": "How much money?",
+            "cn": "多少钱？",
+            "py": "duōshao qián?",
+            "segments": [
+                { "en_lit": "how many/much", "cn": "多少", "py": "duōshao", "color": "bg-teal-100", "searchKey": "how_many_much" },
+                { "en_lit": "money", "cn": "钱", "py": "qián", "color": "bg-indigo-100", "searchKey": "money" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "how_many_jǐ": {
+        "searchKey": "how_many_jǐ",
+        "displayKey": "how many (small number); a few",
+        "hanzi": "几",
+        "pinyin": "jǐ",
+        "category": "Interrogative Pronoun",
+        "example": {
+            "en_full_grammatical": "How many people?",
+            "cn": "几个人？",
+            "py": "jǐ ge rén?",
+            "segments": [
+                { "en_lit": "how many", "cn": "几", "py": "jǐ", "color": "bg-sky-100", "searchKey": "how_many_jǐ" },
+                { "en_lit": "(measure word)", "cn": "个", "py": "gè", "color": "bg-red-100", "searchKey": "ge_mw" },
+                { "en_lit": "person", "cn": "人", "py": "rén", "color": "bg-yellow-100", "searchKey": "person" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "how": {
+        "searchKey": "how",
+        "displayKey": "how",
+        "hanzi": "怎么",
+        "pinyin": "zěnme",
+        "category": "Interrogative Pronoun",
+        "example": {
+            "en_full_grammatical": "How do you go to school?",
+            "cn": "你怎么去学校？",
+            "py": "nǐ zěnme qù xuéxiào?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "how", "cn": "怎么", "py": "zěnme", "color": "bg-green-100", "searchKey": "how" },
+                { "en_lit": "go", "cn": "去", "py": "qù", "color": "bg-purple-100", "searchKey": "go" },
+                { "en_lit": "school", "cn": "学校", "py": "xuéxiào", "color": "bg-blue-100", "searchKey": "school" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "how_is_it": {
+        "searchKey": "how_is_it",
+        "displayKey": "how is it; how about",
+        "hanzi": "怎么样",
+        "pinyin": "zěnmeyàng",
+        "category": "Interrogative Pronoun",
+        "example": {
+            "en_full_grammatical": "How is the weather?",
+            "cn": "天气怎么样？",
+            "py": "tiānqì zěnmeyàng?",
+            "segments": [
+                { "en_lit": "weather", "cn": "天气", "py": "tiānqì", "color": "bg-orange-100", "searchKey": "weather" },
+                { "en_lit": "how is it", "cn": "怎么样", "py": "zěnmeyàng", "color": "bg-teal-100", "searchKey": "how_is_it" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "one": {
+        "searchKey": "one",
+        "displayKey": "one",
+        "hanzi": "一",
+        "pinyin": "yī",
+        "category": "Numeral",
+        "example": {
+            "en_full_grammatical": "One person.",
+            "cn": "一个人。",
+            "py": "yī ge rén.",
+            "segments": [
+                { "en_lit": "one", "cn": "一", "py": "yī", "color": "bg-indigo-100", "searchKey": "one" },
+                { "en_lit": "(measure word)", "cn": "个", "py": "gè", "color": "bg-red-100", "searchKey": "ge_mw" },
+                { "en_lit": "person", "cn": "人", "py": "rén", "color": "bg-yellow-100", "searchKey": "person" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "two": {
+        "searchKey": "two",
+        "displayKey": "two",
+        "hanzi": "二",
+        "pinyin": "èr",
+        "category": "Numeral",
+        "example": {
+            "en_full_grammatical": "Two books.",
+            "cn": "两本书。",
+            "py": "liǎng běn shū.",
+            "segments": [
+                { "en_lit": "two (used with measure words)", "cn": "两", "py": "liǎng", "color": "bg-sky-100", "searchKey": "liang_two" },
+                { "en_lit": "(measure word for books)", "cn": "本", "py": "běn", "color": "bg-green-100", "searchKey": "ben_mw" },
+                { "en_lit": "book", "cn": "书", "py": "shū", "color": "bg-teal-100", "searchKey": "book" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "three": {
+        "searchKey": "three",
+        "displayKey": "three",
+        "hanzi": "三",
+        "pinyin": "sān",
+        "category": "Numeral",
+        "example": {
+            "en_full_grammatical": "Three cups of tea.",
+            "cn": "三杯茶。",
+            "py": "sān bēi chá.",
+            "segments": [
+                { "en_lit": "three", "cn": "三", "py": "sān", "color": "bg-red-100", "searchKey": "three" },
+                { "en_lit": "cup(s) (measure word)", "cn": "杯", "py": "bēi", "color": "bg-yellow-100", "searchKey": "bei_mw" },
+                { "en_lit": "tea", "cn": "茶", "py": "chá", "color": "bg-purple-100", "searchKey": "tea" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "four": {
+        "searchKey": "four",
+        "displayKey": "four",
+        "hanzi": "四",
+        "pinyin": "sì",
+        "category": "Numeral",
+        "example": {
+            "en_full_grammatical": "Four students.",
+            "cn": "四个学生。",
+            "py": "sì ge xuésheng.",
+            "segments": [
+                { "en_lit": "four", "cn": "四", "py": "sì", "color": "bg-pink-100", "searchKey": "four" },
+                { "en_lit": "(measure word)", "cn": "个", "py": "gè", "color": "bg-red-100", "searchKey": "ge_mw" },
+                { "en_lit": "student", "cn": "学生", "py": "xuésheng", "color": "bg-blue-100", "searchKey": "student" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "five": {
+        "searchKey": "five",
+        "displayKey": "five",
+        "hanzi": "五",
+        "pinyin": "wǔ",
+        "category": "Numeral",
+        "example": {
+            "en_full_grammatical": "Five apples.",
+            "cn": "五个苹果。",
+            "py": "wǔ ge píngguǒ.",
+            "segments": [
+                { "en_lit": "five", "cn": "五", "py": "wǔ", "color": "bg-blue-100", "searchKey": "five" },
+                { "en_lit": "(measure word)", "cn": "个", "py": "gè", "color": "bg-red-100", "searchKey": "ge_mw" },
+                { "en_lit": "apple", "cn": "苹果", "py": "píngguǒ", "color": "bg-purple-100", "searchKey": "apple" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "six": {
+        "searchKey": "six",
+        "displayKey": "six",
+        "hanzi": "六",
+        "pinyin": "liù",
+        "category": "Numeral",
+        "example": {
+            "en_full_grammatical": "Six years old.",
+            "cn": "六岁。",
+            "py": "liù suì.",
+            "segments": [
+                { "en_lit": "six", "cn": "六", "py": "liù", "color": "bg-orange-100", "searchKey": "six" },
+                { "en_lit": "year(s) of age", "cn": "岁", "py": "suì", "color": "bg-teal-100", "searchKey": "sui_mw" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "seven": {
+        "searchKey": "seven",
+        "displayKey": "seven",
+        "hanzi": "七",
+        "pinyin": "qī",
+        "category": "Numeral",
+        "example": {
+            "en_full_grammatical": "Seven days.",
+            "cn": "七天。",
+            "py": "qī tiān.",
+            "segments": [
+                { "en_lit": "seven", "cn": "七", "py": "qī", "color": "bg-indigo-100", "searchKey": "seven" },
+                { "en_lit": "day", "cn": "天", "py": "tiān", "color": "bg-sky-100", "searchKey": "day" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "eight": {
+        "searchKey": "eight",
+        "displayKey": "eight",
+        "hanzi": "八",
+        "pinyin": "bā",
+        "category": "Numeral",
+        "example": {
+            "en_full_grammatical": "Eight o'clock.",
+            "cn": "八点。",
+            "py": "bā diǎn.",
+            "segments": [
+                { "en_lit": "eight", "cn": "八", "py": "bā", "color": "bg-green-100", "searchKey": "eight" },
+                { "en_lit": "o'clock/dot", "cn": "点", "py": "diǎn", "color": "bg-red-100", "searchKey": "oclock" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "nine": {
+        "searchKey": "nine",
+        "displayKey": "nine",
+        "hanzi": "九",
+        "pinyin": "jiǔ",
+        "category": "Numeral",
+        "example": {
+            "en_full_grammatical": "Nine dogs.",
+            "cn": "九只狗。",
+            "py": "jiǔ zhī gǒu.",
+            "segments": [
+                { "en_lit": "nine", "cn": "九", "py": "jiǔ", "color": "bg-yellow-100", "searchKey": "nine" },
+                { "en_lit": "(measure word for animals)", "cn": "只", "py": "zhī", "color": "bg-purple-100", "searchKey": "zhi_mw" },
+                { "en_lit": "dog", "cn": "狗", "py": "gǒu", "color": "bg-pink-100", "searchKey": "dog" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "ten": {
+        "searchKey": "ten",
+        "displayKey": "ten",
+        "hanzi": "十",
+        "pinyin": "shí",
+        "category": "Numeral",
+        "example": {
+            "en_full_grammatical": "Ten pieces of_money (yuan).",
+            "cn": "十块钱。",
+            "py": "shí kuài qián.",
+            "segments": [
+                { "en_lit": "ten", "cn": "十", "py": "shí", "color": "bg-blue-100", "searchKey": "ten" },
+                { "en_lit": "piece (measure for money)", "cn": "块", "py": "kuài", "color": "bg-orange-100", "searchKey": "kuai_mw" },
+                { "en_lit": "money", "cn": "钱", "py": "qián", "color": "bg-indigo-100", "searchKey": "money" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "ge_mw": {
+        "searchKey": "ge_mw",
+        "displayKey": "个 (general measure word)",
+        "hanzi": "个",
+        "pinyin": "gè",
+        "category": "Measure Word",
+        "example": {
+            "en_full_grammatical": "I have one older brother.",
+            "cn": "我有一个哥哥。",
+            "py": "wǒ yǒu yī gè gēge.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "have", "cn": "有", "py": "yǒu", "color": "bg-green-100", "searchKey": "have" },
+                { "en_lit": "one", "cn": "一", "py": "yī", "color": "bg-red-100", "searchKey": "one" },
+                { "en_lit": "(measure word)", "cn": "个", "py": "gè", "color": "bg-yellow-100", "searchKey": "ge_mw" },
+                { "en_lit": "older brother", "cn": "哥哥", "py": "gēge", "color": "bg-purple-100", "searchKey": "older_brother" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "sui_mw": {
+        "searchKey": "sui_mw",
+        "displayKey": "岁 (year of age)",
+        "hanzi": "岁",
+        "pinyin": "suì",
+        "category": "Measure Word",
+        "example": {
+            "en_full_grammatical": "He is five years old.",
+            "cn": "他五岁。",
+            "py": "tā wǔ suì.",
+            "segments": [
+                { "en_lit": "he", "cn": "他", "py": "tā", "color": "bg-teal-100", "searchKey": "he" },
+                { "en_lit": "five", "cn": "五", "py": "wǔ", "color": "bg-blue-100", "searchKey": "five" },
+                { "en_lit": "year(s) of age", "cn": "岁", "py": "suì", "color": "bg-pink-100", "searchKey": "sui_mw" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "ben_mw": {
+        "searchKey": "ben_mw",
+        "displayKey": "本 (measure word for books)",
+        "hanzi": "本",
+        "pinyin": "běn",
+        "category": "Measure Word",
+        "example": {
+            "en_full_grammatical": "This is one book.",
+            "cn": "这是一本书。",
+            "py": "zhè shì yī běn shū.",
+            "segments": [
+                { "en_lit": "this", "cn": "这", "py": "zhè", "color": "bg-yellow-100", "searchKey": "this" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "one", "cn": "一", "py": "yī", "color": "bg-red-100", "searchKey": "one" },
+                { "en_lit": "(measure word for books)", "cn": "本", "py": "běn", "color": "bg-orange-100", "searchKey": "ben_mw" },
+                { "en_lit": "book", "cn": "书", "py": "shū", "color": "bg-teal-100", "searchKey": "book" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "xie_mw": {
+        "searchKey": "xie_mw",
+        "displayKey": "些 (some, a few)",
+        "hanzi": "些",
+        "pinyin": "xiē",
+        "category": "Measure Word",
+        "example": {
+            "en_full_grammatical": "I want some apples.",
+            "cn": "我想要些苹果。",
+            "py": "wǒ xiǎng yào xiē píngguǒ.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "want/think", "cn": "想", "py": "xiǎng", "color": "bg-green-100", "searchKey": "want_think" },
+                { "en_lit": "want/need", "cn": "要", "py": "yào", "color": "bg-red-100", "searchKey": "want_need" },
+                { "en_lit": "some", "cn": "些", "py": "xiē", "color": "bg-yellow-100", "searchKey": "xie_mw" },
+                { "en_lit": "apple(s)", "cn": "苹果", "py": "píngguǒ", "color": "bg-purple-100", "searchKey": "apple" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "kuai_mw": {
+        "searchKey": "kuai_mw",
+        "displayKey": "块 (piece; currency unit)",
+        "hanzi": "块",
+        "pinyin": "kuài",
+        "category": "Measure Word",
+        "example": {
+            "en_full_grammatical": "This piece of bread.",
+            "cn": "这块面包。",
+            "py": "zhè kuài miànbāo.",
+            "segments": [
+                { "en_lit": "this", "cn": "这", "py": "zhè", "color": "bg-yellow-100", "searchKey": "this" },
+                { "en_lit": "piece (measure word)", "cn": "块", "py": "kuài", "color": "bg-pink-100", "searchKey": "kuai_mw" },
+                { "en_lit": "bread", "cn": "面包", "py": "miànbāo", "color": "bg-blue-100", "searchKey": "bread" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "not_bu": {
+        "searchKey": "not_bu",
+        "displayKey": "不 (no, not)",
+        "hanzi": "不",
+        "pinyin": "bù",
+        "category": "Adverb",
+        "example": {
+            "en_full_grammatical": "I am not a teacher.",
+            "cn": "我不是老师。",
+            "py": "wǒ bù shì lǎoshī.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "not", "cn": "不", "py": "bù", "color": "bg-orange-100", "searchKey": "not_bu" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "teacher", "cn": "老师", "py": "lǎoshī", "color": "bg-teal-100", "searchKey": "teacher" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "not_mei": {
+        "searchKey": "not_mei",
+        "displayKey": "没 (not; for past actions with 有)",
+        "hanzi": "没",
+        "pinyin": "méi",
+        "category": "Adverb",
+        "example": {
+            "en_full_grammatical": "I didn't go.",
+            "cn": "我没去。",
+            "py": "wǒ méi qù.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "not (past)", "cn": "没", "py": "méi", "color": "bg-indigo-100", "searchKey": "not_mei" },
+                { "en_lit": "go", "cn": "去", "py": "qù", "color": "bg-purple-100", "searchKey": "go" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "very": {
+        "searchKey": "very",
+        "displayKey": "很 (very)",
+        "hanzi": "很",
+        "pinyin": "hěn",
+        "category": "Adverb",
+        "example": {
+            "en_full_grammatical": "She is very happy.",
+            "cn": "她很高兴。",
+            "py": "tā hěn gāoxìng.",
+            "segments": [
+                { "en_lit": "she", "cn": "她", "py": "tā", "color": "bg-sky-100", "searchKey": "she" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-green-100", "searchKey": "very" },
+                { "en_lit": "happy", "cn": "高兴", "py": "gāoxìng", "color": "bg-red-100", "searchKey": "happy" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "too": {
+        "searchKey": "too",
+        "displayKey": "太 (too, excessively)",
+        "hanzi": "太",
+        "pinyin": "tài",
+        "category": "Adverb",
+        "example": {
+            "en_full_grammatical": "This is too expensive!",
+            "cn": "这个太贵了！",
+            "py": "zhège tài guì le!",
+            "segments": [
+                { "en_lit": "this (one)", "cn": "这个", "py": "zhège", "color": "bg-yellow-100", "searchKey": "this_one" },
+                { "en_lit": "too", "cn": "太", "py": "tài", "color": "bg-purple-100", "searchKey": "too" },
+                { "en_lit": "expensive", "cn": "贵", "py": "guì", "color": "bg-pink-100", "searchKey": "expensive" },
+                { "en_lit": "(particle for emphasis/change)", "cn": "了", "py": "le", "color": "bg-blue-100", "searchKey": "le_particle" },
+                { "en_lit": "!", "cn": "！", "py": "!", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "all_both": {
+        "searchKey": "all_both",
+        "displayKey": "都 (all, both)",
+        "hanzi": "都",
+        "pinyin": "dōu",
+        "category": "Adverb",
+        "example": {
+            "en_full_grammatical": "We all are students.",
+            "cn": "我们都是学生。",
+            "py": "wǒmen dōu shì xuésheng.",
+            "segments": [
+                { "en_lit": "we", "cn": "我们", "py": "wǒmen", "color": "bg-yellow-100", "searchKey": "we" },
+                { "en_lit": "all", "cn": "都", "py": "dōu", "color": "bg-orange-100", "searchKey": "all_both" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "student(s)", "cn": "学生", "py": "xuésheng", "color": "bg-red-100", "searchKey": "student" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "a_little": {
+        "searchKey": "a_little",
+        "displayKey": "一点儿 (a little bit)",
+        "hanzi": "一点儿",
+        "pinyin": "yìdiǎnr",
+        "category": "Adverb",
+        "example": {
+            "en_full_grammatical": "I can speak a little Chinese.",
+            "cn": "我会说一点儿汉语。",
+            "py": "wǒ huì shuō yìdiǎnr Hànyǔ.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "can/know how to", "cn": "会", "py": "huì", "color": "bg-teal-100", "searchKey": "can_know_how_to" },
+                { "en_lit": "speak", "cn": "说", "py": "shuō", "color": "bg-indigo-100", "searchKey": "speak" },
+                { "en_lit": "a little bit", "cn": "一点儿", "py": "yìdiǎnr", "color": "bg-sky-100", "searchKey": "a_little" },
+                { "en_lit": "Chinese language", "cn": "汉语", "py": "Hànyǔ", "color": "bg-green-100", "searchKey": "chinese_language" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "and": {
+        "searchKey": "and",
+        "displayKey": "和 (and)",
+        "hanzi": "和",
+        "pinyin": "hé",
+        "category": "Conjunction",
+        "example": {
+            "en_full_grammatical": "I like tea and coffee.",
+            "cn": "我喜欢茶和咖啡。",
+            "py": "wǒ xǐhuan chá hé kāfēi.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "like", "cn": "喜欢", "py": "xǐhuan", "color": "bg-green-100", "searchKey": "like" },
+                { "en_lit": "tea", "cn": "茶", "py": "chá", "color": "bg-red-100", "searchKey": "tea" },
+                { "en_lit": "and", "cn": "和", "py": "hé", "color": "bg-yellow-100", "searchKey": "and" },
+                { "en_lit": "coffee", "cn": "咖啡", "py": "kāfēi", "color": "bg-purple-100", "searchKey": "coffee" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "zai_prep": {
+        "searchKey": "zai_prep",
+        "displayKey": "在 (in, at, on)",
+        "hanzi": "在",
+        "pinyin": "zài",
+        "category": "Preposition",
+        "example": {
+            "en_full_grammatical": "The book is on the table.",
+            "cn": "书在桌子上。",
+            "py": "shū zài zhuōzi shang.",
+            "segments": [
+                { "en_lit": "book", "cn": "书", "py": "shū", "color": "bg-teal-100", "searchKey": "book" },
+                { "en_lit": "be at/in/on", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_prep" },
+                { "en_lit": "table", "cn": "桌子", "py": "zhuōzi", "color": "bg-blue-100", "searchKey": "table" },
+                { "en_lit": "on top of", "cn": "上", "py": "shang", "color": "bg-orange-100", "searchKey": "on_top_of" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "de_particle": {
+        "searchKey": "de_particle",
+        "displayKey": "的 (possessive/attributive particle)",
+        "hanzi": "的",
+        "pinyin": "de",
+        "category": "Auxiliary Particle",
+        "example": {
+            "en_full_grammatical": "My book.",
+            "cn": "我的书。",
+            "py": "wǒ de shū.",
+            "segments": [
+                { "en_lit": "I/my", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "(possessive particle)", "cn": "的", "py": "de", "color": "bg-teal-100", "searchKey": "de_particle" },
+                { "en_lit": "book", "cn": "书", "py": "shū", "color": "bg-indigo-100", "searchKey": "book" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "le_particle": {
+        "searchKey": "le_particle",
+        "displayKey": "了 (completed action/change of state particle)",
+        "hanzi": "了",
+        "pinyin": "le",
+        "category": "Auxiliary Particle",
+        "example": {
+            "en_full_grammatical": "I ate.",
+            "cn": "我吃了。",
+            "py": "wǒ chī le.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "eat", "cn": "吃", "py": "chī", "color": "bg-green-100", "searchKey": "eat" },
+                { "en_lit": "(completed action particle)", "cn": "了", "py": "le", "color": "bg-blue-100", "searchKey": "le_particle" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "ma_particle": {
+        "searchKey": "ma_particle",
+        "displayKey": "吗 (yes/no question particle)",
+        "hanzi": "吗",
+        "pinyin": "ma",
+        "category": "Auxiliary Particle",
+        "example": {
+            "en_full_grammatical": "Are you okay?",
+            "cn": "你好吗？",
+            "py": "nǐ hǎo ma?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "good/okay", "cn": "好", "py": "hǎo", "color": "bg-blue-100", "searchKey": "good" },
+                { "en_lit": "(question particle)", "cn": "吗", "py": "ma", "color": "bg-orange-100", "searchKey": "ma_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "ne_particle": {
+        "searchKey": "ne_particle",
+        "displayKey": "呢 (question particle for follow-up/location; ongoing action)",
+        "hanzi": "呢",
+        "pinyin": "ne",
+        "category": "Auxiliary Particle",
+        "example": {
+            "en_full_grammatical": "And you?",
+            "cn": "你呢？",
+            "py": "nǐ ne?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "(question particle)", "cn": "呢", "py": "ne", "color": "bg-green-100", "searchKey": "ne_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "wei_hello_phone": {
+        "searchKey": "wei_hello_phone",
+        "displayKey": "喂 (hello - on the phone)",
+        "hanzi": "喂",
+        "pinyin": "wèi",
+        "category": "Interjection",
+        "example": {
+            "en_full_grammatical": "Hello? Who is it?",
+            "cn": "喂？你是谁？",
+            "py": "wèi? nǐ shì shéi?",
+            "segments": [
+                { "en_lit": "hello (phone)", "cn": "喂", "py": "wèi", "color": "bg-red-100", "searchKey": "wei_hello_phone" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" },
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "who", "cn": "谁", "py": "shéi", "color": "bg-blue-100", "searchKey": "who" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "home_family": {
+        "searchKey": "home_family",
+        "displayKey": "家 (home, family)",
+        "hanzi": "家",
+        "pinyin": "jiā",
+        "category": "Noun",
+        "example": {
+            "en_full_grammatical": "This is my home.",
+            "cn": "这是我的家。",
+            "py": "zhè shì wǒ de jiā.",
+            "segments": [
+                { "en_lit": "this", "cn": "这", "py": "zhè", "color": "bg-yellow-100", "searchKey": "this" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "my", "cn": "我的", "py": "wǒ de", "color": "bg-purple-100", "searchKey": "my" },
+                { "en_lit": "home/family", "cn": "家", "py": "jiā", "color": "bg-pink-100", "searchKey": "home_family" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "school": {
+        "searchKey": "school",
+        "displayKey": "school",
+        "hanzi": "学校",
+        "pinyin": "xuéxiào",
+        "category": "Noun",
+        "example": {
+            "en_full_grammatical": "I go to school.",
+            "cn": "我去学校。",
+            "py": "wǒ qù xuéxiào.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "go", "cn": "去", "py": "qù", "color": "bg-purple-100", "searchKey": "go" },
+                { "en_lit": "school", "cn": "学校", "py": "xuéxiào", "color": "bg-blue-100", "searchKey": "school" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "restaurant_hotel": {
+        "searchKey": "restaurant_hotel",
+        "displayKey": "饭店 (restaurant; hotel)",
+        "hanzi": "饭店",
+        "pinyin": "fàndiàn",
+        "category": "Noun",
+        "example": {
+            "en_full_grammatical": "Let's eat at a restaurant.",
+            "cn": "我们去饭店吃饭吧。",
+            "py": "wǒmen qù fàndiàn chīfàn ba.",
+            "segments": [
+                { "en_lit": "we", "cn": "我们", "py": "wǒmen", "color": "bg-yellow-100", "searchKey": "we" },
+                { "en_lit": "go", "cn": "去", "py": "qù", "color": "bg-purple-100", "searchKey": "go" },
+                { "en_lit": "restaurant/hotel", "cn": "饭店", "py": "fàndiàn", "color": "bg-orange-100", "searchKey": "restaurant_hotel" },
+                { "en_lit": "eat food/meal", "cn": "吃饭", "py": "chīfàn", "color": "bg-teal-100", "searchKey": "eat_meal" },
+                { "en_lit": "(suggestion particle)", "cn": "吧", "py": "ba", "color": "bg-indigo-100", "searchKey": "ba_particle" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "shop_store": {
+        "searchKey": "shop_store",
+        "displayKey": "商店 (shop, store)",
+        "hanzi": "商店",
+        "pinyin": "shāngdiàn",
+        "category": "Noun",
+        "example": {
+            "en_full_grammatical": "This store has many things.",
+            "cn": "这家商店有很多东西。",
+            "py": "zhè jiā shāngdiàn yǒu hěn duō dōngxi.",
+            "segments": [
+                { "en_lit": "this", "cn": "这", "py": "zhè", "color": "bg-yellow-100", "searchKey": "this" },
+                { "en_lit": "(measure word for establishments)", "cn": "家", "py": "jiā", "color": "bg-pink-100", "searchKey": "jia_mw_shop" },
+                { "en_lit": "shop/store", "cn": "商店", "py": "shāngdiàn", "color": "bg-sky-100", "searchKey": "shop_store" },
+                { "en_lit": "have", "cn": "有", "py": "yǒu", "color": "bg-green-100", "searchKey": "have" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-red-100", "searchKey": "very" },
+                { "en_lit": "many/much", "cn": "多", "py": "duō", "color": "bg-yellow-100", "searchKey": "many_much" },
+                { "en_lit": "thing(s)", "cn": "东西", "py": "dōngxi", "color": "bg-purple-100", "searchKey": "thing" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "hospital": {
+        "searchKey": "hospital",
+        "displayKey": "医院 (hospital)",
+        "hanzi": "医院",
+        "pinyin": "yīyuàn",
+        "category": "Noun",
+        "example": {
+            "en_full_grammatical": "The hospital is very big.",
+            "cn": "医院很大。",
+            "py": "yīyuàn hěn dà.",
+            "segments": [
+                { "en_lit": "hospital", "cn": "医院", "py": "yīyuàn", "color": "bg-purple-100", "searchKey": "hospital" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-green-100", "searchKey": "very" },
+                { "en_lit": "big", "cn": "大", "py": "dà", "color": "bg-pink-100", "searchKey": "big" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "train_station": {
+        "searchKey": "train_station",
+        "displayKey": "火车站 (train station)",
+        "hanzi": "火车站",
+        "pinyin": "huǒchēzhàn",
+        "category": "Noun",
+        "example": {
+            "en_full_grammatical": "I am at the train station.",
+            "cn": "我在火车站。",
+            "py": "wǒ zài huǒchēzhàn.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "be at/in/on", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_prep" },
+                { "en_lit": "train station", "cn": "火车站", "py": "huǒchēzhàn", "color": "bg-blue-100", "searchKey": "train_station" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "China": {
+        "searchKey": "China",
+        "displayKey": "中国 (China)",
+        "hanzi": "中国",
+        "pinyin": "Zhōngguó",
+        "category": "Noun",
+        "example": {
+            "en_full_grammatical": "China is a big country.",
+            "cn": "中国是一个大国。",
+            "py": "Zhōngguó shì yī ge dà guó.",
+            "segments": [
+                { "en_lit": "China", "cn": "中国", "py": "Zhōngguó", "color": "bg-orange-100", "searchKey": "China" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "one", "cn": "一", "py": "yī", "color": "bg-red-100", "searchKey": "one" },
+                { "en_lit": "(measure word)", "cn": "个", "py": "ge", "color": "bg-yellow-100", "searchKey": "ge_mw" },
+                { "en_lit": "big", "cn": "大", "py": "dà", "color": "bg-pink-100", "searchKey": "big" },
+                { "en_lit": "country", "cn": "国", "py": "guó", "color": "bg-teal-100", "searchKey": "country" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "Beijing": {
+        "searchKey": "Beijing",
+        "displayKey": "北京 (Beijing)",
+        "hanzi": "北京",
+        "pinyin": "Běijīng",
+        "category": "Noun",
+        "example": {
+            "en_full_grammatical": "Beijing is the capital of China.",
+            "cn": "北京是中国的首都。",
+            "py": "Běijīng shì Zhōngguó de shǒudū.",
+            "segments": [
+                { "en_lit": "Beijing", "cn": "北京", "py": "Běijīng", "color": "bg-indigo-100", "searchKey": "Beijing" },
+                { "en_lit": "am/is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "China", "cn": "中国", "py": "Zhōngguó", "color": "bg-orange-100", "searchKey": "China" },
+                { "en_lit": "(possessive particle)", "cn": "的", "py": "de", "color": "bg-teal-100", "searchKey": "de_particle" },
+                { "en_lit": "capital city", "cn": "首都", "py": "shǒudū", "color": "bg-sky-100", "searchKey": "capital_city" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "shang_loc": {
+        "searchKey": "shang_loc",
+        "displayKey": "上 (on, above, previous)",
+        "hanzi": "上",
+        "pinyin": "shàng",
+        "category": "Noun (Locative)",
+        "example": {
+            "en_full_grammatical": "The cat is on the chair.",
+            "cn": "猫在椅子上。",
+            "py": "māo zài yǐzi shang.",
+            "segments": [
+                { "en_lit": "cat", "cn": "猫", "py": "māo", "color": "bg-red-100", "searchKey": "cat" },
+                { "en_lit": "be at/in/on", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_prep" },
+                { "en_lit": "chair", "cn": "椅子", "py": "yǐzi", "color": "bg-yellow-100", "searchKey": "chair" },
+                { "en_lit": "on", "cn": "上", "py": "shang", "color": "bg-green-100", "searchKey": "shang_loc" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "xia_loc": {
+        "searchKey": "xia_loc",
+        "displayKey": "下 (under, below, next)",
+        "hanzi": "下",
+        "pinyin": "xià",
+        "category": "Noun (Locative)",
+        "example": {
+            "en_full_grammatical": "The ball is under the table.",
+            "cn": "球在桌子下。",
+            "py": "qiú zài zhuōzi xia.",
+            "segments": [
+                { "en_lit": "ball", "cn": "球", "py": "qiú", "color": "bg-purple-100", "searchKey": "ball" },
+                { "en_lit": "be at/in/on", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_prep" },
+                { "en_lit": "table", "cn": "桌子", "py": "zhuōzi", "color": "bg-blue-100", "searchKey": "table" },
+                { "en_lit": "under", "cn": "下", "py": "xia", "color": "bg-orange-100", "searchKey": "xia_loc" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "front": {
+        "searchKey": "front",
+        "displayKey": "前面 (front)",
+        "hanzi": "前面",
+        "pinyin": "qiánmiàn",
+        "category": "Noun (Locative)",
+        "example": {
+            "en_full_grammatical": "The school is in front.",
+            "cn": "学校在前面。",
+            "py": "xuéxiào zài qiánmiàn.",
+            "segments": [
+                { "en_lit": "school", "cn": "学校", "py": "xuéxiào", "color": "bg-blue-100", "searchKey": "school" },
+                { "en_lit": "be at/in/on", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_prep" },
+                { "en_lit": "front", "cn": "前面", "py": "qiánmiàn", "color": "bg-teal-100", "searchKey": "front" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "back_behind": {
+        "searchKey": "back_behind",
+        "displayKey": "后面 (back, behind)",
+        "hanzi": "后面",
+        "pinyin": "hòumiàn",
+        "category": "Noun (Locative)",
+        "example": {
+            "en_full_grammatical": "The park is behind the house.",
+            "cn": "公园在房子后面。",
+            "py": "gōngyuán zài fángzi hòumiàn.",
+            "segments": [
+                { "en_lit": "park", "cn": "公园", "py": "gōngyuán", "color": "bg-indigo-100", "searchKey": "park" },
+                { "en_lit": "be at/in/on", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_prep" },
+                { "en_lit": "house", "cn": "房子", "py": "fángzi", "color": "bg-sky-100", "searchKey": "house" },
+                { "en_lit": "behind", "cn": "后面", "py": "hòumiàn", "color": "bg-green-100", "searchKey": "back_behind" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "inside": {
+        "searchKey": "inside",
+        "displayKey": "里面 (inside)",
+        "hanzi": "里面",
+        "pinyin": "lǐmiàn",
+        "category": "Noun (Locative)",
+        "example": {
+            "en_full_grammatical": "What's inside the box?",
+            "cn": "盒子里有什么？",
+            "py": "hézi lǐ yǒu shénme?",
+            "segments": [
+                { "en_lit": "box", "cn": "盒子", "py": "hézi", "color": "bg-red-100", "searchKey": "box" },
+                { "en_lit": "inside", "cn": "里", "py": "lǐ", "color": "bg-yellow-100", "searchKey": "inside" },
+                { "en_lit": "have/there is", "cn": "有", "py": "yǒu", "color": "bg-green-100", "searchKey": "have" },
+                { "en_lit": "what", "cn": "什么", "py": "shénme", "color": "bg-orange-100", "searchKey": "what" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "today": {
+        "searchKey": "today",
+        "displayKey": "今天 (today)",
+        "hanzi": "今天",
+        "pinyin": "jīntiān",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "How are you today?",
+            "cn": "你今天好吗？",
+            "py": "nǐ jīntiān hǎo ma?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "today", "cn": "今天", "py": "jīntiān", "color": "bg-purple-100", "searchKey": "today" },
+                { "en_lit": "good/okay", "cn": "好", "py": "hǎo", "color": "bg-blue-100", "searchKey": "good" },
+                { "en_lit": "(question particle)", "cn": "吗", "py": "ma", "color": "bg-orange-100", "searchKey": "ma_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "tomorrow": {
+        "searchKey": "tomorrow",
+        "displayKey": "明天 (tomorrow)",
+        "hanzi": "明天",
+        "pinyin": "míngtiān",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "See you tomorrow.",
+            "cn": "明天见。",
+            "py": "míngtiān jiàn.",
+            "segments": [
+                { "en_lit": "tomorrow", "cn": "明天", "py": "míngtiān", "color": "bg-pink-100", "searchKey": "tomorrow" },
+                { "en_lit": "see", "cn": "见", "py": "jiàn", "color": "bg-teal-100", "searchKey": "see" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+	"yesterday": {
+        "searchKey": "yesterday",
+        "displayKey": "昨天 (yesterday)",
+        "hanzi": "昨天",
+        "pinyin": "zuótiān",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "What did you do yesterday?",
+            "cn": "你昨天做什么了？",
+            "py": "nǐ zuótiān zuò shénme le?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "yesterday", "cn": "昨天", "py": "zuótiān", "color": "bg-sky-100", "searchKey": "yesterday" },
+                { "en_lit": "do", "cn": "做", "py": "zuò", "color": "bg-green-100", "searchKey": "do_make" },
+                { "en_lit": "what", "cn": "什么", "py": "shénme", "color": "bg-orange-100", "searchKey": "what" },
+                { "en_lit": "(completed action particle)", "cn": "了", "py": "le", "color": "bg-blue-100", "searchKey": "le_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "morning_am": {
+        "searchKey": "morning_am",
+        "displayKey": "上午 (morning, AM)",
+        "hanzi": "上午",
+        "pinyin": "shàngwǔ",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "I work in the morning.",
+            "cn": "我上午工作。",
+            "py": "wǒ shàngwǔ gōngzuò.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "morning (AM)", "cn": "上午", "py": "shàngwǔ", "color": "bg-red-100", "searchKey": "morning_am" },
+                { "en_lit": "work", "cn": "工作", "py": "gōngzuò", "color": "bg-yellow-100", "searchKey": "work" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "noon": {
+        "searchKey": "noon",
+        "displayKey": "中午 (noon, midday)",
+        "hanzi": "中午",
+        "pinyin": "zhōngwǔ",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "What do you eat at noon?",
+            "cn": "你中午吃什么？",
+            "py": "nǐ zhōngwǔ chī shénme?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "noon", "cn": "中午", "py": "zhōngwǔ", "color": "bg-purple-100", "searchKey": "noon" },
+                { "en_lit": "eat", "cn": "吃", "py": "chī", "color": "bg-green-100", "searchKey": "eat" },
+                { "en_lit": "what", "cn": "什么", "py": "shénme", "color": "bg-orange-100", "searchKey": "what" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "afternoon_pm": {
+        "searchKey": "afternoon_pm",
+        "displayKey": "下午 (afternoon, PM)",
+        "hanzi": "下午",
+        "pinyin": "xiàwǔ",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "See you this afternoon.",
+            "cn": "今天下午见。",
+            "py": "jīntiān xiàwǔ jiàn.",
+            "segments": [
+                { "en_lit": "today", "cn": "今天", "py": "jīntiān", "color": "bg-purple-100", "searchKey": "today" },
+                { "en_lit": "afternoon (PM)", "cn": "下午", "py": "xiàwǔ", "color": "bg-pink-100", "searchKey": "afternoon_pm" },
+                { "en_lit": "see", "cn": "见", "py": "jiàn", "color": "bg-teal-100", "searchKey": "see" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "year": {
+        "searchKey": "year",
+        "displayKey": "年 (year)",
+        "hanzi": "年",
+        "pinyin": "nián",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "This year is 2025.",
+            "cn": "今年是二零二五年。",
+            "py": "jīnnián shì èr líng èr wǔ nián.",
+            "segments": [
+                { "en_lit": "this year", "cn": "今年", "py": "jīnnián", "color": "bg-blue-100", "searchKey": "this_year" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "two zero two five", "cn": "二零二五", "py": "èr líng èr wǔ", "color": "bg-orange-100", "searchKey": "2025" },
+                { "en_lit": "year", "cn": "年", "py": "nián", "color": "bg-teal-100", "searchKey": "year" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "month": {
+        "searchKey": "month",
+        "displayKey": "月 (month)",
+        "hanzi": "月",
+        "pinyin": "yuè",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "May is the fifth month.",
+            "cn": "五月是第五个月。",
+            "py": "wǔ yuè shì dì wǔ ge yuè.",
+            "segments": [
+                { "en_lit": "May/five month", "cn": "五月", "py": "wǔ yuè", "color": "bg-indigo-100", "searchKey": "may" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "the fifth", "cn": "第五", "py": "dì wǔ", "color": "bg-sky-100", "searchKey": "fifth" },
+                { "en_lit": "(measure word)", "cn": "个", "py": "ge", "color": "bg-red-100", "searchKey": "ge_mw" },
+                { "en_lit": "month", "cn": "月", "py": "yuè", "color": "bg-yellow-100", "searchKey": "month" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "day_date": {
+        "searchKey": "day_date",
+        "displayKey": "日 (day; date)",
+        "hanzi": "日",
+        "pinyin": "rì",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "Today is May 10th.",
+            "cn": "今天是五月十日。",
+            "py": "jīntiān shì wǔ yuè shí rì.",
+            "segments": [
+                { "en_lit": "today", "cn": "今天", "py": "jīntiān", "color": "bg-purple-100", "searchKey": "today" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "May/five month", "cn": "五月", "py": "wǔ yuè", "color": "bg-indigo-100", "searchKey": "may" },
+                { "en_lit": "ten", "cn": "十", "py": "shí", "color": "bg-blue-100", "searchKey": "ten" },
+                { "en_lit": "day/date", "cn": "日", "py": "rì", "color": "bg-pink-100", "searchKey": "day_date" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "week": {
+        "searchKey": "week",
+        "displayKey": "星期 (week)",
+        "hanzi": "星期",
+        "pinyin": "xīngqī",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "One week has seven days.",
+            "cn": "一个星期有七天。",
+            "py": "yī ge xīngqī yǒu qī tiān.",
+            "segments": [
+                { "en_lit": "one", "cn": "一", "py": "yī", "color": "bg-red-100", "searchKey": "one" },
+                { "en_lit": "(measure word)", "cn": "个", "py": "ge", "color": "bg-yellow-100", "searchKey": "ge_mw" },
+                { "en_lit": "week", "cn": "星期", "py": "xīngqī", "color": "bg-blue-100", "searchKey": "week" },
+                { "en_lit": "have", "cn": "有", "py": "yǒu", "color": "bg-green-100", "searchKey": "have" },
+                { "en_lit": "seven", "cn": "七", "py": "qī", "color": "bg-indigo-100", "searchKey": "seven" },
+                { "en_lit": "day(s)", "cn": "天", "py": "tiān", "color": "bg-sky-100", "searchKey": "day" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "oclock_dot": {
+        "searchKey": "oclock_dot",
+        "displayKey": "点 (o'clock; dot)",
+        "hanzi": "点",
+        "pinyin": "diǎn",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "It's three o'clock now.",
+            "cn": "现在三点。",
+            "py": "xiànzài sān diǎn.",
+            "segments": [
+                { "en_lit": "now", "cn": "现在", "py": "xiànzài", "color": "bg-orange-100", "searchKey": "now" },
+                { "en_lit": "three", "cn": "三", "py": "sān", "color": "bg-red-100", "searchKey": "three" },
+                { "en_lit": "o'clock", "cn": "点", "py": "diǎn", "color": "bg-teal-100", "searchKey": "oclock_dot" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "minute": {
+        "searchKey": "minute",
+        "displayKey": "分钟 (minute)",
+        "hanzi": "分钟",
+        "pinyin": "fēnzhōng",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "Wait five minutes.",
+            "cn": "等五分钟。",
+            "py": "děng wǔ fēnzhōng.",
+            "segments": [
+                { "en_lit": "wait", "cn": "等", "py": "děng", "color": "bg-indigo-100", "searchKey": "wait" },
+                { "en_lit": "five", "cn": "五", "py": "wǔ", "color": "bg-blue-100", "searchKey": "five" },
+                { "en_lit": "minute(s)", "cn": "分钟", "py": "fēnzhōng", "color": "bg-sky-100", "searchKey": "minute" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "now": {
+        "searchKey": "now",
+        "displayKey": "现在 (now)",
+        "hanzi": "现在",
+        "pinyin": "xiànzài",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "What time is it now?",
+            "cn": "现在几点？",
+            "py": "xiànzài jǐ diǎn?",
+            "segments": [
+                { "en_lit": "now", "cn": "现在", "py": "xiànzài", "color": "bg-orange-100", "searchKey": "now" },
+                { "en_lit": "how many (small number)", "cn": "几", "py": "jǐ", "color": "bg-sky-100", "searchKey": "how_many_jǐ" },
+                { "en_lit": "o'clock", "cn": "点", "py": "diǎn", "color": "bg-teal-100", "searchKey": "oclock_dot" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "time_moment": {
+        "searchKey": "time_moment",
+        "displayKey": "时候 (time; moment)",
+        "hanzi": "时候",
+        "pinyin": "shíhou",
+        "category": "Noun (Time)",
+        "example": {
+            "en_full_grammatical": "When will you come?",
+            "cn": "你什么时候来？",
+            "py": "nǐ shénme shíhou lái?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "what time/when", "cn": "什么时候", "py": "shénme shíhou", "color": "bg-green-100", "searchKey": "what_time_when" },
+                { "en_lit": "come", "cn": "来", "py": "lái", "color": "bg-red-100", "searchKey": "come" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "dad_father": {
+        "searchKey": "dad_father",
+        "displayKey": "爸爸 (dad, father)",
+        "hanzi": "爸爸",
+        "pinyin": "bàba",
+        "category": "Noun (People)",
+        "example": {
+            "en_full_grammatical": "My father is a doctor.",
+            "cn": "我爸爸是医生。",
+            "py": "wǒ bàba shì yīshēng.",
+            "segments": [
+                { "en_lit": "I/my", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "dad/father", "cn": "爸爸", "py": "bàba", "color": "bg-yellow-100", "searchKey": "dad_father" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "doctor", "cn": "医生", "py": "yīshēng", "color": "bg-indigo-100", "searchKey": "doctor" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "mom_mother": {
+        "searchKey": "mom_mother",
+        "displayKey": "妈妈 (mom, mother)",
+        "hanzi": "妈妈",
+        "pinyin": "māma",
+        "category": "Noun (People)",
+        "example": {
+            "en_full_grammatical": "I love my mother.",
+            "cn": "我爱我妈妈。",
+            "py": "wǒ ài wǒ māma.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "love", "cn": "爱", "py": "ài", "color": "bg-pink-100", "searchKey": "love" },
+                { "en_lit": "my", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "mom/mother", "cn": "妈妈", "py": "māma", "color": "bg-purple-100", "searchKey": "mom_mother" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "son": {
+        "searchKey": "son",
+        "displayKey": "儿子 (son)",
+        "hanzi": "儿子",
+        "pinyin": "érzi",
+        "category": "Noun (People)",
+        "example": {
+            "en_full_grammatical": "He has a son.",
+            "cn": "他有一个儿子。",
+            "py": "tā yǒu yī ge érzi.",
+            "segments": [
+                { "en_lit": "he", "cn": "他", "py": "tā", "color": "bg-teal-100", "searchKey": "he" },
+                { "en_lit": "have", "cn": "有", "py": "yǒu", "color": "bg-green-100", "searchKey": "have" },
+                { "en_lit": "one", "cn": "一", "py": "yī", "color": "bg-red-100", "searchKey": "one" },
+                { "en_lit": "(measure word)", "cn": "个", "py": "ge", "color": "bg-yellow-100", "searchKey": "ge_mw" },
+                { "en_lit": "son", "cn": "儿子", "py": "érzi", "color": "bg-blue-100", "searchKey": "son" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "daughter": {
+        "searchKey": "daughter",
+        "displayKey": "女儿 (daughter)",
+        "hanzi": "女儿",
+        "pinyin": "nǚ'ér",
+        "category": "Noun (People)",
+        "example": {
+            "en_full_grammatical": "She is my daughter.",
+            "cn": "她是我的女儿。",
+            "py": "tā shì wǒ de nǚ'ér.",
+            "segments": [
+                { "en_lit": "she", "cn": "她", "py": "tā", "color": "bg-sky-100", "searchKey": "she" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "my", "cn": "我的", "py": "wǒ de", "color": "bg-purple-100", "searchKey": "my" },
+                { "en_lit": "daughter", "cn": "女儿", "py": "nǚ'ér", "color": "bg-orange-100", "searchKey": "daughter" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "teacher": {
+        "searchKey": "teacher",
+        "displayKey": "老师 (teacher)",
+        "hanzi": "老师",
+        "pinyin": "lǎoshī",
+        "category": "Noun (People)",
+        "example": {
+            "en_full_grammatical": "My teacher is Chinese.",
+            "cn": "我的老师是中国人。",
+            "py": "wǒ de lǎoshī shì Zhōngguó rén.",
+            "segments": [
+                { "en_lit": "my", "cn": "我的", "py": "wǒ de", "color": "bg-purple-100", "searchKey": "my" },
+                { "en_lit": "teacher", "cn": "老师", "py": "lǎoshī", "color": "bg-teal-100", "searchKey": "teacher" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "Chinese person", "cn": "中国人", "py": "Zhōngguó rén", "color": "bg-indigo-100", "searchKey": "chinese_person" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "student": {
+        "searchKey": "student",
+        "displayKey": "学生 (student)",
+        "hanzi": "学生",
+        "pinyin": "xuésheng",
+        "category": "Noun (People)",
+        "example": {
+            "en_full_grammatical": "Are you a student?",
+            "cn": "你是学生吗？",
+            "py": "nǐ shì xuésheng ma?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "student", "cn": "学生", "py": "xuésheng", "color": "bg-red-100", "searchKey": "student" },
+                { "en_lit": "(question particle)", "cn": "吗", "py": "ma", "color": "bg-orange-100", "searchKey": "ma_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "classmate": {
+        "searchKey": "classmate",
+        "displayKey": "同学 (classmate)",
+        "hanzi": "同学",
+        "pinyin": "tóngxué",
+        "category": "Noun (People)",
+        "example": {
+            "en_full_grammatical": "He is my classmate.",
+            "cn": "他是我的同学。",
+            "py": "tā shì wǒ de tóngxué.",
+            "segments": [
+                { "en_lit": "he", "cn": "他", "py": "tā", "color": "bg-teal-100", "searchKey": "he" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "my", "cn": "我的", "py": "wǒ de", "color": "bg-purple-100", "searchKey": "my" },
+                { "en_lit": "classmate", "cn": "同学", "py": "tóngxué", "color": "bg-sky-100", "searchKey": "classmate" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "friend": {
+        "searchKey": "friend",
+        "displayKey": "朋友 (friend)",
+        "hanzi": "朋友",
+        "pinyin": "péngyǒu",
+        "category": "Noun (People)",
+        "example": {
+            "en_full_grammatical": "She is a good friend.",
+            "cn": "她是一个好朋友。",
+            "py": "tā shì yī ge hǎo péngyǒu.",
+            "segments": [
+                { "en_lit": "she", "cn": "她", "py": "tā", "color": "bg-sky-100", "searchKey": "she" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "one", "cn": "一", "py": "yī", "color": "bg-red-100", "searchKey": "one" },
+                { "en_lit": "(measure word)", "cn": "个", "py": "ge", "color": "bg-yellow-100", "searchKey": "ge_mw" },
+                { "en_lit": "good", "cn": "好", "py": "hǎo", "color": "bg-blue-100", "searchKey": "good" },
+                { "en_lit": "friend", "cn": "朋友", "py": "péngyǒu", "color": "bg-purple-100", "searchKey": "friend" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "doctor": {
+        "searchKey": "doctor",
+        "displayKey": "医生 (doctor)",
+        "hanzi": "医生",
+        "pinyin": "yīshēng",
+        "category": "Noun (People)",
+        "example": {
+            "en_full_grammatical": "I want to see a doctor.",
+            "cn": "我想看医生。",
+            "py": "wǒ xiǎng kàn yīshēng.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "want/think", "cn": "想", "py": "xiǎng", "color": "bg-green-100", "searchKey": "want_think" },
+                { "en_lit": "see/watch/read", "cn": "看", "py": "kàn", "color": "bg-red-100", "searchKey": "see_look_watch" },
+                { "en_lit": "doctor", "cn": "医生", "py": "yīshēng", "color": "bg-indigo-100", "searchKey": "doctor" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "mr_sir_husband": {
+        "searchKey": "mr_sir_husband",
+        "displayKey": "先生 (Mr.; sir; husband)",
+        "hanzi": "先生",
+        "pinyin": "xiānsheng",
+        "category": "Noun (People)",
+        "example": {
+            "en_full_grammatical": "Hello, Mr. Wang.",
+            "cn": "王先生，你好。",
+            "py": "Wáng xiānsheng, nǐ hǎo.",
+            "segments": [
+                { "en_lit": "Wang (surname)", "cn": "王", "py": "Wáng", "color": "bg-pink-100", "searchKey": "wang_surname" },
+                { "en_lit": "Mr./sir", "cn": "先生", "py": "xiānsheng", "color": "bg-blue-100", "searchKey": "mr_sir_husband" },
+                { "en_lit": ",", "cn": "，", "py": ",", "color": "bg-gray-100" },
+                { "en_lit": "you good (hello)", "cn": "你好", "py": "nǐ hǎo", "color": "bg-green-100", "searchKey": "hello" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "miss_young_lady": {
+        "searchKey": "miss_young_lady",
+        "displayKey": "小姐 (Miss; young lady)",
+        "hanzi": "小姐",
+        "pinyin": "xiǎojiě",
+        "category": "Noun (People)",
+        "example": {
+            "en_full_grammatical": "Excuse me, Miss, where is the restroom?",
+            "cn": "请问，小姐，洗手间在哪儿？",
+            "py": "qǐngwèn, xiǎojiě, xǐshǒujiān zài nǎr?",
+            "segments": [
+                { "en_lit": "please ask/excuse me", "cn": "请问", "py": "qǐngwèn", "color": "bg-orange-100", "searchKey": "excuse_me_may_i_ask" },
+                { "en_lit": ",", "cn": "，", "py": ",", "color": "bg-gray-100" },
+                { "en_lit": "Miss/young lady", "cn": "小姐", "py": "xiǎojiě", "color": "bg-teal-100", "searchKey": "miss_young_lady" },
+                { "en_lit": ",", "cn": "，", "py": ",", "color": "bg-gray-100" },
+                { "en_lit": "restroom", "cn": "洗手间", "py": "xǐshǒujiān", "color": "bg-indigo-100", "searchKey": "restroom" },
+                { "en_lit": "is at", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_prep" },
+                { "en_lit": "where", "cn": "哪儿", "py": "nǎr", "color": "bg-purple-100", "searchKey": "where" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "clothes": {
+        "searchKey": "clothes",
+        "displayKey": "衣服 (clothes)",
+        "hanzi": "衣服",
+        "pinyin": "yīfu",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "These clothes are beautiful.",
+            "cn": "这件衣服很漂亮。",
+            "py": "zhè jiàn yīfu hěn piàoliang.",
+            "segments": [
+                { "en_lit": "this", "cn": "这", "py": "zhè", "color": "bg-yellow-100", "searchKey": "this" },
+                { "en_lit": "(measure word for clothes)", "cn": "件", "py": "jiàn", "color": "bg-sky-100", "searchKey": "jian_mw_clothes" },
+                { "en_lit": "clothes", "cn": "衣服", "py": "yīfu", "color": "bg-green-100", "searchKey": "clothes" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-red-100", "searchKey": "very" },
+                { "en_lit": "beautiful/pretty", "cn": "漂亮", "py": "piàoliang", "color": "bg-blue-100", "searchKey": "beautiful" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "water": {
+        "searchKey": "water",
+        "displayKey": "水 (water)",
+        "hanzi": "水",
+        "pinyin": "shuǐ",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "I want to drink water.",
+            "cn": "我想喝水。",
+            "py": "wǒ xiǎng hē shuǐ.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "want/think", "cn": "想", "py": "xiǎng", "color": "bg-green-100", "searchKey": "want_think" },
+                { "en_lit": "drink", "cn": "喝", "py": "hē", "color": "bg-red-100", "searchKey": "drink" },
+                { "en_lit": "water", "cn": "水", "py": "shuǐ", "color": "bg-yellow-100", "searchKey": "water" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "dish_vegetable": {
+        "searchKey": "dish_vegetable",
+        "displayKey": "菜 (dish; vegetable)",
+        "hanzi": "菜",
+        "pinyin": "cài",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "This dish is delicious.",
+            "cn": "这个菜很好吃。",
+            "py": "zhège cài hěn hǎochī.",
+            "segments": [
+                { "en_lit": "this (one)", "cn": "这个", "py": "zhège", "color": "bg-yellow-100", "searchKey": "this_one" },
+                { "en_lit": "dish/vegetable", "cn": "菜", "py": "cài", "color": "bg-purple-100", "searchKey": "dish_vegetable" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-red-100", "searchKey": "very" },
+                { "en_lit": "delicious", "cn": "好吃", "py": "hǎochī", "color": "bg-pink-100", "searchKey": "delicious" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "cooked_rice": {
+        "searchKey": "cooked_rice",
+        "displayKey": "米饭 (cooked rice)",
+        "hanzi": "米饭",
+        "pinyin": "mǐfàn",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "Do you like to eat rice?",
+            "cn": "你喜欢吃米饭吗？",
+            "py": "nǐ xǐhuan chī mǐfàn ma?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "like", "cn": "喜欢", "py": "xǐhuan", "color": "bg-green-100", "searchKey": "like" },
+                { "en_lit": "eat", "cn": "吃", "py": "chī", "color": "bg-red-100", "searchKey": "eat" },
+                { "en_lit": "cooked rice", "cn": "米饭", "py": "mǐfàn", "color": "bg-blue-100", "searchKey": "cooked_rice" },
+                { "en_lit": "(question particle)", "cn": "吗", "py": "ma", "color": "bg-orange-100", "searchKey": "ma_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "fruit": {
+        "searchKey": "fruit",
+        "displayKey": "水果 (fruit)",
+        "hanzi": "水果",
+        "pinyin": "shuǐguǒ",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "Apples are fruit.",
+            "cn": "苹果是水果。",
+            "py": "píngguǒ shì shuǐguǒ.",
+            "segments": [
+                { "en_lit": "apple(s)", "cn": "苹果", "py": "píngguǒ", "color": "bg-purple-100", "searchKey": "apple" },
+                { "en_lit": "is/are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "fruit", "cn": "水果", "py": "shuǐguǒ", "color": "bg-teal-100", "searchKey": "fruit" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "apple": {
+        "searchKey": "apple",
+        "displayKey": "苹果 (apple)",
+        "hanzi": "苹果",
+        "pinyin": "píngguǒ",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "I want to buy apples.",
+            "cn": "我想买苹果。",
+            "py": "wǒ xiǎng mǎi píngguǒ.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "want/think", "cn": "想", "py": "xiǎng", "color": "bg-green-100", "searchKey": "want_think" },
+                { "en_lit": "buy", "cn": "买", "py": "mǎi", "color": "bg-indigo-100", "searchKey": "buy" },
+                { "en_lit": "apple(s)", "cn": "苹果", "py": "píngguǒ", "color": "bg-purple-100", "searchKey": "apple" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "tea": {
+        "searchKey": "tea",
+        "displayKey": "茶 (tea)",
+        "hanzi": "茶",
+        "pinyin": "chá",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "Would you like some tea?",
+            "cn": "你想喝茶吗？",
+            "py": "nǐ xiǎng hē chá ma?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "want/think", "cn": "想", "py": "xiǎng", "color": "bg-green-100", "searchKey": "want_think" },
+                { "en_lit": "drink", "cn": "喝", "py": "hē", "color": "bg-red-100", "searchKey": "drink" },
+                { "en_lit": "tea", "cn": "茶", "py": "chá", "color": "bg-yellow-100", "searchKey": "tea" },
+                { "en_lit": "(question particle)", "cn": "吗", "py": "ma", "color": "bg-orange-100", "searchKey": "ma_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+	"cup_glass": {
+        "searchKey": "cup_glass",
+        "displayKey": "杯子 (cup, glass)",
+        "hanzi": "杯子",
+        "pinyin": "bēizi",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "This cup is mine.",
+            "cn": "这个杯子是我的。",
+            "py": "zhège bēizi shì wǒ de.",
+            "segments": [
+                { "en_lit": "this (one)", "cn": "这个", "py": "zhège", "color": "bg-yellow-100", "searchKey": "this_one" },
+                { "en_lit": "cup/glass", "cn": "杯子", "py": "bēizi", "color": "bg-pink-100", "searchKey": "cup_glass" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "my", "cn": "我的", "py": "wǒ de", "color": "bg-purple-100", "searchKey": "my" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "money": {
+        "searchKey": "money",
+        "displayKey": "钱 (money)",
+        "hanzi": "钱",
+        "pinyin": "qián",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "I don't have money.",
+            "cn": "我没有钱。",
+            "py": "wǒ méiyǒu qián.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "don't have", "cn": "没有", "py": "méiyǒu", "color": "bg-indigo-100", "searchKey": "dont_have" },
+                { "en_lit": "money", "cn": "钱", "py": "qián", "color": "bg-blue-100", "searchKey": "money" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "airplane": {
+        "searchKey": "airplane",
+        "displayKey": "飞机 (airplane)",
+        "hanzi": "飞机",
+        "pinyin": "fēijī",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "He travels by airplane.",
+            "cn": "他坐飞机去旅行。",
+            "py": "tā zuò fēijī qù lǚxíng.",
+            "segments": [
+                { "en_lit": "he", "cn": "他", "py": "tā", "color": "bg-teal-100", "searchKey": "he" },
+                { "en_lit": "sit/take (transport)", "cn": "坐", "py": "zuò", "color": "bg-orange-100", "searchKey": "sit_take_transport" },
+                { "en_lit": "airplane", "cn": "飞机", "py": "fēijī", "color": "bg-red-100", "searchKey": "airplane" },
+                { "en_lit": "go", "cn": "去", "py": "qù", "color": "bg-purple-100", "searchKey": "go" },
+                { "en_lit": "travel", "cn": "旅行", "py": "lǚxíng", "color": "bg-yellow-100", "searchKey": "travel" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "taxi": {
+        "searchKey": "taxi",
+        "displayKey": "出租车 (taxi)",
+        "hanzi": "出租车",
+        "pinyin": "chūzūchē",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "Let's take a taxi.",
+            "cn": "我们坐出租车吧。",
+            "py": "wǒmen zuò chūzūchē ba.",
+            "segments": [
+                { "en_lit": "we", "cn": "我们", "py": "wǒmen", "color": "bg-yellow-100", "searchKey": "we" },
+                { "en_lit": "sit/take (transport)", "cn": "坐", "py": "zuò", "color": "bg-orange-100", "searchKey": "sit_take_transport" },
+                { "en_lit": "taxi", "cn": "出租车", "py": "chūzūchē", "color": "bg-green-100", "searchKey": "taxi" },
+                { "en_lit": "(suggestion particle)", "cn": "吧", "py": "ba", "color": "bg-indigo-100", "searchKey": "ba_particle" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "television_tv": {
+        "searchKey": "television_tv",
+        "displayKey": "电视 (television, TV)",
+        "hanzi": "电视",
+        "pinyin": "diànshì",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "I like watching TV.",
+            "cn": "我喜欢看电视。",
+            "py": "wǒ xǐhuan kàn diànshì.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "like", "cn": "喜欢", "py": "xǐhuan", "color": "bg-green-100", "searchKey": "like" },
+                { "en_lit": "watch", "cn": "看", "py": "kàn", "color": "bg-red-100", "searchKey": "see_look_watch_read" },
+                { "en_lit": "television/TV", "cn": "电视", "py": "diànshì", "color": "bg-pink-100", "searchKey": "television_tv" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "computer": {
+        "searchKey": "computer",
+        "displayKey": "电脑 (computer)",
+        "hanzi": "电脑",
+        "pinyin": "diànnǎo",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "My computer is new.",
+            "cn": "我的电脑是新的。",
+            "py": "wǒ de diànnǎo shì xīn de.",
+            "segments": [
+                { "en_lit": "my", "cn": "我的", "py": "wǒ de", "color": "bg-purple-100", "searchKey": "my" },
+                { "en_lit": "computer", "cn": "电脑", "py": "diànnǎo", "color": "bg-blue-100", "searchKey": "computer" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "new", "cn": "新", "py": "xīn", "color": "bg-orange-100", "searchKey": "new" },
+                { "en_lit": "(attributive particle)", "cn": "的", "py": "de", "color": "bg-teal-100", "searchKey": "de_particle" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "movie_film": {
+        "searchKey": "movie_film",
+        "displayKey": "电影 (movie, film)",
+        "hanzi": "电影",
+        "pinyin": "diànyǐng",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "Let's watch a movie.",
+            "cn": "我们看电影吧。",
+            "py": "wǒmen kàn diànyǐng ba.",
+            "segments": [
+                { "en_lit": "we", "cn": "我们", "py": "wǒmen", "color": "bg-yellow-100", "searchKey": "we" },
+                { "en_lit": "watch", "cn": "看", "py": "kàn", "color": "bg-red-100", "searchKey": "see_look_watch_read" },
+                { "en_lit": "movie/film", "cn": "电影", "py": "diànyǐng", "color": "bg-indigo-100", "searchKey": "movie_film" },
+                { "en_lit": "(suggestion particle)", "cn": "吧", "py": "ba", "color": "bg-indigo-100", "searchKey": "ba_particle" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "weather": {
+        "searchKey": "weather",
+        "displayKey": "天气 (weather)",
+        "hanzi": "天气",
+        "pinyin": "tiānqì",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "How is the weather today?",
+            "cn": "今天天气怎么样？",
+            "py": "jīntiān tiānqì zěnmeyàng?",
+            "segments": [
+                { "en_lit": "today", "cn": "今天", "py": "jīntiān", "color": "bg-purple-100", "searchKey": "today" },
+                { "en_lit": "weather", "cn": "天气", "py": "tiānqì", "color": "bg-sky-100", "searchKey": "weather" },
+                { "en_lit": "how is it", "cn": "怎么样", "py": "zěnmeyàng", "color": "bg-teal-100", "searchKey": "how_is_it" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "cat": {
+        "searchKey": "cat",
+        "displayKey": "猫 (cat)",
+        "hanzi": "猫",
+        "pinyin": "māo",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "The cat is sleeping.",
+            "cn": "猫在睡觉。",
+            "py": "māo zài shuìjiào.",
+            "segments": [
+                { "en_lit": "cat", "cn": "猫", "py": "māo", "color": "bg-red-100", "searchKey": "cat" },
+                { "en_lit": "is (at/in the process of)", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_action_in_progress" },
+                { "en_lit": "sleep", "cn": "睡觉", "py": "shuìjiào", "color": "bg-green-100", "searchKey": "sleep" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "dog": {
+        "searchKey": "dog",
+        "displayKey": "狗 (dog)",
+        "hanzi": "狗",
+        "pinyin": "gǒu",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "This dog is very cute.",
+            "cn": "这只狗很可爱。",
+            "py": "zhè zhī gǒu hěn kě'ài.",
+            "segments": [
+                { "en_lit": "this", "cn": "这", "py": "zhè", "color": "bg-yellow-100", "searchKey": "this" },
+                { "en_lit": "(measure word for animals)", "cn": "只", "py": "zhī", "color": "bg-purple-100", "searchKey": "zhi_mw" },
+                { "en_lit": "dog", "cn": "狗", "py": "gǒu", "color": "bg-pink-100", "searchKey": "dog" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-red-100", "searchKey": "very" },
+                { "en_lit": "cute/lovely", "cn": "可爱", "py": "kě'ài", "color": "bg-blue-100", "searchKey": "cute" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "thing_object": {
+        "searchKey": "thing_object",
+        "displayKey": "东西 (thing, object)",
+        "hanzi": "东西",
+        "pinyin": "dōngxi",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "What is this thing?",
+            "cn": "这是什么东西？",
+            "py": "zhè shì shénme dōngxi?",
+            "segments": [
+                { "en_lit": "this", "cn": "这", "py": "zhè", "color": "bg-yellow-100", "searchKey": "this" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "what", "cn": "什么", "py": "shénme", "color": "bg-orange-100", "searchKey": "what" },
+                { "en_lit": "thing/object", "cn": "东西", "py": "dōngxi", "color": "bg-teal-100", "searchKey": "thing_object" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "person_people": {
+        "searchKey": "person_people",
+        "displayKey": "人 (person, people)",
+        "hanzi": "人",
+        "pinyin": "rén",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "There are many people here.",
+            "cn": "这里有很多人。",
+            "py": "zhèli yǒu hěn duō rén.",
+            "segments": [
+                { "en_lit": "here", "cn": "这里", "py": "zhèli", "color": "bg-blue-100", "searchKey": "here_place" },
+                { "en_lit": "have/there are", "cn": "有", "py": "yǒu", "color": "bg-green-100", "searchKey": "have_has_there_is" },
+                { "en_lit": "very many/a lot of", "cn": "很多", "py": "hěn duō", "color": "bg-red-100", "searchKey": "very_many" },
+                { "en_lit": "person/people", "cn": "人", "py": "rén", "color": "bg-yellow-100", "searchKey": "person_people" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "name": {
+        "searchKey": "name",
+        "displayKey": "名字 (name)",
+        "hanzi": "名字",
+        "pinyin": "míngzi",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "What is your name?",
+            "cn": "你叫什么名字？",
+            "py": "nǐ jiào shénme míngzi?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "called/named", "cn": "叫", "py": "jiào", "color": "bg-indigo-100", "searchKey": "call_named" },
+                { "en_lit": "what", "cn": "什么", "py": "shénme", "color": "bg-orange-100", "searchKey": "what" },
+                { "en_lit": "name", "cn": "名字", "py": "míngzi", "color": "bg-sky-100", "searchKey": "name" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "book": {
+        "searchKey": "book",
+        "displayKey": "书 (book)",
+        "hanzi": "书",
+        "pinyin": "shū",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "This is a Chinese book.",
+            "cn": "这是一本汉语书。",
+            "py": "zhè shì yī běn Hànyǔ shū.",
+            "segments": [
+                { "en_lit": "this", "cn": "这", "py": "zhè", "color": "bg-yellow-100", "searchKey": "this" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is" },
+                { "en_lit": "one", "cn": "一", "py": "yī", "color": "bg-red-100", "searchKey": "one" },
+                { "en_lit": "(measure word for books)", "cn": "本", "py": "běn", "color": "bg-orange-100", "searchKey": "ben_mw" },
+                { "en_lit": "Chinese language", "cn": "汉语", "py": "Hànyǔ", "color": "bg-green-100", "searchKey": "chinese_language_hanyu" },
+                { "en_lit": "book", "cn": "书", "py": "shū", "color": "bg-teal-100", "searchKey": "book" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "chinese_language_hanyu": {
+        "searchKey": "chinese_language_hanyu",
+        "displayKey": "汉语 (Chinese language, Mandarin)",
+        "hanzi": "汉语",
+        "pinyin": "Hànyǔ",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "I am learning Chinese.",
+            "cn": "我在学习汉语。",
+            "py": "wǒ zài xuéxí Hànyǔ.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "am (in the process of)", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_action_in_progress" },
+                { "en_lit": "learn/study", "cn": "学习", "py": "xuéxí", "color": "bg-purple-100", "searchKey": "learn_study" },
+                { "en_lit": "Chinese language", "cn": "汉语", "py": "Hànyǔ", "color": "bg-green-100", "searchKey": "chinese_language_hanyu" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "character_word": {
+        "searchKey": "character_word",
+        "displayKey": "字 (character, word)",
+        "hanzi": "字",
+        "pinyin": "zì",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "This character is hard to write.",
+            "cn": "这个字很难写。",
+            "py": "zhège zì hěn nán xiě.",
+            "segments": [
+                { "en_lit": "this (one)", "cn": "这个", "py": "zhège", "color": "bg-yellow-100", "searchKey": "this_one" },
+                { "en_lit": "character/word", "cn": "字", "py": "zì", "color": "bg-blue-100", "searchKey": "character_word" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-red-100", "searchKey": "very" },
+                { "en_lit": "difficult", "cn": "难", "py": "nán", "color": "bg-pink-100", "searchKey": "difficult" },
+                { "en_lit": "write", "cn": "写", "py": "xiě", "color": "bg-indigo-100", "searchKey": "write" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "table": {
+        "searchKey": "table",
+        "displayKey": "桌子 (table)",
+        "hanzi": "桌子",
+        "pinyin": "zhuōzi",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "The book is on the table.",
+            "cn": "书在桌子上。",
+            "py": "shū zài zhuōzi shang.",
+            "segments": [
+                { "en_lit": "book", "cn": "书", "py": "shū", "color": "bg-teal-100", "searchKey": "book" },
+                { "en_lit": "is on", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_prep" },
+                { "en_lit": "table", "cn": "桌子", "py": "zhuōzi", "color": "bg-blue-100", "searchKey": "table" },
+                { "en_lit": "on top", "cn": "上", "py": "shang", "color": "bg-orange-100", "searchKey": "shang_loc" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "chair": {
+        "searchKey": "chair",
+        "displayKey": "椅子 (chair)",
+        "hanzi": "椅子",
+        "pinyin": "yǐzi",
+        "category": "Noun (Things)",
+        "example": {
+            "en_full_grammatical": "Please sit on the chair.",
+            "cn": "请坐在椅子上。",
+            "py": "qǐng zuò zài yǐzi shang.",
+            "segments": [
+                { "en_lit": "please", "cn": "请", "py": "qǐng", "color": "bg-green-100", "searchKey": "please_invite_request" },
+                { "en_lit": "sit", "cn": "坐", "py": "zuò", "color": "bg-orange-100", "searchKey": "sit_take_transport" },
+                { "en_lit": "at/on", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_prep" },
+                { "en_lit": "chair", "cn": "椅子", "py": "yǐzi", "color": "bg-sky-100", "searchKey": "chair" },
+                { "en_lit": "on top", "cn": "上", "py": "shang", "color": "bg-orange-100", "searchKey": "shang_loc" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "thank_you": {
+        "searchKey": "thank_you",
+        "displayKey": "谢谢 (thank you)",
+        "hanzi": "谢谢",
+        "pinyin": "xièxie",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "Thank you very much!",
+            "cn": "太谢谢你了！",
+            "py": "tài xièxie nǐ le!",
+            "segments": [
+                { "en_lit": "too/very much", "cn": "太", "py": "tài", "color": "bg-purple-100", "searchKey": "too" },
+                { "en_lit": "thank", "cn": "谢谢", "py": "xièxie", "color": "bg-red-100", "searchKey": "thank_you" },
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "(particle for emphasis)", "cn": "了", "py": "le", "color": "bg-blue-100", "searchKey": "le_particle" },
+                { "en_lit": "!", "cn": "！", "py": "!", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "you_are_welcome": {
+        "searchKey": "you_are_welcome",
+        "displayKey": "不客气 (you're welcome)",
+        "hanzi": "不客气",
+        "pinyin": "bú kèqi",
+        "category": "Verb (Expression)",
+        "example": {
+            "en_full_grammatical": "A: Thank you! B: You're welcome!",
+            "cn": "A：谢谢！B：不客气！",
+            "py": "A: xièxie! B: bú kèqi!",
+            "segments": [
+                { "en_lit": "A: Thank you!", "cn": "A：谢谢！", "py": "A: xièxie!", "color": "bg-yellow-100", "searchKey": "thank_you_phrase" },
+                { "en_lit": "B: You're welcome!", "cn": "B：不客气！", "py": "B: bú kèqi!", "color": "bg-green-100", "searchKey": "you_are_welcome_phrase" }
+            ]
+        }
+    },
+    "goodbye": {
+        "searchKey": "goodbye",
+        "displayKey": "再见 (goodbye)",
+        "hanzi": "再见",
+        "pinyin": "zàijiàn",
+        "category": "Verb (Expression)",
+        "example": {
+            "en_full_grammatical": "Goodbye, see you tomorrow!",
+            "cn": "再见，明天见！",
+            "py": "zàijiàn, míngtiān jiàn!",
+            "segments": [
+                { "en_lit": "goodbye", "cn": "再见", "py": "zàijiàn", "color": "bg-teal-100", "searchKey": "goodbye" },
+                { "en_lit": ",", "cn": "，", "py": ",", "color": "bg-gray-100" },
+                { "en_lit": "tomorrow", "cn": "明天", "py": "míngtiān", "color": "bg-pink-100", "searchKey": "tomorrow" },
+                { "en_lit": "see", "cn": "见", "py": "jiàn", "color": "bg-teal-100", "searchKey": "see" },
+                { "en_lit": "!", "cn": "！", "py": "!", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "please_invite_request": {
+        "searchKey": "please_invite_request",
+        "displayKey": "请 (please; invite; request)",
+        "hanzi": "请",
+        "pinyin": "qǐng",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "Please sit down.",
+            "cn": "请坐。",
+            "py": "qǐng zuò.",
+            "segments": [
+                { "en_lit": "please", "cn": "请", "py": "qǐng", "color": "bg-green-100", "searchKey": "please_invite_request" },
+                { "en_lit": "sit", "cn": "坐", "py": "zuò", "color": "bg-orange-100", "searchKey": "sit_take_transport" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "sorry": {
+        "searchKey": "sorry",
+        "displayKey": "对不起 (sorry)",
+        "hanzi": "对不起",
+        "pinyin": "duìbuqǐ",
+        "category": "Verb (Expression)",
+        "example": {
+            "en_full_grammatical": "Sorry, I am late.",
+            "cn": "对不起，我来晚了。",
+            "py": "duìbuqǐ, wǒ lái wǎn le.",
+            "segments": [
+                { "en_lit": "sorry", "cn": "对不起", "py": "duìbuqǐ", "color": "bg-indigo-100", "searchKey": "sorry" },
+                { "en_lit": ",", "cn": "，", "py": ",", "color": "bg-gray-100" },
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "come", "cn": "来", "py": "lái", "color": "bg-red-100", "searchKey": "come" },
+                { "en_lit": "late", "cn": "晚", "py": "wǎn", "color": "bg-yellow-100", "searchKey": "late" },
+                { "en_lit": "(completed/change particle)", "cn": "了", "py": "le", "color": "bg-blue-100", "searchKey": "le_particle" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "no_problem_its_ok": {
+        "searchKey": "no_problem_its_ok",
+        "displayKey": "没关系 (it's okay, no problem)",
+        "hanzi": "没关系",
+        "pinyin": "méi guānxi",
+        "category": "Verb (Expression)",
+        "example": {
+            "en_full_grammatical": "A: Sorry! B: It's okay.",
+            "cn": "A：对不起！B：没关系。",
+            "py": "A: duìbuqǐ! B: méi guānxi.",
+            "segments": [
+                { "en_lit": "A: Sorry!", "cn": "A：对不起！", "py": "A: duìbuqǐ!", "color": "bg-indigo-100", "searchKey": "sorry_phrase" },
+                { "en_lit": "B: It's okay.", "cn": "B：没关系。", "py": "B: méi guānxi.", "color": "bg-green-100", "searchKey": "no_problem_phrase" }
+            ]
+        }
+    },
+    "is_am_are_to_be": {
+        "searchKey": "is_am_are_to_be",
+        "displayKey": "是 (to be - is, am, are)",
+        "hanzi": "是",
+        "pinyin": "shì",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "He is a good person.",
+            "cn": "他是一个好人。",
+            "py": "tā shì yī ge hǎo rén.",
+            "segments": [
+                { "en_lit": "he", "cn": "他", "py": "tā", "color": "bg-teal-100", "searchKey": "he" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is_am_are_to_be" },
+                { "en_lit": "one", "cn": "一", "py": "yī", "color": "bg-red-100", "searchKey": "one" },
+                { "en_lit": "(measure word)", "cn": "个", "py": "ge", "color": "bg-yellow-100", "searchKey": "ge_mw" },
+                { "en_lit": "good", "cn": "好", "py": "hǎo", "color": "bg-blue-100", "searchKey": "good" },
+                { "en_lit": "person", "cn": "人", "py": "rén", "color": "bg-yellow-100", "searchKey": "person_people" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "have_has_there_is": {
+        "searchKey": "have_has_there_is",
+        "displayKey": "有 (to have; there is/are)",
+        "hanzi": "有",
+        "pinyin": "yǒu",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "I have a book.",
+            "cn": "我有一本书。",
+            "py": "wǒ yǒu yī běn shū.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "have", "cn": "有", "py": "yǒu", "color": "bg-green-100", "searchKey": "have_has_there_is" },
+                { "en_lit": "one", "cn": "一", "py": "yī", "color": "bg-red-100", "searchKey": "one" },
+                { "en_lit": "(measure word for books)", "cn": "本", "py": "běn", "color": "bg-orange-100", "searchKey": "ben_mw" },
+                { "en_lit": "book", "cn": "书", "py": "shū", "color": "bg-teal-100", "searchKey": "book" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "see_look_watch_read": {
+        "searchKey": "see_look_watch_read",
+        "displayKey": "看 (to see, look, watch; read)",
+        "hanzi": "看",
+        "pinyin": "kàn",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "I like to read books.",
+            "cn": "我喜欢看书。",
+            "py": "wǒ xǐhuan kàn shū.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "like", "cn": "喜欢", "py": "xǐhuan", "color": "bg-green-100", "searchKey": "like" },
+                { "en_lit": "read/watch", "cn": "看", "py": "kàn", "color": "bg-red-100", "searchKey": "see_look_watch_read" },
+                { "en_lit": "book(s)", "cn": "书", "py": "shū", "color": "bg-teal-100", "searchKey": "book" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "listen_hear": {
+        "searchKey": "listen_hear",
+        "displayKey": "听 (to listen, hear)",
+        "hanzi": "听",
+        "pinyin": "tīng",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "Listen to the teacher.",
+            "cn": "听老师说。",
+            "py": "tīng lǎoshī shuō.",
+            "segments": [
+                { "en_lit": "listen", "cn": "听", "py": "tīng", "color": "bg-purple-100", "searchKey": "listen_hear" },
+                { "en_lit": "teacher", "cn": "老师", "py": "lǎoshī", "color": "bg-teal-100", "searchKey": "teacher" },
+                { "en_lit": "speak", "cn": "说", "py": "shuō", "color": "bg-indigo-100", "searchKey": "speak_say" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "speak_say": {
+        "searchKey": "speak_say",
+        "displayKey": "说 (to speak, say)",
+        "hanzi": "说",
+        "pinyin": "shuō",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "Can you speak Chinese?",
+            "cn": "你会说汉语吗？",
+            "py": "nǐ huì shuō Hànyǔ ma?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "can/know how to", "cn": "会", "py": "huì", "color": "bg-teal-100", "searchKey": "can_know_how_to" },
+                { "en_lit": "speak/say", "cn": "说", "py": "shuō", "color": "bg-indigo-100", "searchKey": "speak_say" },
+                { "en_lit": "Chinese language", "cn": "汉语", "py": "Hànyǔ", "color": "bg-green-100", "searchKey": "chinese_language_hanyu" },
+                { "en_lit": "(question particle)", "cn": "吗", "py": "ma", "color": "bg-orange-100", "searchKey": "ma_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "read_aloud": {
+        "searchKey": "read_aloud",
+        "displayKey": "读 (to read aloud)",
+        "hanzi": "读",
+        "pinyin": "dú",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "Please read this text.",
+            "cn": "请读一下这个课文。",
+            "py": "qǐng dú yīxià zhège kèwén.",
+            "segments": [
+                { "en_lit": "please", "cn": "请", "py": "qǐng", "color": "bg-green-100", "searchKey": "please_invite_request" },
+                { "en_lit": "read (a bit)", "cn": "读一下", "py": "dú yīxià", "color": "bg-pink-100", "searchKey": "read_a_bit" },
+                { "en_lit": "this (one)", "cn": "这个", "py": "zhège", "color": "bg-yellow-100", "searchKey": "this_one" },
+                { "en_lit": "text", "cn": "课文", "py": "kèwén", "color": "bg-blue-100", "searchKey": "text" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+	"write": {
+        "searchKey": "write",
+        "displayKey": "写 (to write)",
+        "hanzi": "写",
+        "pinyin": "xiě",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "I can write Chinese characters.",
+            "cn": "我会写汉字。",
+            "py": "wǒ huì xiě Hànzì.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "can/know how to", "cn": "会", "py": "huì", "color": "bg-teal-100", "searchKey": "can_know_how_to_will" },
+                { "en_lit": "write", "cn": "写", "py": "xiě", "color": "bg-pink-100", "searchKey": "write" },
+                { "en_lit": "Chinese characters", "cn": "汉字", "py": "Hànzì", "color": "bg-blue-100", "searchKey": "hanzi_characters" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "see_perceive": {
+        "searchKey": "see_perceive",
+        "displayKey": "看见 (to see, to catch sight of)",
+        "hanzi": "看见",
+        "pinyin": "kànjiàn",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "Did you see him?",
+            "cn": "你看见他了吗？",
+            "py": "nǐ kànjiàn tā le ma?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "see/catch sight of", "cn": "看见", "py": "kànjiàn", "color": "bg-orange-100", "searchKey": "see_perceive" },
+                { "en_lit": "him", "cn": "他", "py": "tā", "color": "bg-teal-100", "searchKey": "he" },
+                { "en_lit": "(particle indicating change/completion)", "cn": "了", "py": "le", "color": "bg-blue-100", "searchKey": "le_particle" },
+                { "en_lit": "(question particle)", "cn": "吗", "py": "ma", "color": "bg-orange-100", "searchKey": "ma_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "call_shout_named": {
+        "searchKey": "call_shout_named",
+        "displayKey": "叫 (to call; to be called; to shout)",
+        "hanzi": "叫",
+        "pinyin": "jiào",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "My name is Li Ming.",
+            "cn": "我叫李明。",
+            "py": "wǒ jiào Lǐ Míng.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "am called", "cn": "叫", "py": "jiào", "color": "bg-indigo-100", "searchKey": "call_shout_named" },
+                { "en_lit": "Li Ming (name)", "cn": "李明", "py": "Lǐ Míng", "color": "bg-red-100", "searchKey": "li_ming_name" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "come": {
+        "searchKey": "come",
+        "displayKey": "来 (to come)",
+        "hanzi": "来",
+        "pinyin": "lái",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "He will come tomorrow.",
+            "cn": "他明天来。",
+            "py": "tā míngtiān lái.",
+            "segments": [
+                { "en_lit": "he", "cn": "他", "py": "tā", "color": "bg-teal-100", "searchKey": "he" },
+                { "en_lit": "tomorrow", "cn": "明天", "py": "míngtiān", "color": "bg-pink-100", "searchKey": "tomorrow" },
+                { "en_lit": "come", "cn": "来", "py": "lái", "color": "bg-yellow-100", "searchKey": "come" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "return_go_back": {
+        "searchKey": "return_go_back",
+        "displayKey": "回 (to return, go back)",
+        "hanzi": "回",
+        "pinyin": "huí",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "When will you return home?",
+            "cn": "你什么时候回家？",
+            "py": "nǐ shénme shíhou huí jiā?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "what time/when", "cn": "什么时候", "py": "shénme shíhou", "color": "bg-green-100", "searchKey": "what_time_when" },
+                { "en_lit": "return", "cn": "回", "py": "huí", "color": "bg-purple-100", "searchKey": "return_go_back" },
+                { "en_lit": "home/family", "cn": "家", "py": "jiā", "color": "bg-pink-100", "searchKey": "home_family" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "go": {
+        "searchKey": "go",
+        "displayKey": "去 (to go)",
+        "hanzi": "去",
+        "pinyin": "qù",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "I want to go to China.",
+            "cn": "我想去中国。",
+            "py": "wǒ xiǎng qù Zhōngguó.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "want/think", "cn": "想", "py": "xiǎng", "color": "bg-green-100", "searchKey": "want_think_miss" },
+                { "en_lit": "go", "cn": "去", "py": "qù", "color": "bg-purple-100", "searchKey": "go" },
+                { "en_lit": "China", "cn": "中国", "py": "Zhōngguó", "color": "bg-orange-100", "searchKey": "China" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "eat": {
+        "searchKey": "eat",
+        "displayKey": "吃 (to eat)",
+        "hanzi": "吃",
+        "pinyin": "chī",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "What do you want to eat?",
+            "cn": "你想吃什么？",
+            "py": "nǐ xiǎng chī shénme?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "want/think", "cn": "想", "py": "xiǎng", "color": "bg-green-100", "searchKey": "want_think_miss" },
+                { "en_lit": "eat", "cn": "吃", "py": "chī", "color": "bg-red-100", "searchKey": "eat" },
+                { "en_lit": "what", "cn": "什么", "py": "shénme", "color": "bg-orange-100", "searchKey": "what" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "drink": {
+        "searchKey": "drink",
+        "displayKey": "喝 (to drink)",
+        "hanzi": "喝",
+        "pinyin": "hē",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "I like to drink tea.",
+            "cn": "我喜欢喝茶。",
+            "py": "wǒ xǐhuan hē chá.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "like", "cn": "喜欢", "py": "xǐhuan", "color": "bg-green-100", "searchKey": "like_verb" },
+                { "en_lit": "drink", "cn": "喝", "py": "hē", "color": "bg-red-100", "searchKey": "drink" },
+                { "en_lit": "tea", "cn": "茶", "py": "chá", "color": "bg-yellow-100", "searchKey": "tea" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "sleep": {
+        "searchKey": "sleep",
+        "displayKey": "睡觉 (to sleep)",
+        "hanzi": "睡觉",
+        "pinyin": "shuìjiào",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "I want to sleep.",
+            "cn": "我想睡觉。",
+            "py": "wǒ xiǎng shuìjiào.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "want/think", "cn": "想", "py": "xiǎng", "color": "bg-green-100", "searchKey": "want_think_miss" },
+                { "en_lit": "sleep", "cn": "睡觉", "py": "shuìjiào", "color": "bg-blue-100", "searchKey": "sleep" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "make_phone_call": {
+        "searchKey": "make_phone_call",
+        "displayKey": "打电话 (to make a phone call)",
+        "hanzi": "打电话",
+        "pinyin": "dǎ diànhuà",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "He is making a phone call.",
+            "cn": "他在打电话。",
+            "py": "tā zài dǎ diànhuà.",
+            "segments": [
+                { "en_lit": "he", "cn": "他", "py": "tā", "color": "bg-teal-100", "searchKey": "he" },
+                { "en_lit": "is (in the process of)", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_action_in_progress" },
+                { "en_lit": "make a phone call", "cn": "打电话", "py": "dǎ diànhuà", "color": "bg-orange-100", "searchKey": "make_phone_call" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "do_make": {
+        "searchKey": "do_make",
+        "displayKey": "做 (to do, to make)",
+        "hanzi": "做",
+        "pinyin": "zuò",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "What are you doing?",
+            "cn": "你在做什么？",
+            "py": "nǐ zài zuò shénme?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "are (in the process of)", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_action_in_progress" },
+                { "en_lit": "do/make", "cn": "做", "py": "zuò", "color": "bg-teal-100", "searchKey": "do_make" },
+                { "en_lit": "what", "cn": "什么", "py": "shénme", "color": "bg-orange-100", "searchKey": "what" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "buy": {
+        "searchKey": "buy",
+        "displayKey": "买 (to buy)",
+        "hanzi": "买",
+        "pinyin": "mǎi",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "I want to buy clothes.",
+            "cn": "我想买衣服。",
+            "py": "wǒ xiǎng mǎi yīfu.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "want/think", "cn": "想", "py": "xiǎng", "color": "bg-green-100", "searchKey": "want_think_miss" },
+                { "en_lit": "buy", "cn": "买", "py": "mǎi", "color": "bg-indigo-100", "searchKey": "buy" },
+                { "en_lit": "clothes", "cn": "衣服", "py": "yīfu", "color": "bg-green-100", "searchKey": "clothes" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "open_drive_start": {
+        "searchKey": "open_drive_start",
+        "displayKey": "开 (to open; to drive; to start)",
+        "hanzi": "开",
+        "pinyin": "kāi",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "Please open the door.",
+            "cn": "请开门。",
+            "py": "qǐng kāi mén.",
+            "segments": [
+                { "en_lit": "please", "cn": "请", "py": "qǐng", "color": "bg-green-100", "searchKey": "please_invite_request" },
+                { "en_lit": "open", "cn": "开", "py": "kāi", "color": "bg-red-100", "searchKey": "open_drive_start" },
+                { "en_lit": "door", "cn": "门", "py": "mén", "color": "bg-yellow-100", "searchKey": "door" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "sit_take_transport": {
+        "searchKey": "sit_take_transport",
+        "displayKey": "坐 (to sit; to take transport)",
+        "hanzi": "坐",
+        "pinyin": "zuò",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "I take the bus to school.",
+            "cn": "我坐公共汽车去学校。",
+            "py": "wǒ zuò gōnggòng qìchē qù xuéxiào.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "take (transport)", "cn": "坐", "py": "zuò", "color": "bg-orange-100", "searchKey": "sit_take_transport" },
+                { "en_lit": "bus", "cn": "公共汽车", "py": "gōnggòng qìchē", "color": "bg-purple-100", "searchKey": "bus" },
+                { "en_lit": "go", "cn": "去", "py": "qù", "color": "bg-purple-100", "searchKey": "go" },
+                { "en_lit": "school", "cn": "学校", "py": "xuéxiào", "color": "bg-blue-100", "searchKey": "school" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "live_reside": {
+        "searchKey": "live_reside",
+        "displayKey": "住 (to live, reside)",
+        "hanzi": "住",
+        "pinyin": "zhù",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "Where do you live?",
+            "cn": "你住在哪儿？",
+            "py": "nǐ zhù zài nǎr?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "live/reside", "cn": "住", "py": "zhù", "color": "bg-pink-100", "searchKey": "live_reside" },
+                { "en_lit": "at", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_prep" },
+                { "en_lit": "where", "cn": "哪儿", "py": "nǎr", "color": "bg-purple-100", "searchKey": "where" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "learn_study": {
+        "searchKey": "learn_study",
+        "displayKey": "学习 (to learn, to study)",
+        "hanzi": "学习",
+        "pinyin": "xuéxí",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "I like to study Chinese.",
+            "cn": "我喜欢学习汉语。",
+            "py": "wǒ xǐhuan xuéxí Hànyǔ.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "like", "cn": "喜欢", "py": "xǐhuan", "color": "bg-green-100", "searchKey": "like_verb" },
+                { "en_lit": "learn/study", "cn": "学习", "py": "xuéxí", "color": "bg-purple-100", "searchKey": "learn_study" },
+                { "en_lit": "Chinese language", "cn": "汉语", "py": "Hànyǔ", "color": "bg-green-100", "searchKey": "chinese_language_hanyu" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "work_job": {
+        "searchKey": "work_job",
+        "displayKey": "工作 (to work; work, job)",
+        "hanzi": "工作",
+        "pinyin": "gōngzuò",
+        "category": "Verb/Noun",
+        "example": {
+            "en_full_grammatical": "What is your job?",
+            "cn": "你做什么工作？",
+            "py": "nǐ zuò shénme gōngzuò?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "do", "cn": "做", "py": "zuò", "color": "bg-teal-100", "searchKey": "do_make" },
+                { "en_lit": "what", "cn": "什么", "py": "shénme", "color": "bg-orange-100", "searchKey": "what" },
+                { "en_lit": "work/job", "cn": "工作", "py": "gōngzuò", "color": "bg-yellow-100", "searchKey": "work_job" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "rain_verb": {
+        "searchKey": "rain_verb",
+        "displayKey": "下雨 (to rain)",
+        "hanzi": "下雨",
+        "pinyin": "xià yǔ",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "It's raining today.",
+            "cn": "今天下雨了。",
+            "py": "jīntiān xià yǔ le.",
+            "segments": [
+                { "en_lit": "today", "cn": "今天", "py": "jīntiān", "color": "bg-purple-100", "searchKey": "today" },
+                { "en_lit": "rain", "cn": "下雨", "py": "xià yǔ", "color": "bg-blue-100", "searchKey": "rain_verb" },
+                { "en_lit": "(particle indicating change/completion)", "cn": "了", "py": "le", "color": "bg-blue-100", "searchKey": "le_particle" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "love_verb": {
+        "searchKey": "love_verb",
+        "displayKey": "爱 (to love)",
+        "hanzi": "爱",
+        "pinyin": "ài",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "I love my family.",
+            "cn": "我爱我的家人。",
+            "py": "wǒ ài wǒ de jiārén.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "love", "cn": "爱", "py": "ài", "color": "bg-pink-100", "searchKey": "love_verb" },
+                { "en_lit": "my", "cn": "我的", "py": "wǒ de", "color": "bg-purple-100", "searchKey": "my" },
+                { "en_lit": "family members", "cn": "家人", "py": "jiārén", "color": "bg-teal-100", "searchKey": "family_members" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "like_verb": {
+        "searchKey": "like_verb",
+        "displayKey": "喜欢 (to like)",
+        "hanzi": "喜欢",
+        "pinyin": "xǐhuan",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "I like Chinese food.",
+            "cn": "我喜欢中国菜。",
+            "py": "wǒ xǐhuan Zhōngguó cài.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "like", "cn": "喜欢", "py": "xǐhuan", "color": "bg-green-100", "searchKey": "like_verb" },
+                { "en_lit": "Chinese", "cn": "中国", "py": "Zhōngguó", "color": "bg-orange-100", "searchKey": "China" },
+                { "en_lit": "dish/food", "cn": "菜", "py": "cài", "color": "bg-purple-100", "searchKey": "dish_vegetable" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "want_think_miss": {
+        "searchKey": "want_think_miss",
+        "displayKey": "想 (to want; to think; to miss)",
+        "hanzi": "想",
+        "pinyin": "xiǎng",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "I want to go home.",
+            "cn": "我想回家。",
+            "py": "wǒ xiǎng huí jiā.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "want/think", "cn": "想", "py": "xiǎng", "color": "bg-green-100", "searchKey": "want_think_miss" },
+                { "en_lit": "return", "cn": "回", "py": "huí", "color": "bg-purple-100", "searchKey": "return_go_back" },
+                { "en_lit": "home", "cn": "家", "py": "jiā", "color": "bg-pink-100", "searchKey": "home_family" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "know_recognize_person": {
+        "searchKey": "know_recognize_person",
+        "displayKey": "认识 (to know, recognize someone)",
+        "hanzi": "认识",
+        "pinyin": "rènshi",
+        "category": "Verb",
+        "example": {
+            "en_full_grammatical": "Do you know him?",
+            "cn": "你认识他吗？",
+            "py": "nǐ rènshi tā ma?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "know/recognize (person)", "cn": "认识", "py": "rènshi", "color": "bg-indigo-100", "searchKey": "know_recognize_person" },
+                { "en_lit": "him", "cn": "他", "py": "tā", "color": "bg-teal-100", "searchKey": "he" },
+                { "en_lit": "(question particle)", "cn": "吗", "py": "ma", "color": "bg-orange-100", "searchKey": "ma_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "can_know_how_to_will": {
+        "searchKey": "can_know_how_to_will",
+        "displayKey": "会 (can, know how to; will)",
+        "hanzi": "会",
+        "pinyin": "huì",
+        "category": "Auxiliary Verb",
+        "example": {
+            "en_full_grammatical": "I can speak Chinese.",
+            "cn": "我会说汉语。",
+            "py": "wǒ huì shuō Hànyǔ.",
+            "segments": [
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "can/know how to", "cn": "会", "py": "huì", "color": "bg-teal-100", "searchKey": "can_know_how_to_will" },
+                { "en_lit": "speak", "cn": "说", "py": "shuō", "color": "bg-indigo-100", "searchKey": "speak_say" },
+                { "en_lit": "Chinese language", "cn": "汉语", "py": "Hànyǔ", "color": "bg-green-100", "searchKey": "chinese_language_hanyu" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "can_be_able_to": {
+        "searchKey": "can_be_able_to",
+        "displayKey": "能 (can, be able to)",
+        "hanzi": "能",
+        "pinyin": "néng",
+        "category": "Auxiliary Verb",
+        "example": {
+            "en_full_grammatical": "Can you help me?",
+            "cn": "你能帮我吗？",
+            "py": "nǐ néng bāng wǒ ma?",
+            "segments": [
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "can/be able to", "cn": "能", "py": "néng", "color": "bg-blue-100", "searchKey": "can_be_able_to" },
+                { "en_lit": "help", "cn": "帮", "py": "bāng", "color": "bg-yellow-100", "searchKey": "help" },
+                { "en_lit": "me", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "(question particle)", "cn": "吗", "py": "ma", "color": "bg-orange-100", "searchKey": "ma_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "good_well": {
+        "searchKey": "good_well",
+        "displayKey": "好 (good, well)",
+        "hanzi": "好",
+        "pinyin": "hǎo",
+        "category": "Adjective",
+        "example": {
+            "en_full_grammatical": "This is very good.",
+            "cn": "这个很好。",
+            "py": "zhège hěn hǎo.",
+            "segments": [
+                { "en_lit": "this (one)", "cn": "这个", "py": "zhège", "color": "bg-yellow-100", "searchKey": "this_one" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-red-100", "searchKey": "very" },
+                { "en_lit": "good/well", "cn": "好", "py": "hǎo", "color": "bg-blue-100", "searchKey": "good_well" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "big_large": {
+        "searchKey": "big_large",
+        "displayKey": "大 (big, large)",
+        "hanzi": "大",
+        "pinyin": "dà",
+        "category": "Adjective",
+        "example": {
+            "en_full_grammatical": "His house is very big.",
+            "cn": "他的家很大。",
+            "py": "tā de jiā hěn dà.",
+            "segments": [
+                { "en_lit": "his", "cn": "他的", "py": "tā de", "color": "bg-purple-100", "searchKey": "his" },
+                { "en_lit": "home/house", "cn": "家", "py": "jiā", "color": "bg-pink-100", "searchKey": "home_family" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-red-100", "searchKey": "very" },
+                { "en_lit": "big/large", "cn": "大", "py": "dà", "color": "bg-green-100", "searchKey": "big_large" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "small_little": {
+        "searchKey": "small_little",
+        "displayKey": "小 (small, little)",
+        "hanzi": "小",
+        "pinyin": "xiǎo",
+        "category": "Adjective",
+        "example": {
+            "en_full_grammatical": "This cat is small.",
+            "cn": "这只猫很小。",
+            "py": "zhè zhī māo hěn xiǎo.",
+            "segments": [
+                { "en_lit": "this", "cn": "这", "py": "zhè", "color": "bg-yellow-100", "searchKey": "this" },
+                { "en_lit": "(measure word for animals)", "cn": "只", "py": "zhī", "color": "bg-purple-100", "searchKey": "zhi_mw" },
+                { "en_lit": "cat", "cn": "猫", "py": "māo", "color": "bg-red-100", "searchKey": "cat" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-red-100", "searchKey": "very" },
+                { "en_lit": "small/little", "cn": "小", "py": "xiǎo", "color": "bg-orange-100", "searchKey": "small_little" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "many_much_adjective": {
+        "searchKey": "many_much_adjective",
+        "displayKey": "多 (many, much)",
+        "hanzi": "多",
+        "pinyin": "duō",
+        "category": "Adjective",
+        "example": {
+            "en_full_grammatical": "There are many people here.",
+            "cn": "这里人很多。",
+            "py": "zhèli rén hěn duō.",
+            "segments": [
+                { "en_lit": "here", "cn": "这里", "py": "zhèli", "color": "bg-blue-100", "searchKey": "here_place" },
+                { "en_lit": "people", "cn": "人", "py": "rén", "color": "bg-yellow-100", "searchKey": "person_people" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-red-100", "searchKey": "very" },
+                { "en_lit": "many/much", "cn": "多", "py": "duō", "color": "bg-teal-100", "searchKey": "many_much_adjective" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "few_little_less_adjective": {
+        "searchKey": "few_little_less_adjective",
+        "displayKey": "少 (few, little, less)",
+        "hanzi": "少",
+        "pinyin": "shǎo",
+        "category": "Adjective",
+        "example": {
+            "en_full_grammatical": "There is little water.",
+            "cn": "水很少。",
+            "py": "shuǐ hěn shǎo.",
+            "segments": [
+                { "en_lit": "water", "cn": "水", "py": "shuǐ", "color": "bg-yellow-100", "searchKey": "water" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-red-100", "searchKey": "very" },
+                { "en_lit": "few/little", "cn": "少", "py": "shǎo", "color": "bg-indigo-100", "searchKey": "few_little_less_adjective" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "cold": {
+        "searchKey": "cold",
+        "displayKey": "冷 (cold)",
+        "hanzi": "冷",
+        "pinyin": "lěng",
+        "category": "Adjective",
+        "example": {
+            "en_full_grammatical": "Today is very cold.",
+            "cn": "今天很冷。",
+            "py": "jīntiān hěn lěng.",
+            "segments": [
+                { "en_lit": "today", "cn": "今天", "py": "jīntiān", "color": "bg-purple-100", "searchKey": "today" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-red-100", "searchKey": "very" },
+                { "en_lit": "cold", "cn": "冷", "py": "lěng", "color": "bg-sky-100", "searchKey": "cold" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "hot": {
+        "searchKey": "hot",
+        "displayKey": "热 (hot)",
+        "hanzi": "热",
+        "pinyin": "rè",
+        "category": "Adjective",
+        "example": {
+            "en_full_grammatical": "The weather is very hot.",
+            "cn": "天气很热。",
+            "py": "tiānqì hěn rè.",
+            "segments": [
+                { "en_lit": "weather", "cn": "天气", "py": "tiānqì", "color": "bg-sky-100", "searchKey": "weather" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-red-100", "searchKey": "very" },
+                { "en_lit": "hot", "cn": "热", "py": "rè", "color": "bg-green-100", "searchKey": "hot" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "happy_glad": {
+        "searchKey": "happy_glad",
+        "displayKey": "高兴 (happy, glad)",
+        "hanzi": "高兴",
+        "pinyin": "gāoxìng",
+        "category": "Adjective",
+        "example": {
+            "en_full_grammatical": "I am very happy to see you.",
+            "cn": "看见你我很高兴。",
+            "py": "kànjiàn nǐ wǒ hěn gāoxìng.",
+            "segments": [
+                { "en_lit": "see/catch sight of", "cn": "看见", "py": "kànjiàn", "color": "bg-orange-100", "searchKey": "see_perceive" },
+                { "en_lit": "you", "cn": "你", "py": "nǐ", "color": "bg-pink-100", "searchKey": "you" },
+                { "en_lit": "I", "cn": "我", "py": "wǒ", "color": "bg-sky-100", "searchKey": "i" },
+                { "en_lit": "very", "cn": "很", "py": "hěn", "color": "bg-red-100", "searchKey": "very" },
+                { "en_lit": "happy/glad", "cn": "高兴", "py": "gāoxìng", "color": "bg-yellow-100", "searchKey": "happy_glad" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+	"you_plural": {
+        "searchKey": "you_plural",
+        "displayKey": "你们 (you - plural)",
+        "hanzi": "你们",
+        "pinyin": "nǐmen",
+        "category": "Personal Pronoun",
+        "example": {
+            "en_full_grammatical": "Are you all students?",
+            "cn": "你们都是学生吗？",
+            "py": "nǐmen dōu shì xuésheng ma?",
+            "segments": [
+                { "en_lit": "you (plural)", "cn": "你们", "py": "nǐmen", "color": "bg-sky-100", "searchKey": "you_plural" },
+                { "en_lit": "all", "cn": "都", "py": "dōu", "color": "bg-green-100", "searchKey": "all_both" },
+                { "en_lit": "are", "cn": "是", "py": "shì", "color": "bg-red-100", "searchKey": "is_am_are_to_be" },
+                { "en_lit": "student(s)", "cn": "学生", "py": "xuésheng", "color": "bg-yellow-100", "searchKey": "student" },
+                { "en_lit": "(question particle)", "cn": "吗", "py": "ma", "color": "bg-orange-100", "searchKey": "ma_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "they_masculine_mixed": {
+        "searchKey": "they_masculine_mixed",
+        "displayKey": "他们 (they - masculine/mixed)",
+        "hanzi": "他们",
+        "pinyin": "tāmen",
+        "category": "Personal Pronoun",
+        "example": {
+            "en_full_grammatical": "They are good friends.",
+            "cn": "他们是好朋友。",
+            "py": "tāmen shì hǎo péngyǒu.",
+            "segments": [
+                { "en_lit": "they (masculine/mixed)", "cn": "他们", "py": "tāmen", "color": "bg-purple-100", "searchKey": "they_masculine_mixed" },
+                { "en_lit": "are", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is_am_are_to_be" },
+                { "en_lit": "good", "cn": "好", "py": "hǎo", "color": "bg-blue-100", "searchKey": "good_well" },
+                { "en_lit": "friend(s)", "cn": "朋友", "py": "péngyǒu", "color": "bg-pink-100", "searchKey": "friend" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "they_feminine": {
+        "searchKey": "they_feminine",
+        "displayKey": "她们 (they - feminine)",
+        "hanzi": "她们",
+        "pinyin": "tāmen",
+        "category": "Personal Pronoun",
+        "example": {
+            "en_full_grammatical": "They (feminine) are all teachers.",
+            "cn": "她们都是老师。",
+            "py": "tāmen dōu shì lǎoshī.",
+            "segments": [
+                { "en_lit": "they (feminine)", "cn": "她们", "py": "tāmen", "color": "bg-teal-100", "searchKey": "they_feminine" },
+                { "en_lit": "all", "cn": "都", "py": "dōu", "color": "bg-green-100", "searchKey": "all_both" },
+                { "en_lit": "are", "cn": "是", "py": "shì", "color": "bg-red-100", "searchKey": "is_am_are_to_be" },
+                { "en_lit": "teacher(s)", "cn": "老师", "py": "lǎoshī", "color": "bg-indigo-100", "searchKey": "teacher" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "it_pronoun": {
+        "searchKey": "it_pronoun",
+        "displayKey": "它 (it - for objects/animals)",
+        "hanzi": "它",
+        "pinyin": "tā",
+        "category": "Personal Pronoun",
+        "example": {
+            "en_full_grammatical": "It is a small cat.",
+            "cn": "它是一只小猫。",
+            "py": "tā shì yī zhī xiǎo māo.",
+            "segments": [
+                { "en_lit": "it", "cn": "它", "py": "tā", "color": "bg-sky-100", "searchKey": "it_pronoun" },
+                { "en_lit": "is", "cn": "是", "py": "shì", "color": "bg-green-100", "searchKey": "is_am_are_to_be" },
+                { "en_lit": "one", "cn": "一", "py": "yī", "color": "bg-red-100", "searchKey": "one" },
+                { "en_lit": "(measure word for animals)", "cn": "只", "py": "zhī", "color": "bg-purple-100", "searchKey": "zhi_mw" },
+                { "en_lit": "small", "cn": "小", "py": "xiǎo", "color": "bg-orange-100", "searchKey": "small_little" },
+                { "en_lit": "cat", "cn": "猫", "py": "māo", "color": "bg-red-100", "searchKey": "cat" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "they_objects_animals": {
+        "searchKey": "they_objects_animals",
+        "displayKey": "它们 (they - for objects/animals)",
+        "hanzi": "它们",
+        "pinyin": "tāmen",
+        "category": "Personal Pronoun",
+        "example": {
+            "en_full_grammatical": "They (the books) are on the table.",
+            "cn": "它们在桌子上。",
+            "py": "tāmen zài zhuōzi shang.",
+            "segments": [
+                { "en_lit": "they (objects/animals)", "cn": "它们", "py": "tāmen", "color": "bg-yellow-100", "searchKey": "they_objects_animals" },
+                { "en_lit": "are at/on", "cn": "在", "py": "zài", "color": "bg-pink-100", "searchKey": "zai_prep" },
+                { "en_lit": "table", "cn": "桌子", "py": "zhuōzi", "color": "bg-blue-100", "searchKey": "table" },
+                { "en_lit": "on top", "cn": "上", "py": "shang", "color": "bg-orange-100", "searchKey": "shang_loc" },
+                { "en_lit": ".", "cn": "。", "py": ".", "color": "bg-gray-100" }
+            ]
+        }
+    },
+    "you_formal": {
+        "searchKey": "you_formal",
+        "displayKey": "您 (you - singular, formal)",
+        "hanzi": "您",
+        "pinyin": "nín",
+        "category": "Personal Pronoun",
+        "example": {
+            "en_full_grammatical": "How are you, Mr. Wang? (formal)",
+            "cn": "王先生，您好吗？",
+            "py": "Wáng xiānsheng, nín hǎo ma?",
+            "segments": [
+                { "en_lit": "Wang (surname)", "cn": "王", "py": "Wáng", "color": "bg-pink-100", "searchKey": "wang_surname" },
+                { "en_lit": "Mr./sir", "cn": "先生", "py": "xiānsheng", "color": "bg-blue-100", "searchKey": "mr_sir_husband" },
+                { "en_lit": ",", "cn": "，", "py": ",", "color": "bg-gray-100" },
+                { "en_lit": "you (formal)", "cn": "您", "py": "nín", "color": "bg-green-100", "searchKey": "you_formal" },
+                { "en_lit": "good", "cn": "好", "py": "hǎo", "color": "bg-blue-100", "searchKey": "good_well" },
+                { "en_lit": "(question particle)", "cn": "吗", "py": "ma", "color": "bg-orange-100", "searchKey": "ma_particle" },
+                { "en_lit": "?", "cn": "？", "py": "?", "color": "bg-gray-100" }
+            ]
+        }
+    }
+}

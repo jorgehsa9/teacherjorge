@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo: Preencher Lacunas - Inglês</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Estilos específicos para Preencher Lacunas, complementando style.css */
+        .lesson-content {
+             padding: 30px 40px;
+             display: flex;
+             flex-direction: column;
+             align-items: center; /* Centraliza o conteúdo do jogo */
+        }
+
+        #game-container-fillblanks { /* ID específico */
+            background-color: var(--section-even-bg);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 800px; /* Largura maior para frases */
+            text-align: center;
+            margin: 20px auto;
+            box-shadow: 0 3px 8px var(--shadow-color);
+        }
+
+        /* Seletor de Dificuldade */
+        #difficulty-selector-fillblanks {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #difficulty-selector-fillblanks h3 {
+             margin-top: 0;
+             margin-bottom: 1rem;
+             font-size: 1.2em;
+             color: var(--primary-color);
+        }
+        body.dark-mode #difficulty-selector-fillblanks h3 {
+             color: var(--secondary-color);
+         }
+        .difficulty-button-fillblanks { /* Classe específica */
+            padding: 8px 15px;
+            margin: 0 5px 10px 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--white-color);
+            color: var(--text-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+        }
+        body.dark-mode .difficulty-button-fillblanks {
+             background-color: var(--section-even-bg);
+             border-color: var(--border-color);
+             color: var(--text-color);
+         }
+        .difficulty-button-fillblanks.active {
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+            border-color: var(--primary-color);
+            font-weight: bold;
+            transform: scale(1.05);
+        }
+        body.dark-mode .difficulty-button-fillblanks.active {
+            background-color: var(--secondary-color);
+            color: var(--button-text-color);
+            border-color: var(--secondary-color);
+        }
+
+        /* Contador de Exercício */
+        #exercise-counter {
+            font-size: 0.9em;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Display da Frase com Lacunas (CORRIGIDO ALINHAMENTO) */
+        #sentence-display {
+            font-size: 1.2em; /* Tamanho da fonte da frase */
+            line-height: 2; /* Aumenta espaçamento para inputs */
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            text-align: center; /* Centraliza o texto e os inputs inline */
+            padding: 1rem;
+            background-color: var(--section-odd-bg);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+        body.dark-mode #sentence-display {
+             background-color: var(--section-odd-bg);
+        }
+
+        .blank-input {
+            border: 1px solid var(--border-color);
+            padding: 0.3rem 0.6rem;
+            margin: 0 0.25rem;
+            border-radius: 4px;
+            min-width: 80px;
+            text-align: center;
+            font-size: 0.95em; /* Levemente menor que a frase */
+            font-family: 'Poppins', sans-serif; /* Mesma fonte */
+            background-color: var(--white-color);
+            color: var(--text-color);
+            transition: border-color 0.3s, background-color 0.3s, box-shadow 0.2s;
+        }
+        body.dark-mode .blank-input {
+             background-color: var(--bg-color);
+        }
+        .blank-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px hsla(from var(--secondary-color) h s l / 0.2);
+        }
+        /* Estilos para feedback nos inputs */
+        .blank-input.correct {
+            border-color: var(--success-color);
+            background-color: var(--success-bg-light);
+            color: var(--success-color); /* Opcional: texto verde */
+        }
+        .blank-input.incorrect {
+            border-color: var(--danger-color);
+            background-color: var(--danger-bg-light);
+             color: var(--danger-color); /* Opcional: texto vermelho */
+        }
+         .blank-input.incorrect::placeholder { /* Estilo para mostrar resposta correta */
+             color: var(--danger-color);
+             opacity: 0.8;
+             font-size: 0.9em;
+         }
+        .blank-input:disabled { /* Estilo quando desabilitado após checar */
+             opacity: 0.8;
+             background-color: var(--section-even-bg); /* Fundo levemente diferente */
+        }
+         body.dark-mode .blank-input:disabled {
+              background-color: var(--light-gray);
+         }
+
+
+        /* Feedback Geral */
+        #feedback-fillblanks { /* ID específico */
+            margin-top: 1rem;
+            font-weight: 600;
+            min-height: 1.5rem;
+            font-size: 1.05em;
+        }
+        .feedback-correct { color: var(--success-color); }
+        .feedback-incorrect { color: var(--danger-color); }
+
+        /* Botões de Ação */
+        .action-buttons-container {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .action-button { /* Estilo genérico para os botões */
+            padding: 10px 25px;
+            font-size: 1em;
+            font-weight: 500;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            color: var(--button-text-color);
+        }
+         body.dark-mode .action-button {
+             color: var(--button-text-color);
+         }
+        #check-button { background-color: var(--success-color); }
+        #check-button:hover { background-color: #218838; }
+        #next-button { background-color: var(--primary-color); }
+        #next-button:hover { background-color: var(--secondary-color); }
+        .action-button:active { transform: scale(0.98); }
+        .action-button.hidden { display: none; }
+
+        /* Modal de Resultado (CSS para garantir centralização) */
+        .modal {
+            display: none; /* Escondido por padrão */
+            position: fixed; /* Fica fixo na tela */
+            z-index: 1001; /* Garante que fique sobre outros elementos */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Permite rolagem se o conteúdo for grande */
+            background-color: rgba(0,0,0,0.6); /* Fundo semi-transparente */
+            /* Flexbox para centralizar o conteúdo */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.show {
+            display: flex; /* Mostra o modal usando flexbox */
+        }
+        .modal-content {
+            background-color: var(--container-bg);
+            margin: auto; /* Margem automática ajuda na centralização */
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            width: 90%; /* Largura responsiva */
+            max-width: 500px; /* Largura máxima */
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            position: relative; /* Para posicionamento interno se necessário */
+        }
+         #result-modal .modal-content h2 { color: var(--primary-color); }
+         body.dark-mode #result-modal .modal-content h2 { color: var(--secondary-color); }
+         #result-modal .modal-content strong { color: var(--primary-color); }
+         body.dark-mode #result-modal .modal-content strong { color: var(--secondary-color); }
+         #restart-button-fillblanks { /* ID específico */
+             padding: 10px 25px;
+             font-size: 1em;
+             font-weight: 500;
+             border: none;
+             border-radius: 6px;
+             cursor: pointer;
+             transition: background-color 0.3s ease;
+             background-color: var(--primary-color);
+             color: var(--button-text-color);
+             margin-top: 1rem;
+         }
+         #restart-button-fillblanks:hover {
+             background-color: var(--secondary-color);
+         }
+
+    </style>
+</head>
+<body>
+
+    <div id="floating-video"> <div class="video-container"> <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </div> </div>
+    <div id="floating-notepad"> <textarea id="notepad-area" placeholder="Suas anotações..."></textarea> </div>
+    <div id="floating-chat"> <div id="chatbox"> <div id="chatOutput"> <div class="message bot-message">Olá! Eu sou o George. Como posso ajudar com seu inglês hoje?</div> </div> <div id="chatInputContainer"> <input type="text" id="chatInput" placeholder="Digite sua dúvida aqui..." autocomplete="off"> <button id="sendButton">Enviar</button> </div> </div> </div>
+    <div class="container">
+        <header class="lesson-header">
+            <h1>Jogo: Preencher Lacunas</h1>
+            <div class="header-controls">
+                <a href="index.html" id="home-index-btn" title="Voltar ao Índice"><i class="fas fa-home"></i></a>
+                <button id="theme-toggle-btn" title="Alternar Modo Claro/Escuro"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+                <button id="video-toggle-btn" title="Mostrar/Esconder Vídeo"><i class="fas fa-video"></i></button>
+                <button id="notepad-toggle-btn" title="Mostrar/Esconder Bloco de Notas"><i class="fas fa-pencil-alt"></i></button>
+                <button id="chat-toggle-btn" title="Abrir Chat"><i class="fas fa-robot"></i></button>
+            </div>
+        </header>
+        <main class="lesson-content">
+
+            <div id="game-container-fillblanks">
+
+                 <div id="difficulty-selector-fillblanks">
+                    <h3>Escolha a Dificuldade:</h3>
+                    <button class="difficulty-button-fillblanks active" data-difficulty="1">Nível 1</button>
+                    <button class="difficulty-button-fillblanks" data-difficulty="2">Nível 2</button>
+                    <button class="difficulty-button-fillblanks" data-difficulty="3">Nível 3</button>
+                    <button class="difficulty-button-fillblanks" data-difficulty="4">Nível 4</button>
+                    <button class="difficulty-button-fillblanks" data-difficulty="5">Nível 5</button>
+                </div>
+
+                <p id="exercise-counter"></p>
+
+                <div id="sentence-display">
+                    </div>
+
+                <div id="feedback-fillblanks" class="min-h-[1.5rem]">
+                      </div>
+
+                <div class="action-buttons-container">
+                    <button id="check-button" class="action-button">
+                        <i class="fas fa-check"></i> Verificar
+                    </button>
+                    <button id="next-button" class="action-button hidden">
+                        Próximo <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+            </div> </main> </div> <div id="result-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-4">Exercício Concluído!</h2>
+            <p class="mb-4 text-lg">Sua pontuação: <strong id="final-score"></strong> acertos.</p>
+            <p id="result-message" class="mb-6 text-gray-600"></p>
+            <button id="restart-button-fillblanks">
+                Jogar Novamente
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Lógica do Tema e Painéis Flutuantes ---
+            // ... (código mantido igual ao anterior) ...
+            const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            const notepadToggleBtn = document.getElementById('notepad-toggle-btn');
+            const videoToggleBtn = document.getElementById('video-toggle-btn');
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            const floatingNotepad = document.getElementById('floating-notepad');
+            const floatingVideo = document.getElementById('floating-video');
+            const floatingChat = document.getElementById('floating-chat');
+            const notepadArea = document.getElementById('notepad-area');
+            const notepadStorageKey = 'notepadContent_fillblanks_game'; // Chave específica
+
+            const applyTheme = (theme) => { if (theme === 'dark') { document.body.classList.add('dark-mode'); } else { document.body.classList.remove('dark-mode'); } };
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(currentTheme);
+            if (themeToggleBtn) { themeToggleBtn.addEventListener('click', () => { const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark'; applyTheme(newTheme); localStorage.setItem('theme', newTheme); }); }
+            const savedNotepadContent = localStorage.getItem(notepadStorageKey);
+            if (savedNotepadContent && notepadArea) { notepadArea.value = savedNotepadContent; }
+            if (notepadArea) { notepadArea.addEventListener('input', () => { localStorage.setItem(notepadStorageKey, notepadArea.value); }); }
+            const setupPanelToggle = (button, panelElement, bodyClass) => { if (button && panelElement) { button.addEventListener('click', () => { document.body.classList.toggle(bodyClass); button.classList.toggle('active'); if (bodyClass === 'chat-visible' && document.body.classList.contains(bodyClass)) { const chatInput = document.querySelector('#floating-chat #chatInput'); if (chatInput) setTimeout(() => chatInput.focus(), 50); } }); } };
+            setupPanelToggle(notepadToggleBtn, floatingNotepad, 'notepad-visible');
+            setupPanelToggle(videoToggleBtn, floatingVideo, 'video-visible');
+            setupPanelToggle(chatToggleBtn, floatingChat, 'chat-visible');
+            const chatInput = document.getElementById('chatInput');
+            const chatOutput = document.getElementById('chatOutput');
+            const sendButton = document.getElementById('sendButton');
+            const WORKER_URL = 'https://george.jorgehsantonio.workers.dev/';
+            if (chatInput && chatOutput && sendButton) { function addMessage(message, className) { const messageDiv = document.createElement('div'); messageDiv.classList.add('message', className); messageDiv.textContent = message; chatOutput.appendChild(messageDiv); messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' }); return messageDiv; } async function sendMessageToWorker() { const userMessage = chatInput.value.trim(); if (!userMessage) return; addMessage(userMessage, 'user-message'); chatInput.value = ''; chatInput.focus(); const typingDiv = addMessage("George está digitando...", "typing-indicator"); chatInput.disabled = true; sendButton.disabled = true; try { const response = await fetch(WORKER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ message: userMessage }), }); if (typingDiv && chatOutput.contains(typingDiv)) typingDiv.remove(); if (!response.ok) { let errorText = `Erro ${response.status}: ${response.statusText}`; try { const errorData = await response.json(); errorText = `Erro do George: ${errorData.error || errorText}`; } catch (e) { /* Ignora */ } addMessage(errorText, 'error-message'); } else { const data = await response.json(); if (data.reply) { addMessage(data.reply, 'bot-message'); } else if (data.error) { addMessage(`Erro do George: ${data.error}`, 'error-message'); } else { addMessage(`George: Resposta inesperada.`, 'error-message'); } } } catch (error) { console.error('Erro ao enviar mensagem:', error); if (typingDiv && chatOutput.contains(typingDiv)) { typingDiv.remove(); } addMessage(`Erro de comunicação. Verifique sua conexão.`, 'error-message'); } finally { chatInput.disabled = false; sendButton.disabled = false; chatInput.focus(); } } sendButton.addEventListener('click', sendMessageToWorker); chatInput.addEventListener('keypress', function(event) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessageToWorker(); } }); } else { console.warn("Elementos do chat flutuante não encontrados."); }
+
+
+            // --- Lógica Específica do Jogo Preencher Lacunas ---
+
+            // Conjuntos de Exercícios por Dificuldade (EXPANDIDOS)
+            const exerciseSets = {
+                1: [ // Nível 1: Presente Simples (be, have), Artigos (a/an), Vocabulário Básico
+                    { sentence: "I ___ happy.", answers: ["am"] },
+                    { sentence: "She ___ a blue car.", answers: ["has"] },
+                    { sentence: "They ___ students.", answers: ["are"] },
+                    { sentence: "He is ___ teacher.", answers: ["a"] },
+                    { sentence: "It is ___ apple.", answers: ["an"] },
+                    { sentence: "This is a ___.", answers: ["dog"] },
+                    { sentence: "We ___ books.", answers: ["have"] },
+                    { sentence: "You ___ tall.", answers: ["are"] },
+                    { sentence: "It ___ cold today.", answers: ["is"] },
+                    { sentence: "I have ___ cat.", answers: ["a"] },
+                    { sentence: "My name ___ John.", answers: ["is"] },
+                    { sentence: "He ___ from Brazil.", answers: ["is"] },
+                ],
+                2: [ // Nível 2: Presente Simples (verbos comuns), Do/Does (neg/int), Preposições (in/on)
+                    { sentence: "She ___ (work) in an office.", answers: ["works"] },
+                    { sentence: "We ___ (play) soccer on Saturdays.", answers: ["play"] },
+                    { sentence: "He ___ (not live) here.", answers: ["doesn't live"] },
+                    { sentence: "They ___ (not speak) French.", answers: ["don't speak"] },
+                    { sentence: "___ you like pizza?", answers: ["Do"] },
+                    { sentence: "___ she study English?", answers: ["Does"] },
+                    { sentence: "The keys are ___ the table.", answers: ["on"] },
+                    { sentence: "I live ___ London.", answers: ["in"] },
+                    { sentence: "My birthday is ___ May.", answers: ["in"] },
+                    { sentence: "He reads books ___ the evening.", answers: ["in"] },
+                    { sentence: "Birds ___ (fly).", answers: ["fly"] },
+                    { sentence: "My cat ___ (sleep) a lot.", answers: ["sleeps"] },
+                ],
+                3: [ // Nível 3: Presente Contínuo, Adjetivos, There is/are, Some/Any
+                    { sentence: "Look! It ___ (rain).", answers: ["is raining"] },
+                    { sentence: "They ___ (watch) TV now.", answers: ["are watching"] },
+                    { sentence: "She ___ (not cook) at the moment.", answers: ["isn't cooking"] },
+                    { sentence: "What ___ you ___ (do)?", answers: ["are", "doing"] },
+                    { sentence: "___ is a book on the desk.", answers: ["There"] },
+                    { sentence: "___ are two cats in the garden.", answers: ["There"] },
+                    { sentence: "Is there ___ milk?", answers: ["any"] },
+                    { sentence: "I have ___ apples.", answers: ["some"] },
+                    { sentence: "This house is ___ (big).", answers: ["big"] },
+                    { sentence: "Are they ___ (happy)?", answers: ["happy"] },
+                    { sentence: "He ___ (wear) a blue shirt today.", answers: ["is wearing"] },
+                    { sentence: "We ___ (learn) English.", answers: ["are learning"] },
+                ],
+                4: [ // Nível 4: Passado Simples (regulares e irregulares), Expressões de tempo, Modais (can/could/should)
+                    { sentence: "He ___ (visit) Paris last year.", answers: ["visited"] },
+                    { sentence: "We ___ (eat) pasta yesterday.", answers: ["ate"] },
+                    { sentence: "She ___ (not see) the film.", answers: ["didn't see"] },
+                    { sentence: "___ you ___ (buy) that shirt?", answers: ["Did", "buy"] },
+                    { sentence: "I ___ swim when I was young.", answers: ["could"] },
+                    { sentence: "You ___ study more.", answers: ["should"] },
+                    { sentence: "They arrived two hours ___.", answers: ["ago"] },
+                    { sentence: "He ___ (be) very tired last night.", answers: ["was"] },
+                    { sentence: "___ I borrow your pen?", answers: ["Can"] },
+                    { sentence: "We ___ (study) for the test all morning.", answers: ["studied"] },
+                    { sentence: "My parents ___ (travel) to Italy last summer.", answers: ["travelled|traveled"] }, // Variação UK/US
+                    { sentence: "She ___ (break) her leg.", answers: ["broke"] },
+                ],
+                5: [ // Nível 5: Present Perfect (for/since/yet/already), Past Perfect, Comparativos/Superlativos
+                    { sentence: "She ___ (live) here since 2015.", answers: ["has lived"] },
+                    { sentence: "I ___ (not finish) my homework yet.", answers: ["haven't finished"] },
+                    { sentence: "Have you ___ (be) to Italy?", answers: ["ever been|been"] },
+                    { sentence: "He had ___ (leave) when I arrived.", answers: ["already left|left"] },
+                    { sentence: "This is the ___ (tall) building in the city.", answers: ["tallest"] },
+                    { sentence: "She speaks English ___ (good) than her brother.", answers: ["better"] },
+                    { sentence: "We have known each other ___ ten years.", answers: ["for"] },
+                    { sentence: "The train ___ (leave) before we got to the station.", answers: ["had left"] },
+                    { sentence: "I think this is the ___ (interesting) book.", answers: ["most interesting"] },
+                    { sentence: "He ___ (just arrive) from work.", answers: ["has just arrived"] },
+                    { sentence: "She is ___ (intelligent) person I know.", answers: ["the most intelligent"] },
+                    { sentence: "They ___ (already see) that movie twice.", answers: ["have already seen"] },
+                ]
+            };
+
+            // Elementos do DOM do Jogo
+            const gameContainer = document.getElementById('game-container-fillblanks');
+            const sentenceDisplay = document.getElementById('sentence-display');
+            const exerciseCounter = document.getElementById('exercise-counter');
+            const feedbackDisplay = document.getElementById('feedback-fillblanks');
+            const checkButton = document.getElementById('check-button');
+            const nextButton = document.getElementById('next-button');
+            const resultModal = document.getElementById('result-modal');
+            const finalScoreDisplay = document.getElementById('final-score');
+            const resultMessageDisplay = document.getElementById('result-message');
+            const restartButton = document.getElementById('restart-button-fillblanks');
+            const difficultyButtonsFillblanks = document.querySelectorAll('.difficulty-button-fillblanks');
+
+            // Variáveis de Estado do Jogo
+            let currentDifficulty = 1;
+            let currentExerciseIndex = 0;
+            let score = 0;
+            let totalBlanksInSession = 0;
+            let exercises = [];
+            let fullExerciseSet = [];
+            let checked = false;
+
+            // Função para embaralhar
+            function shuffleArray(array) { /* ... (código mantido) ... */ }
+             function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            // Função para iniciar/reiniciar o jogo
+            function startGame() { /* ... (código mantido) ... */ }
+             function startGame() {
+                currentExerciseIndex = 0;
+                score = 0;
+                totalBlanksInSession = 0;
+
+                const currentExerciseSet = exerciseSets[currentDifficulty] || exerciseSets[1];
+                 if (!currentExerciseSet || currentExerciseSet.length === 0) {
+                     console.error("Conjunto de exercícios vazio ou inválido para o nível:", currentDifficulty);
+                     sentenceDisplay.innerHTML = "Erro: Nenhum exercício encontrado para este nível.";
+                     return;
+                 }
+                fullExerciseSet = shuffleArray([...currentExerciseSet]);
+
+                exercises = fullExerciseSet.slice(0, 5);
+
+                totalBlanksInSession = exercises.reduce((acc, ex) => acc + ex.answers.length, 0);
+
+                resultModal.classList.remove('show');
+                feedbackDisplay.innerHTML = ' ';
+                feedbackDisplay.className = 'min-h-[1.5rem]';
+                gameContainer.style.display = 'block';
+                displayExercise();
+            }
+
+            // Função para exibir o exercício atual
+            function displayExercise() { /* ... (código mantido) ... */ }
+             function displayExercise() {
+                checked = false;
+                nextButton.classList.add('hidden');
+                checkButton.classList.remove('hidden');
+                checkButton.disabled = false;
+                feedbackDisplay.innerHTML = ' ';
+
+                if (currentExerciseIndex < exercises.length) {
+                    const currentExercise = exercises[currentExerciseIndex];
+                    exerciseCounter.textContent = `Exercício ${currentExerciseIndex + 1} de ${exercises.length}`;
+                    sentenceDisplay.innerHTML = '';
+
+                    const parts = currentExercise.sentence.split('___');
+                    let inputIndex = 0;
+
+                    parts.forEach((part, index) => {
+                        sentenceDisplay.appendChild(document.createTextNode(part));
+                        if (index < parts.length - 1) {
+                            const input = document.createElement('input');
+                            input.type = 'text';
+                            input.classList.add('blank-input');
+                            input.dataset.index = inputIndex;
+                            input.autocomplete = "off";
+                            inputIndex++;
+                            sentenceDisplay.appendChild(input);
+                            input.addEventListener('keypress', function(event) {
+                                if (event.key === 'Enter') {
+                                     event.preventDefault();
+                                     checkAnswers();
+                                }
+                            });
+                        }
+                    });
+                     const firstInput = sentenceDisplay.querySelector('.blank-input');
+                     if (firstInput) {
+                         setTimeout(() => firstInput.focus(), 100);
+                     }
+
+                } else {
+                    showResults();
+                }
+            }
+
+            // Função para verificar as respostas
+            function checkAnswers() { /* ... (código mantido) ... */ }
+             function checkAnswers() {
+                if (checked) return;
+
+                const currentExercise = exercises[currentExerciseIndex];
+                const inputs = sentenceDisplay.querySelectorAll('.blank-input');
+                let allCorrectInSentence = true;
+                let correctCountInSentence = 0;
+
+                inputs.forEach(input => {
+                    const inputIndex = parseInt(input.dataset.index);
+                    const userAnswer = input.value.trim().toLowerCase();
+                    const correctAnswers = currentExercise.answers[inputIndex].toLowerCase().split('|').map(ans => ans.trim());
+                    const isInputCorrect = correctAnswers.includes(userAnswer);
+
+                    input.disabled = true;
+
+                    if (isInputCorrect) {
+                        input.classList.add('correct');
+                        input.classList.remove('incorrect');
+                        correctCountInSentence++;
+                    } else {
+                        input.classList.add('incorrect');
+                        input.classList.remove('correct');
+                        allCorrectInSentence = false;
+                        input.placeholder = correctAnswers[0];
+                    }
+                });
+
+                score += correctCountInSentence;
+
+                if (allCorrectInSentence) {
+                    feedbackDisplay.textContent = 'Correto!';
+                    feedbackDisplay.className = 'min-h-[1.5rem] feedback-correct';
+                } else {
+                    feedbackDisplay.textContent = 'Verifique as respostas incorretas.';
+                    feedbackDisplay.className = 'min-h-[1.5rem] feedback-incorrect';
+                }
+
+                checked = true;
+                checkButton.classList.add('hidden');
+                checkButton.disabled = true;
+                nextButton.classList.remove('hidden');
+
+                if (currentExerciseIndex === exercises.length - 1) {
+                    nextButton.textContent = 'Ver Resultado Final';
+                } else {
+                    nextButton.textContent = 'Próximo Exercício';
+                }
+            }
+
+            // Função para ir para o próximo exercício
+            function nextExercise() { /* ... (código mantido) ... */ }
+             function nextExercise() {
+                currentExerciseIndex++;
+                displayExercise();
+            }
+
+
+             // Função para mostrar os resultados finais
+             function showResults() { /* ... (código mantido) ... */ }
+              function showResults() {
+                gameContainer.style.display = 'none';
+                finalScoreDisplay.textContent = `${score} de ${totalBlanksInSession}`;
+
+                const percentage = totalBlanksInSession > 0 ? (score / totalBlanksInSession) * 100 : 0;
+                let message = '';
+                if (percentage === 100) message = 'Excelente! Você acertou tudo!';
+                else if (percentage >= 70) message = 'Muito bem! Continue praticando.';
+                else if (percentage >= 50) message = 'Bom esforço! Revise os erros.';
+                else message = 'Não desanime! Continue estudando.';
+                resultMessageDisplay.textContent = message;
+
+                resultModal.classList.add('show');
+            }
+
+             // Função para mudar a dificuldade
+             function changeDifficulty(newDifficulty) { /* ... (código mantido) ... */ }
+              function changeDifficulty(newDifficulty) {
+                 currentDifficulty = parseInt(newDifficulty, 10);
+                 difficultyButtonsFillblanks.forEach(btn => {
+                     btn.classList.toggle('active', btn.dataset.difficulty == currentDifficulty);
+                 });
+                 console.log("Dificuldade de Preencher Lacunas alterada para:", currentDifficulty);
+                 startGame();
+             }
+
+
+            // --- Event Listeners ---
+            checkButton.addEventListener('click', checkAnswers);
+            nextButton.addEventListener('click', () => {
+                 if (currentExerciseIndex === exercises.length - 1) {
+                    showResults();
+                } else {
+                    nextExercise();
+                }
+            });
+             restartButton.addEventListener('click', startGame);
+
+             difficultyButtonsFillblanks.forEach(button => {
+                 button.addEventListener('click', () => {
+                     changeDifficulty(button.dataset.difficulty);
+                 });
+             });
+
+            // --- Inicialização ---
+            changeDifficulty(currentDifficulty);
+
+        }); // Fim do DOMContentLoaded
+    </script>
+
+</body>
+</html>

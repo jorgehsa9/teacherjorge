@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Anotações</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Estilos específicos para a página de notas */
+        .notes-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Ajusta colunas */
+            gap: 15px; /* Espaçamento entre botões */
+        }
+
+        .note-item button {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centraliza texto no botão */
+            width: 100%; /* Ocupa toda a largura da célula da grid */
+            min-height: 60px; /* Altura mínima */
+            padding: 10px 12px;
+            border-radius: 5px;
+            background-color: var(--secondary-color);
+            color: var(--button-text-color);
+            border: none;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            line-height: 1.4;
+        }
+
+        .note-item button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+         body.dark-mode .note-item button {
+             background-color: var(--primary-color);
+         }
+          body.dark-mode .note-item button:hover {
+             background-color: var(--secondary-color);
+         }
+
+
+        .note-item button i {
+            margin-right: 8px;
+        }
+
+        /* Estilo para área de exibição da nota */
+        #note-display-section {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: var(--section-odd-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            display: none; /* Começa escondido */
+        }
+        body.dark-mode #note-display-section {
+             background-color: var(--section-even-bg);
+        }
+
+        #note-display-title {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 1.3em;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+         body.dark-mode #note-display-title {
+             color: var(--secondary-color);
+         }
+
+        #note-display-content {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            background-color: var(--white-color); /* Fundo claro para área de texto */
+            color: var(--text-color);
+            resize: vertical; /* Permite redimensionar verticalmente */
+            box-sizing: border-box;
+        }
+        body.dark-mode #note-display-content {
+             background-color: var(--bg-color);
+             border-color: var(--border-color);
+             color: var(--text-color);
+        }
+
+        #close-note-display-btn {
+            display: block;
+            width: fit-content;
+            margin: 10px auto 0 auto;
+            padding: 8px 20px;
+            background-color: var(--danger-color);
+            color: var(--button-text-color);
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+         #close-note-display-btn:hover {
+            background-color: #c82333; /* Vermelho mais escuro */
+         }
+
+         .no-notes-message {
+             color: var(--text-muted);
+             font-style: italic;
+             margin-top: 15px;
+         }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="lesson-header">
+            <h1>Minhas Anotações</h1>
+            <div class="header-controls">
+                <a href="index.html" id="home-index-btn" title="Voltar ao Índice">
+                    <i class="fas fa-home"></i>
+                </a>
+                <button id="theme-toggle-btn" title="Alternar Modo Claro/Escuro">
+                    <i class="fas fa-moon"></i><i class="fas fa-sun"></i>
+                </button>
+                </div>
+        </header>
+
+        <main class="lesson-content">
+
+            <section id="main-lessons-notes" class="index-section">
+                <h2 class="index-section-title collapsible-trigger active">
+                    <i class="section-icon fas fa-graduation-cap"></i>
+                    Anotações das Lições Principais
+                    <span class="toggle-icon fas fa-chevron-up"></span>
+                </h2>
+                <div class="collapsible-content open">
+                    <ul class="notes-list" id="main-lesson-notes-list">
+                        </ul>
+                    <p class="no-notes-message" id="no-main-notes" style="display: none;">Nenhuma anotação encontrada para as lições principais.</p>
+                </div>
+            </section>
+
+            <section id="comp-lessons-notes" class="index-section">
+                <h2 class="index-section-title collapsible-trigger">
+                    <i class="section-icon fas fa-puzzle-piece"></i>
+                    Anotações das Lições Complementares
+                    <span class="toggle-icon fas fa-chevron-down"></span>
+                </h2>
+                <div class="collapsible-content">
+                    <ul class="notes-list" id="comp-lesson-notes-list">
+                        </ul>
+                     <p class="no-notes-message" id="no-comp-notes" style="display: none;">Nenhuma anotação encontrada para as lições complementares.</p>
+                </div>
+            </section>
+
+            <section id="games-notes" class="index-section">
+                <h2 class="index-section-title collapsible-trigger">
+                    <i class="section-icon fas fa-gamepad"></i>
+                    Anotações dos Jogos
+                    <span class="toggle-icon fas fa-chevron-down"></span>
+                </h2>
+                <div class="collapsible-content">
+                    <ul class="notes-list" id="game-notes-list">
+                        </ul>
+                     <p class="no-notes-message" id="no-game-notes" style="display: none;">Nenhuma anotação encontrada para os jogos.</p>
+                </div>
+            </section>
+
+            <section id="other-notes" class="index-section">
+                <h2 class="index-section-title collapsible-trigger">
+                    <i class="section-icon fas fa-sticky-note"></i>
+                    Outras Anotações
+                    <span class="toggle-icon fas fa-chevron-down"></span>
+                </h2>
+                <div class="collapsible-content">
+                    <ul class="notes-list" id="other-notes-list">
+                        </ul>
+                     <p class="no-notes-message" id="no-other-notes" style="display: none;">Nenhuma outra anotação encontrada.</p>
+                </div>
+            </section>
+
+            <section id="note-display-section">
+                <h3 id="note-display-title"></h3>
+                <textarea id="note-display-content" readonly rows="15"></textarea>
+                <button id="close-note-display-btn">Fechar Nota</button>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            const collapsibleTriggers = document.querySelectorAll('.collapsible-trigger');
+            const mainNotesList = document.getElementById('main-lesson-notes-list');
+            const compNotesList = document.getElementById('comp-lesson-notes-list');
+            const gameNotesList = document.getElementById('game-notes-list');
+            const otherNotesList = document.getElementById('other-notes-list');
+            const noteDisplaySection = document.getElementById('note-display-section');
+            const noteDisplayTitle = document.getElementById('note-display-title');
+            const noteDisplayContent = document.getElementById('note-display-content');
+            const closeNoteDisplayBtn = document.getElementById('close-note-display-btn');
+            const noMainNotesMsg = document.getElementById('no-main-notes');
+            const noCompNotesMsg = document.getElementById('no-comp-notes');
+            const noGameNotesMsg = document.getElementById('no-game-notes');
+            const noOtherNotesMsg = document.getElementById('no-other-notes');
+
+            const NOTE_PREFIX = 'notepadContent_'; // Prefixo usado nas chaves do localStorage
+
+            // --- Modo Claro/Escuro ---
+            const applyTheme = (theme) => {
+                if (theme === 'dark') { document.body.classList.add('dark-mode'); }
+                else { document.body.classList.remove('dark-mode'); }
+            };
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(currentTheme);
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+                    applyTheme(newTheme);
+                    localStorage.setItem('theme', newTheme);
+                });
+            }
+
+            // --- Seções Recolhíveis ---
+            collapsibleTriggers.forEach(trigger => {
+                 const content = trigger.nextElementSibling;
+                 const icon = trigger.querySelector('.toggle-icon');
+                 if (!content || !content.classList.contains('collapsible-content')) return;
+
+                // Define estado inicial
+                if (trigger.classList.contains('active') && content.classList.contains('open')) {
+                    if (icon) icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                } else {
+                    if (icon) icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+                    content.classList.remove('open'); // Garante que esteja fechado se não tiver 'open'
+                    trigger.classList.remove('active');
+                }
+
+                trigger.addEventListener('click', () => {
+                    const isOpen = content.classList.toggle('open');
+                    trigger.classList.toggle('active', isOpen);
+                    if (icon) {
+                        icon.classList.toggle('fa-chevron-down', !isOpen);
+                        icon.classList.toggle('fa-chevron-up', isOpen);
+                    }
+                });
+            });
+
+            // --- Função para Capitalizar e Formatar Nomes ---
+            function formatNoteName(key) {
+                let name = key.replace(NOTE_PREFIX, '').replace(/_/g, ' ');
+                // Capitaliza a primeira letra de cada palavra
+                name = name.replace(/\b\w/g, char => char.toUpperCase());
+                 // Substituições específicas para nomes mais amigáveis
+                 name = name.replace(/^Lesson (\d+)/, 'Lição Principal $1');
+                 name = name.replace(/^Comp Lesson (\d+)/, 'Lição Comp. $1');
+                 name = name.replace(/^Jogo /, 'Jogo: ');
+                 name = name.replace(/^Cefr Assessment/, 'Avaliação CEFR');
+                 name = name.replace(/^Speech$/, 'Avaliação de Fala');
+                 // Adicione mais substituições conforme necessário
+                return name;
+            }
+
+            // --- Carregar e Exibir Notas ---
+            function loadNotes() {
+                 mainNotesList.innerHTML = '';
+                 compNotesList.innerHTML = '';
+                 gameNotesList.innerHTML = '';
+                 otherNotesList.innerHTML = ''; // Limpa listas
+
+                 let mainCount = 0;
+                 let compCount = 0;
+                 let gameCount = 0;
+                 let otherCount = 0;
+
+                try {
+                    const keys = Object.keys(localStorage);
+                    keys.forEach(key => {
+                        if (key.startsWith(NOTE_PREFIX)) {
+                            const noteContent = localStorage.getItem(key);
+                            if (noteContent && noteContent.trim() !== '') { // Exibe apenas se houver conteúdo
+                                const formattedName = formatNoteName(key);
+
+                                const listItem = document.createElement('li');
+                                listItem.classList.add('note-item');
+
+                                const button = document.createElement('button');
+                                // Adiciona ícone baseado no tipo (pode melhorar isso)
+                                let iconClass = 'fa-sticky-note';
+                                if (key.includes('lesson_')) iconClass = 'fa-graduation-cap';
+                                if (key.includes('comp_lesson_')) iconClass = 'fa-puzzle-piece';
+                                if (key.includes('game_') || key.includes('jogo_') || ['flashcards','quiz','preencher_lacunas','correspondencia','anagramas','forca'].some(game => key.includes(game))) iconClass = 'fa-gamepad';
+                                if (key.includes('speech') || key.includes('cefr')) iconClass = 'fa-clipboard-check';
+
+                                button.innerHTML = `<i class="fas ${iconClass}"></i> ${formattedName}`;
+                                button.dataset.noteKey = key; // Armazena a chave original
+
+                                button.addEventListener('click', displayNote);
+
+                                listItem.appendChild(button);
+
+                                // Decide em qual lista colocar
+                                if (key.startsWith(NOTE_PREFIX + 'lesson_')) {
+                                     mainNotesList.appendChild(listItem);
+                                     mainCount++;
+                                } else if (key.startsWith(NOTE_PREFIX + 'comp_lesson_')) {
+                                     compNotesList.appendChild(listItem);
+                                     compCount++;
+                                } else if (key.startsWith(NOTE_PREFIX + 'jogo_') || ['flashcards','quiz','preencher_lacunas','correspondencia','anagramas','forca'].some(game => key.includes(game))) {
+                                     gameNotesList.appendChild(listItem);
+                                     gameCount++;
+                                } else {
+                                     otherNotesList.appendChild(listItem); // Para notas de speech, cefr, etc.
+                                     otherCount++;
+                                }
+                            }
+                        }
+                    });
+
+                     // Exibe mensagens se não houver notas
+                     if(noMainNotesMsg) noMainNotesMsg.style.display = mainCount === 0 ? 'block' : 'none';
+                     if(noCompNotesMsg) noCompNotesMsg.style.display = compCount === 0 ? 'block' : 'none';
+                     if(noGameNotesMsg) noGameNotesMsg.style.display = gameCount === 0 ? 'block' : 'none';
+                     if(noOtherNotesMsg) noOtherNotesMsg.style.display = otherCount === 0 ? 'block' : 'none';
+
+                } catch (error) {
+                    console.error("Erro ao acessar localStorage:", error);
+                    // Poderia exibir uma mensagem de erro para o usuário
+                }
+            }
+
+            // --- Função para Exibir Nota Selecionada ---
+            function displayNote(event) {
+                const key = event.currentTarget.dataset.noteKey;
+                const noteContentValue = localStorage.getItem(key);
+                const formattedName = formatNoteName(key);
+
+                if (noteContentValue && noteDisplaySection && noteDisplayTitle && noteDisplayContent) {
+                    noteDisplayTitle.textContent = `Anotação: ${formattedName}`;
+                    noteDisplayContent.value = noteContentValue; // Usa .value para textarea
+                    noteDisplaySection.style.display = 'block';
+                    noteDisplaySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+
+            // --- Fechar Área de Exibição da Nota ---
+            if (closeNoteDisplayBtn && noteDisplaySection) {
+                closeNoteDisplayBtn.addEventListener('click', () => {
+                    noteDisplaySection.style.display = 'none';
+                });
+            }
+
+            // --- Carrega as notas ao iniciar a página ---
+            loadNotes();
+
+        }); // Fim do DOMContentLoaded
+    </script>
+
+</body>
+</html>

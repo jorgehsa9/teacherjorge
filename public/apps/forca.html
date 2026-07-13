@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo: Forca - Inglês</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Estilos específicos para Forca, complementando style.css */
+        .lesson-content {
+             padding: 30px 40px;
+             display: flex;
+             flex-direction: column;
+             align-items: center; /* Centraliza o conteúdo do jogo */
+        }
+
+        #game-container-hangman { /* ID específico */
+            background-color: var(--section-even-bg);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 700px; /* Largura adequada */
+            text-align: center;
+            margin: 20px auto;
+            box-shadow: 0 3px 8px var(--shadow-color);
+        }
+
+        /* Seletor de Dificuldade */
+        #difficulty-selector-hangman {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #difficulty-selector-hangman h3 {
+             margin-top: 0;
+             margin-bottom: 1rem;
+             font-size: 1.2em;
+             color: var(--primary-color);
+        }
+        body.dark-mode #difficulty-selector-hangman h3 {
+             color: var(--secondary-color);
+         }
+        .difficulty-button-hangman { /* Classe específica */
+            padding: 8px 15px;
+            margin: 0 5px 10px 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--white-color);
+            color: var(--text-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+        }
+        body.dark-mode .difficulty-button-hangman {
+             background-color: var(--section-even-bg);
+             border-color: var(--border-color);
+             color: var(--text-color);
+         }
+        .difficulty-button-hangman.active {
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+            border-color: var(--primary-color);
+            font-weight: bold;
+            transform: scale(1.05);
+        }
+        body.dark-mode .difficulty-button-hangman.active {
+            background-color: var(--secondary-color);
+            color: var(--button-text-color);
+            border-color: var(--secondary-color);
+        }
+
+        /* Status (Erros) */
+        #hangman-status {
+             margin-bottom: 1.5rem; /* Aumenta espaço */
+             font-size: 1.2em; /* Maior */
+             font-weight: 600; /* Mais forte */
+             color: var(--text-muted);
+        }
+        #hangman-status span { /* Estilo para os números */
+             color: var(--danger-color);
+             font-weight: bold;
+        }
+         /* Classes de status (opcional, pode usar para mudar cor do texto todo) */
+        .status-correct { color: var(--success-color) !important; }
+        .status-incorrect { color: var(--danger-color) !important; }
+        .status-lost { color: var(--danger-color); font-weight: bold;}
+        .status-won { color: var(--success-color); font-weight: bold;}
+
+
+        /* Display da Palavra */
+        #word-display {
+            font-size: 2.2em; /* Tamanho grande */
+            font-weight: bold;
+            letter-spacing: 0.5em; /* Espaçamento entre letras/underscores */
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            min-height: 4rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            background-color: var(--section-odd-bg);
+            border-radius: 6px;
+            border: 1px dashed var(--border-color);
+        }
+         body.dark-mode #word-display {
+             color: var(--secondary-color);
+             background-color: var(--section-odd-bg);
+             border-color: var(--border-color);
+         }
+
+        /* Feedback (Correto/Incorreto) */
+        #feedback-hangman { /* ID específico */
+            margin: 1rem 0;
+            font-weight: 600;
+            min-height: 1.5rem;
+            font-size: 1.05em;
+        }
+        .feedback-correct { color: var(--success-color); }
+        .feedback-incorrect { color: var(--danger-color); }
+
+
+        /* Botões das Letras */
+        #letters-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.6rem; /* Espaço entre botões */
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .letter-button {
+            width: 42px; /* Tamanho ajustado */
+            height: 42px;
+            font-size: 1.1em; /* Tamanho letra */
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            border-radius: 6px; /* Bordas padrão */
+            background-color: var(--white-color);
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s, opacity 0.2s, transform 0.1s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 1px 2px var(--shadow-color);
+        }
+        body.dark-mode .letter-button {
+             background-color: var(--section-odd-bg);
+             color: var(--secondary-color);
+             border-color: var(--border-color);
+        }
+        .letter-button:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+            color: var(--button-text-color);
+            border-color: var(--secondary-color);
+             transform: translateY(-2px);
+             box-shadow: 0 3px 5px var(--shadow-color);
+        }
+         body.dark-mode .letter-button:hover:not(:disabled) {
+              background-color: var(--primary-color);
+              color: var(--button-text-color);
+              border-color: var(--primary-color);
+         }
+        .letter-button:disabled {
+            background-color: var(--text-muted);
+            color: var(--bg-color); /* Cor de texto clara sobre fundo cinza */
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+         body.dark-mode .letter-button:disabled {
+              background-color: var(--border-color);
+              color: var(--text-muted);
+         }
+
+
+        /* Botão Jogar Novamente (aparece no final) */
+        #play-again-button-hangman { /* ID específico */
+            display: none; /* Começa escondido */
+            margin: 1.5rem auto 0 auto; /* Centraliza */
+            padding: 10px 25px;
+            font-size: 1em;
+            font-weight: 500;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+        }
+        #play-again-button-hangman:hover {
+            background-color: var(--secondary-color);
+        }
+        #play-again-button-hangman:active { transform: scale(0.98); }
+        #play-again-button-hangman.visible { display: block; } /* Mostra o botão */
+
+
+        /* Modal de Fim de Jogo (CSS para garantir centralização) */
+        .modal {
+            display: none; /* Escondido por padrão */
+            position: fixed; /* Fica fixo na tela */
+            z-index: 1001; /* Garante que fique sobre outros elementos */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Permite rolagem se o conteúdo for grande */
+            background-color: rgba(0,0,0,0.6); /* Fundo semi-transparente */
+            /* Flexbox para centralizar o conteúdo */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.show {
+            display: flex; /* Mostra o modal usando flexbox */
+        }
+        .modal-content {
+            background-color: var(--container-bg);
+            margin: auto; /* Margem automática ajuda na centralização */
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            width: 90%; /* Largura responsiva */
+            max-width: 500px; /* Largura máxima */
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            position: relative; /* Para posicionamento interno se necessário */
+        }
+         #end-game-modal .modal-content h2.win { color: var(--success-color); }
+         #end-game-modal .modal-content h2.lose { color: var(--danger-color); }
+         #end-game-modal .modal-content strong#correct-word { color: var(--primary-color); font-weight: bold; }
+         body.dark-mode #end-game-modal .modal-content strong#correct-word { color: var(--secondary-color); }
+         #modal-play-again-button-hangman { /* ID específico */
+             padding: 10px 25px;
+             font-size: 1em;
+             font-weight: 500;
+             border: none;
+             border-radius: 6px;
+             cursor: pointer;
+             transition: background-color 0.3s ease;
+             background-color: var(--primary-color);
+             color: var(--button-text-color);
+             margin-top: 1rem;
+         }
+         #modal-play-again-button-hangman:hover {
+             background-color: var(--secondary-color);
+         }
+
+    </style>
+</head>
+<body>
+
+    <div id="floating-video"> <div class="video-container"> <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </div> </div>
+    <div id="floating-notepad"> <textarea id="notepad-area" placeholder="Suas anotações..."></textarea> </div>
+    <div id="floating-chat"> <div id="chatbox"> <div id="chatOutput"> <div class="message bot-message">Olá! Eu sou o George. Como posso ajudar com seu inglês hoje?</div> </div> <div id="chatInputContainer"> <input type="text" id="chatInput" placeholder="Digite sua dúvida aqui..." autocomplete="off"> <button id="sendButton">Enviar</button> </div> </div> </div>
+    <div class="container">
+        <header class="lesson-header">
+            <h1>Jogo: Forca</h1>
+            <div class="header-controls">
+                <a href="index.html" id="home-index-btn" title="Voltar ao Índice"><i class="fas fa-home"></i></a>
+                <button id="theme-toggle-btn" title="Alternar Modo Claro/Escuro"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+                <button id="video-toggle-btn" title="Mostrar/Esconder Vídeo"><i class="fas fa-video"></i></button>
+                <button id="notepad-toggle-btn" title="Mostrar/Esconder Bloco de Notas"><i class="fas fa-pencil-alt"></i></button>
+                <button id="chat-toggle-btn" title="Abrir Chat"><i class="fas fa-robot"></i></button>
+            </div>
+        </header>
+        <main class="lesson-content">
+
+            <div id="game-container-hangman">
+
+                <div id="difficulty-selector-hangman">
+                   <h3>Escolha a Dificuldade:</h3>
+                   <button class="difficulty-button-hangman active" data-difficulty="1">Nível 1</button>
+                   <button class="difficulty-button-hangman" data-difficulty="2">Nível 2</button>
+                   <button class="difficulty-button-hangman" data-difficulty="3">Nível 3</button>
+                   <button class="difficulty-button-hangman" data-difficulty="4">Nível 4</button>
+                   <button class="difficulty-button-hangman" data-difficulty="5">Nível 5</button>
+               </div>
+
+                <p class="text-gray-600 mb-4">Adivinhe a palavra em inglês letra por letra:</p>
+
+                <div id="hangman-status">
+                    Erros: <span id="errors-count">0</span> / <span id="max-errors">6</span>
+                </div>
+
+                <div id="word-display">
+                    </div>
+
+                <div id="feedback-hangman" class="my-2 font-semibold min-h-[1.5rem]">
+                      </div>
+
+                <div id="letters-container">
+                    </div>
+
+                <button id="play-again-button-hangman">
+                    <i class="fas fa-redo"></i> Jogar Novamente
+                </button>
+
+            </div> </main> </div> <div id="end-game-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title" class="text-2xl font-bold mb-4">Fim de Jogo!</h2>
+            <p id="modal-message" class="mb-4 text-lg"></p>
+            <p class="mb-6">A palavra era: <strong id="correct-word"></strong></p>
+            <button id="modal-play-again-button-hangman">
+                Jogar Novamente
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+         document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Lógica do Tema e Painéis Flutuantes ---
+            // ... (código mantido igual ao anterior) ...
+             const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            const notepadToggleBtn = document.getElementById('notepad-toggle-btn');
+            const videoToggleBtn = document.getElementById('video-toggle-btn');
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            const floatingNotepad = document.getElementById('floating-notepad');
+            const floatingVideo = document.getElementById('floating-video');
+            const floatingChat = document.getElementById('floating-chat');
+            const notepadArea = document.getElementById('notepad-area');
+            const notepadStorageKey = 'notepadContent_hangman_game'; // Chave específica
+
+            const applyTheme = (theme) => { if (theme === 'dark') { document.body.classList.add('dark-mode'); } else { document.body.classList.remove('dark-mode'); } };
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(currentTheme);
+            if (themeToggleBtn) { themeToggleBtn.addEventListener('click', () => { const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark'; applyTheme(newTheme); localStorage.setItem('theme', newTheme); }); }
+            const savedNotepadContent = localStorage.getItem(notepadStorageKey);
+            if (savedNotepadContent && notepadArea) { notepadArea.value = savedNotepadContent; }
+            if (notepadArea) { notepadArea.addEventListener('input', () => { localStorage.setItem(notepadStorageKey, notepadArea.value); }); }
+            const setupPanelToggle = (button, panelElement, bodyClass) => { if (button && panelElement) { button.addEventListener('click', () => { document.body.classList.toggle(bodyClass); button.classList.toggle('active'); if (bodyClass === 'chat-visible' && document.body.classList.contains(bodyClass)) { const chatInput = document.querySelector('#floating-chat #chatInput'); if (chatInput) setTimeout(() => chatInput.focus(), 50); } }); } };
+            setupPanelToggle(notepadToggleBtn, floatingNotepad, 'notepad-visible');
+            setupPanelToggle(videoToggleBtn, floatingVideo, 'video-visible');
+            setupPanelToggle(chatToggleBtn, floatingChat, 'chat-visible');
+            const chatInput = document.getElementById('chatInput');
+            const chatOutput = document.getElementById('chatOutput');
+            const sendButton = document.getElementById('sendButton');
+            const WORKER_URL = 'https://george.jorgehsantonio.workers.dev/';
+            if (chatInput && chatOutput && sendButton) { function addMessage(message, className) { const messageDiv = document.createElement('div'); messageDiv.classList.add('message', className); messageDiv.textContent = message; chatOutput.appendChild(messageDiv); messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' }); return messageDiv; } async function sendMessageToWorker() { const userMessage = chatInput.value.trim(); if (!userMessage) return; addMessage(userMessage, 'user-message'); chatInput.value = ''; chatInput.focus(); const typingDiv = addMessage("George está digitando...", "typing-indicator"); chatInput.disabled = true; sendButton.disabled = true; try { const response = await fetch(WORKER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ message: userMessage }), }); if (typingDiv && chatOutput.contains(typingDiv)) typingDiv.remove(); if (!response.ok) { let errorText = `Erro ${response.status}: ${response.statusText}`; try { const errorData = await response.json(); errorText = `Erro do George: ${errorData.error || errorText}`; } catch (e) { /* Ignora */ } addMessage(errorText, 'error-message'); } else { const data = await response.json(); if (data.reply) { addMessage(data.reply, 'bot-message'); } else if (data.error) { addMessage(`Erro do George: ${data.error}`, 'error-message'); } else { addMessage(`George: Resposta inesperada.`, 'error-message'); } } } catch (error) { console.error('Erro ao enviar mensagem:', error); if (typingDiv && chatOutput.contains(typingDiv)) { typingDiv.remove(); } addMessage(`Erro de comunicação. Verifique sua conexão.`, 'error-message'); } finally { chatInput.disabled = false; sendButton.disabled = false; chatInput.focus(); } } sendButton.addEventListener('click', sendMessageToWorker); chatInput.addEventListener('keypress', function(event) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessageToWorker(); } }); } else { console.warn("Elementos do chat flutuante não encontrados."); }
+
+
+            // --- Lógica Específica do Jogo da Forca ---
+
+            // Conjuntos de Palavras por Dificuldade (EXPANDIDOS)
+            const hangmanWordSets = { /* ... (código mantido igual ao anterior) ... */
+                1: ["CAT", "DOG", "SUN", "CAR", "BUS", "KEY", "RED", "BLUE", "BIG", "HOT", "FLY", "RUN", "EAT", "SEE", "YES", "NOT"],
+                2: ["BOOK", "HOME", "WORK", "PLAY", "TREE", "FISH", "BIRD", "FOOD", "GOOD", "LIKE", "HAVE", "DOOR", "DESK", "COLD", "WARM", "WALK", "TALK", "HELP"],
+                3: ["APPLE", "TABLE", "CHAIR", "WATER", "HAPPY", "SMILE", "HOUSE", "MOUSE", "GREEN", "STUDY", "PAPER", "BREAD", "NIGHT", "LIGHT", "SLEEP", "SPEAK", "WATCH", "LEARN"],
+                4: ["ORANGE", "BANANA", "FRIEND", "FAMILY", "SCHOOL", "PURPLE", "YELLOW", "LISTEN", "WRITE", "GUITAR", "SUMMER", "WINTER", "STREET", "NUMBER", "PENCIL", "WINDOW", "PLEASE", "THANKS", "ALWAYS", "COFFEE", "MARKET"],
+                5: ["COMPUTER", "KEYBOARD", "LANGUAGE", "ENGLISH", "VOCABULARY", "GRAMMAR", "BEAUTIFUL", "INTEREST", "DIFFICULT", "REMEMBER", "UNDERSTAND", "QUESTION", "ANSWER", "EXAMPLE", "MORNING", "EVENING", "WEEKEND", "WEATHER", "HOLIDAY", "STUDENT", "TEACHER", "WELCOME", "COUNTRY", "AIRPORT", "STATION", "RESTAURANT", "IMPORTANT"]
+            };
+
+            // Constantes do Jogo
+            const MAX_ERRORS = 6;
+            const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            // Elementos do DOM do Jogo
+            const wordDisplay = document.getElementById('word-display');
+            const lettersContainer = document.getElementById('letters-container');
+            const errorsCountDisplay = document.getElementById('errors-count');
+            const maxErrorsDisplay = document.getElementById('max-errors');
+            const hangmanStatusDisplay = document.getElementById('hangman-status');
+            const feedbackDisplay = document.getElementById('feedback-hangman');
+            const playAgainButton = document.getElementById('play-again-button-hangman');
+            const endGameModal = document.getElementById('end-game-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalMessage = document.getElementById('modal-message');
+            const correctWordDisplay = document.getElementById('correct-word');
+            const modalPlayAgainButton = document.getElementById('modal-play-again-button-hangman');
+            const difficultyButtonsHangman = document.querySelectorAll('.difficulty-button-hangman');
+
+            // Variáveis de Estado do Jogo
+            let currentDifficulty = 1;
+            let secretWord = "";
+            let guessedLetters = [];
+            let errors = 0;
+            let wordState = [];
+
+            // Função para iniciar/reiniciar o jogo
+            function startGame() { /* ... (código mantido) ... */ }
+             function startGame() {
+                errors = 0;
+                guessedLetters = [];
+                const currentWordList = hangmanWordSets[currentDifficulty] || hangmanWordSets[1];
+                 if (!currentWordList || currentWordList.length === 0) {
+                     console.error("Lista de palavras vazia ou inválida para o nível:", currentDifficulty);
+                     wordDisplay.textContent = "ERRO";
+                     lettersContainer.innerHTML = '<p style="color: var(--danger-color);">Erro ao carregar palavras.</p>';
+                     return;
+                 }
+                secretWord = currentWordList[Math.floor(Math.random() * currentWordList.length)].toUpperCase();
+                wordState = Array(secretWord.length).fill('_');
+
+                errorsCountDisplay.textContent = errors;
+                maxErrorsDisplay.textContent = MAX_ERRORS;
+                feedbackDisplay.innerHTML = ' ';
+                feedbackDisplay.className = 'my-2 font-semibold min-h-[1.5rem]';
+                updateHangmanStatus();
+                playAgainButton.classList.remove('visible');
+                endGameModal.classList.remove('show');
+
+                renderWordDisplay();
+                renderLetterButtons();
+            }
+
+            // Função para renderizar botões do alfabeto
+            function renderLetterButtons() { /* ... (código mantido) ... */ }
+             function renderLetterButtons() {
+                lettersContainer.innerHTML = '';
+                ALPHABET.split('').forEach(letter => {
+                    const button = document.createElement('button');
+                    button.textContent = letter;
+                    button.classList.add('letter-button');
+                    button.dataset.letter = letter;
+                    button.addEventListener('click', handleGuess);
+                    lettersContainer.appendChild(button);
+                });
+            }
+
+            // Função para renderizar display da palavra
+            function renderWordDisplay() { /* ... (código mantido) ... */ }
+             function renderWordDisplay() {
+                wordDisplay.textContent = wordState.join(' ');
+            }
+
+            // Função para lidar com palpite
+            function handleGuess(event) { /* ... (código mantido) ... */ }
+             function handleGuess(event) {
+                const guessedLetter = event.target.dataset.letter;
+
+                if (guessedLetters.includes(guessedLetter) || errors >= MAX_ERRORS || wordState.join('') === secretWord) {
+                    return;
+                }
+
+                event.target.disabled = true;
+                guessedLetters.push(guessedLetter);
+
+                if (secretWord.includes(guessedLetter)) {
+                    feedbackDisplay.textContent = `Correto! A letra '${guessedLetter}' está na palavra.`;
+                    feedbackDisplay.className = 'my-2 font-semibold min-h-[1.5rem] feedback-correct';
+                    for (let i = 0; i < secretWord.length; i++) {
+                        if (secretWord[i] === guessedLetter) {
+                            wordState[i] = guessedLetter;
+                        }
+                    }
+                    renderWordDisplay();
+                    if (wordState.join('') === secretWord) {
+                        endGame(true);
+                    }
+                } else {
+                    errors++;
+                    errorsCountDisplay.textContent = errors;
+                    feedbackDisplay.textContent = `Incorreto. A letra '${guessedLetter}' não está na palavra.`;
+                    feedbackDisplay.className = 'my-2 font-semibold min-h-[1.5rem] feedback-incorrect';
+                    updateHangmanStatus();
+                    if (errors >= MAX_ERRORS) {
+                        endGame(false);
+                    }
+                }
+            }
+
+            // Função para atualizar status visual de erros
+            function updateHangmanStatus() { /* ... (código mantido) ... */ }
+             function updateHangmanStatus() {
+                 hangmanStatusDisplay.classList.remove('status-correct', 'status-incorrect', 'status-lost', 'status-won');
+                 hangmanStatusDisplay.textContent = `Erros: ${errors} / ${MAX_ERRORS}`;
+                 if (wordState.join('') === secretWord) {
+                     hangmanStatusDisplay.textContent = "Você Venceu!";
+                     hangmanStatusDisplay.classList.add('status-won');
+                 } else if (errors >= MAX_ERRORS) {
+                     hangmanStatusDisplay.textContent = "Você Perdeu!";
+                     hangmanStatusDisplay.classList.add('status-lost');
+                 }
+            }
+
+
+            // Função para finalizar o jogo
+            function endGame(playerWon) { /* ... (código mantido) ... */ }
+             function endGame(playerWon) {
+                lettersContainer.querySelectorAll('.letter-button').forEach(button => {
+                    button.disabled = true;
+                });
+
+                playAgainButton.classList.add('visible');
+
+                correctWordDisplay.textContent = secretWord;
+                if (playerWon) {
+                    modalTitle.textContent = "Você Venceu!";
+                    modalTitle.className = "text-2xl font-bold mb-4 win";
+                    modalMessage.textContent = "Parabéns por adivinhar a palavra!";
+                } else {
+                    modalTitle.textContent = "Você Perdeu!";
+                     modalTitle.className = "text-2xl font-bold mb-4 lose";
+                    modalMessage.textContent = "Não foi desta vez. Tente novamente!";
+                    wordState = secretWord.split('');
+                    renderWordDisplay();
+                }
+                 updateHangmanStatus();
+                endGameModal.classList.add('show');
+            }
+
+             // Função para mudar a dificuldade
+             function changeDifficulty(newDifficulty) { /* ... (código mantido) ... */ }
+              function changeDifficulty(newDifficulty) {
+                 currentDifficulty = parseInt(newDifficulty, 10);
+                 difficultyButtonsHangman.forEach(btn => {
+                     btn.classList.toggle('active', btn.dataset.difficulty == currentDifficulty);
+                 });
+                 console.log("Dificuldade da Forca alterada para:", currentDifficulty);
+                 startGame();
+             }
+
+
+            // --- Event Listeners ---
+            playAgainButton.addEventListener('click', startGame);
+            modalPlayAgainButton.addEventListener('click', startGame);
+
+             difficultyButtonsHangman.forEach(button => {
+                 button.addEventListener('click', () => {
+                     changeDifficulty(button.dataset.difficulty);
+                 });
+             });
+
+            // --- Inicialização ---
+            changeDifficulty(currentDifficulty);
+
+        }); // Fim do DOMContentLoaded
+    </script>
+
+</body>
+</html>

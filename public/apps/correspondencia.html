@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo: Correspondência - Inglês</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Estilos específicos para Correspondência, complementando style.css */
+        .lesson-content {
+             padding: 30px 40px;
+             display: flex;
+             flex-direction: column;
+             align-items: center; /* Centraliza o conteúdo do jogo */
+        }
+
+        #game-container-matching { /* ID específico */
+            background-color: var(--section-even-bg);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 800px; /* Largura maior para colunas */
+            margin: 20px auto;
+            box-shadow: 0 3px 8px var(--shadow-color);
+        }
+
+        /* Seletor de Dificuldade */
+        #difficulty-selector-matching {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+        #difficulty-selector-matching h3 {
+             margin-top: 0;
+             margin-bottom: 1rem;
+             font-size: 1.2em;
+             color: var(--primary-color);
+        }
+        body.dark-mode #difficulty-selector-matching h3 {
+             color: var(--secondary-color);
+         }
+        .difficulty-button-matching { /* Classe específica */
+            padding: 8px 15px;
+            margin: 0 5px 10px 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--white-color);
+            color: var(--text-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+        }
+        body.dark-mode .difficulty-button-matching {
+             background-color: var(--section-even-bg);
+             border-color: var(--border-color);
+             color: var(--text-color);
+         }
+        .difficulty-button-matching.active {
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+            border-color: var(--primary-color);
+            font-weight: bold;
+            transform: scale(1.05);
+        }
+        body.dark-mode .difficulty-button-matching.active {
+            background-color: var(--secondary-color);
+            color: var(--button-text-color);
+            border-color: var(--secondary-color);
+        }
+
+        /* Instruções e Feedback */
+        #instructions-matching, #feedback-matching {
+             text-align: center;
+             margin-bottom: 1.5rem;
+             min-height: 1.5rem;
+             font-weight: 500;
+        }
+        #instructions-matching { color: var(--text-muted); }
+        #feedback-matching.feedback-correct { color: var(--success-color); }
+        #feedback-matching.feedback-incorrect { color: var(--danger-color); }
+        #feedback-matching.feedback-prompt { color: var(--secondary-color); }
+
+        /* Colunas de Correspondência */
+        .matching-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Duas colunas iguais */
+            gap: 2rem; /* Espaço entre colunas */
+            margin-top: 1rem;
+        }
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem; /* Espaço entre itens na coluna */
+        }
+        .match-item {
+            border: 2px solid var(--border-color);
+            padding: 0.75rem;
+            border-radius: 6px; /* Bordas padrão */
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s, transform 0.1s, box-shadow 0.2s;
+            background-color: var(--section-odd-bg);
+            min-height: 65px; /* Altura mínima */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            word-break: break-word;
+            box-shadow: 0 1px 3px var(--shadow-color);
+            font-size: 1em; /* Tamanho base do texto */
+        }
+        body.dark-mode .match-item {
+             background-color: var(--section-odd-bg);
+        }
+        .match-item:hover {
+            background-color: hsla(from var(--secondary-color) h s l / 0.1);
+            border-color: var(--secondary-color);
+            box-shadow: 0 3px 6px var(--shadow-color);
+        }
+        .match-item.selected {
+            background-color: hsla(from var(--primary-color) h s l / 0.2); /* Azul mais claro */
+            border-color: var(--primary-color);
+            transform: scale(1.03); /* Leve aumento */
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+        .match-item.matched {
+            background-color: var(--success-bg-light);
+            border-color: var(--success-color);
+            color: var(--success-color);
+            cursor: default;
+            opacity: 0.7;
+            pointer-events: none; /* Desabilita cliques */
+            box-shadow: none;
+        }
+        .match-item.incorrect {
+            animation: shake 0.5s ease-in-out;
+            background-color: var(--danger-bg-light);
+            border-color: var(--danger-color);
+        }
+        /* Animação de erro */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Botão Reiniciar (aparece no final) */
+        #restart-button-matching {
+            display: none; /* Começa escondido */
+            margin: 2rem auto 0 auto; /* Centraliza e adiciona espaço */
+            padding: 10px 25px;
+            font-size: 1em;
+            font-weight: 500;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+        }
+        #restart-button-matching:hover {
+            background-color: var(--secondary-color);
+        }
+        #restart-button-matching:active { transform: scale(0.98); }
+        #restart-button-matching.visible { display: block; } /* Mostra o botão */
+
+
+        /* Modal de Conclusão (CSS para garantir centralização) */
+         .modal {
+            display: none; /* Escondido por padrão */
+            position: fixed; /* Fica fixo na tela */
+            z-index: 1001; /* Garante que fique sobre outros elementos */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Permite rolagem se o conteúdo for grande */
+            background-color: rgba(0,0,0,0.6); /* Fundo semi-transparente */
+            /* Flexbox para centralizar o conteúdo */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.show {
+            display: flex; /* Mostra o modal usando flexbox */
+        }
+        .modal-content {
+            background-color: var(--container-bg);
+            margin: auto; /* Margem automática ajuda na centralização */
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            width: 90%; /* Largura responsiva */
+            max-width: 500px; /* Largura máxima */
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            position: relative; /* Para posicionamento interno se necessário */
+        }
+         #win-modal .modal-content h2 { color: var(--success-color); }
+         #play-again-button-matching { /* ID específico */
+             padding: 10px 25px;
+             font-size: 1em;
+             font-weight: 500;
+             border: none;
+             border-radius: 6px;
+             cursor: pointer;
+             transition: background-color 0.3s ease;
+             background-color: var(--success-color);
+             color: var(--button-text-color);
+             margin-top: 1rem;
+         }
+         #play-again-button-matching:hover {
+             background-color: #218838;
+         }
+
+    </style>
+</head>
+<body>
+
+    <div id="floating-video"> <div class="video-container"> <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </div> </div>
+    <div id="floating-notepad"> <textarea id="notepad-area" placeholder="Suas anotações..."></textarea> </div>
+    <div id="floating-chat"> <div id="chatbox"> <div id="chatOutput"> <div class="message bot-message">Olá! Eu sou o George. Como posso ajudar com seu inglês hoje?</div> </div> <div id="chatInputContainer"> <input type="text" id="chatInput" placeholder="Digite sua dúvida aqui..." autocomplete="off"> <button id="sendButton">Enviar</button> </div> </div> </div>
+    <div class="container">
+        <header class="lesson-header">
+            <h1>Jogo: Correspondência</h1>
+            <div class="header-controls">
+                <a href="index.html" id="home-index-btn" title="Voltar ao Índice"><i class="fas fa-home"></i></a>
+                <button id="theme-toggle-btn" title="Alternar Modo Claro/Escuro"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+                <button id="video-toggle-btn" title="Mostrar/Esconder Vídeo"><i class="fas fa-video"></i></button>
+                <button id="notepad-toggle-btn" title="Mostrar/Esconder Bloco de Notas"><i class="fas fa-pencil-alt"></i></button>
+                <button id="chat-toggle-btn" title="Abrir Chat"><i class="fas fa-robot"></i></button>
+            </div>
+        </header>
+        <main class="lesson-content">
+
+            <div id="game-container-matching">
+
+                 <div id="difficulty-selector-matching">
+                    <h3>Escolha a Dificuldade (Nº de Pares):</h3>
+                    <button class="difficulty-button-matching active" data-difficulty="1" data-pairs="4">Nível 1 (4)</button>
+                    <button class="difficulty-button-matching" data-difficulty="2" data-pairs="5">Nível 2 (5)</button>
+                    <button class="difficulty-button-matching" data-difficulty="3" data-pairs="6">Nível 3 (6)</button>
+                    <button class="difficulty-button-matching" data-difficulty="4" data-pairs="7">Nível 4 (7)</button>
+                    <button class="difficulty-button-matching" data-difficulty="5" data-pairs="8">Nível 5 (8)</button>
+                </div>
+
+                <p id="instructions-matching">Clique em uma palavra em inglês e depois na sua tradução em português.</p>
+
+                <div id="feedback-matching">
+                       </div>
+
+                <div class="matching-columns">
+                    <div id="column-a" class="column">
+                        </div>
+                    <div id="column-b" class="column">
+                        </div>
+                </div>
+
+                 <button id="restart-button-matching">
+                    <i class="fas fa-redo"></i> Jogar Novamente
+                </button>
+
+            </div> </main> </div> <div id="win-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-4">Parabéns!</h2>
+            <p class="mb-6">Você combinou todos os pares corretamente!</p>
+            <button id="play-again-button-matching">
+                Jogar Novamente
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Lógica do Tema e Painéis Flutuantes ---
+            // ... (código mantido igual ao anterior) ...
+            const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            const notepadToggleBtn = document.getElementById('notepad-toggle-btn');
+            const videoToggleBtn = document.getElementById('video-toggle-btn');
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            const floatingNotepad = document.getElementById('floating-notepad');
+            const floatingVideo = document.getElementById('floating-video');
+            const floatingChat = document.getElementById('floating-chat');
+            const notepadArea = document.getElementById('notepad-area');
+            const notepadStorageKey = 'notepadContent_matching_game';
+
+            const applyTheme = (theme) => { if (theme === 'dark') { document.body.classList.add('dark-mode'); } else { document.body.classList.remove('dark-mode'); } };
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(currentTheme);
+            if (themeToggleBtn) { themeToggleBtn.addEventListener('click', () => { const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark'; applyTheme(newTheme); localStorage.setItem('theme', newTheme); }); }
+            const savedNotepadContent = localStorage.getItem(notepadStorageKey);
+            if (savedNotepadContent && notepadArea) { notepadArea.value = savedNotepadContent; }
+            if (notepadArea) { notepadArea.addEventListener('input', () => { localStorage.setItem(notepadStorageKey, notepadArea.value); }); }
+            const setupPanelToggle = (button, panelElement, bodyClass) => { if (button && panelElement) { button.addEventListener('click', () => { document.body.classList.toggle(bodyClass); button.classList.toggle('active'); if (bodyClass === 'chat-visible' && document.body.classList.contains(bodyClass)) { const chatInput = document.querySelector('#floating-chat #chatInput'); if (chatInput) setTimeout(() => chatInput.focus(), 50); } }); } };
+            setupPanelToggle(notepadToggleBtn, floatingNotepad, 'notepad-visible');
+            setupPanelToggle(videoToggleBtn, floatingVideo, 'video-visible');
+            setupPanelToggle(chatToggleBtn, floatingChat, 'chat-visible');
+            const chatInput = document.getElementById('chatInput');
+            const chatOutput = document.getElementById('chatOutput');
+            const sendButton = document.getElementById('sendButton');
+            const WORKER_URL = 'https://george.jorgehsantonio.workers.dev/';
+            if (chatInput && chatOutput && sendButton) { function addMessage(message, className) { const messageDiv = document.createElement('div'); messageDiv.classList.add('message', className); messageDiv.textContent = message; chatOutput.appendChild(messageDiv); messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' }); return messageDiv; } async function sendMessageToWorker() { const userMessage = chatInput.value.trim(); if (!userMessage) return; addMessage(userMessage, 'user-message'); chatInput.value = ''; chatInput.focus(); const typingDiv = addMessage("George está digitando...", "typing-indicator"); chatInput.disabled = true; sendButton.disabled = true; try { const response = await fetch(WORKER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ message: userMessage }), }); if (typingDiv && chatOutput.contains(typingDiv)) typingDiv.remove(); if (!response.ok) { let errorText = `Erro ${response.status}: ${response.statusText}`; try { const errorData = await response.json(); errorText = `Erro do George: ${errorData.error || errorText}`; } catch (e) { /* Ignora */ } addMessage(errorText, 'error-message'); } else { const data = await response.json(); if (data.reply) { addMessage(data.reply, 'bot-message'); } else if (data.error) { addMessage(`Erro do George: ${data.error}`, 'error-message'); } else { addMessage(`George: Resposta inesperada.`, 'error-message'); } } } catch (error) { console.error('Erro ao enviar mensagem:', error); if (typingDiv && chatOutput.contains(typingDiv)) { typingDiv.remove(); } addMessage(`Erro de comunicação. Verifique sua conexão.`, 'error-message'); } finally { chatInput.disabled = false; sendButton.disabled = false; chatInput.focus(); } } sendButton.addEventListener('click', sendMessageToWorker); chatInput.addEventListener('keypress', function(event) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessageToWorker(); } }); } else { console.warn("Elementos do chat flutuante não encontrados."); }
+
+
+            // --- Lógica Específica do Jogo de Correspondência ---
+
+             // Conjuntos de Pares por Dificuldade (APENAS TEXTO <-> TEXTO)
+            const matchingSets = {
+                1: [ // Nível 1: 4 pares (Básico)
+                    { id: 'm1_1', colA: { type: 'text', content: 'Red' }, colB: { type: 'text', content: 'Vermelho' } },
+                    { id: 'm1_2', colA: { type: 'text', content: 'Blue' }, colB: { type: 'text', content: 'Azul' } },
+                    { id: 'm1_3', colA: { type: 'text', content: 'Dog' }, colB: { type: 'text', content: 'Cachorro' } },
+                    { id: 'm1_4', colA: { type: 'text', content: 'Cat' }, colB: { type: 'text', content: 'Gato' } },
+                ],
+                 2: [ // Nível 2: 5 pares
+                    { id: 'm2_1', colA: { type: 'text', content: 'Apple' }, colB: { type: 'text', content: 'Maçã' } },
+                    { id: 'm2_2', colA: { type: 'text', content: 'Bread' }, colB: { type: 'text', content: 'Pão' } },
+                    { id: 'm2_3', colA: { type: 'text', content: 'Book' }, colB: { type: 'text', content: 'Livro' } },
+                    { id: 'm2_4', colA: { type: 'text', content: 'Table' }, colB: { type: 'text', content: 'Mesa' } },
+                    { id: 'm2_5', colA: { type: 'text', content: 'Water' }, colB: { type: 'text', content: 'Água' } },
+                ],
+                3: [ // Nível 3: 6 pares
+                    { id: 'm3_1', colA: { type: 'text', content: 'House' }, colB: { type: 'text', content: 'Casa' } },
+                    { id: 'm3_2', colA: { type: 'text', content: 'School' }, colB: { type: 'text', content: 'Escola' } },
+                    { id: 'm3_3', colA: { type: 'text', content: 'Park' }, colB: { type: 'text', content: 'Parque' } },
+                    { id: 'm3_4', colA: { type: 'text', content: 'Eat' }, colB: { type: 'text', content: 'Comer' } },
+                    { id: 'm3_5', colA: { type: 'text', content: 'Drink' }, colB: { type: 'text', content: 'Beber' } },
+                    { id: 'm3_6', colA: { type: 'text', content: 'Play' }, colB: { type: 'text', content: 'Jogar/Brincar' } },
+                ],
+                4: [ // Nível 4: 7 pares
+                    { id: 'm4_1', colA: { type: 'text', content: 'Shirt' }, colB: { type: 'text', content: 'Camisa' } },
+                    { id: 'm4_2', colA: { type: 'text', content: 'Shoes' }, colB: { type: 'text', content: 'Sapatos' } },
+                    { id: 'm4_3', colA: { type: 'text', content: 'Hand' }, colB: { type: 'text', content: 'Mão' } },
+                    { id: 'm4_4', colA: { type: 'text', content: 'Head' }, colB: { type: 'text', content: 'Cabeça' } },
+                    { id: 'm4_5', colA: { type: 'text', content: 'Happy' }, colB: { type: 'text', content: 'Feliz' } },
+                    { id: 'm4_6', colA: { type: 'text', content: 'Big' }, colB: { type: 'text', content: 'Grande' } },
+                    { id: 'm4_7', colA: { type: 'text', content: 'Cold' }, colB: { type: 'text', content: 'Frio' } },
+                ],
+                5: [ // Nível 5: 8 pares
+                    { id: 'm5_1', colA: { type: 'text', content: 'Doctor' }, colB: { type: 'text', content: 'Médico(a)' } },
+                    { id: 'm5_2', colA: { type: 'text', content: 'Teacher' }, colB: { type: 'text', content: 'Professor(a)' } },
+                    { id: 'm5_3', colA: { type: 'text', content: 'Study' }, colB: { type: 'text', content: 'Estudar' } },
+                    { id: 'm5_4', colA: { type: 'text', content: 'Write' }, colB: { type: 'text', content: 'Escrever' } },
+                    { id: 'm5_5', colA: { type: 'text', content: 'Language' }, colB: { type: 'text', content: 'Idioma' } },
+                    { id: 'm5_6', colA: { type: 'text', content: 'Difficult' }, colB: { type: 'text', content: 'Difícil' } },
+                    { id: 'm5_7', colA: { type: 'text', content: 'Remember' }, colB: { type: 'text', content: 'Lembrar' } },
+                    { id: 'm5_8', colA: { type: 'text', content: 'Computer' }, colB: { type: 'text', content: 'Computador' } },
+                ]
+            };
+
+            // Elementos do DOM do Jogo
+            const columnA = document.getElementById('column-a');
+            const columnB = document.getElementById('column-b');
+            const feedbackDisplay = document.getElementById('feedback-matching');
+            const instructionsDisplay = document.getElementById('instructions-matching');
+            const winModal = document.getElementById('win-modal');
+            const playAgainButton = document.getElementById('play-again-button-matching');
+            const restartButton = document.getElementById('restart-button-matching');
+            const difficultyButtonsMatching = document.querySelectorAll('.difficulty-button-matching');
+
+            // Variáveis de Estado do Jogo
+            let currentDifficulty = 1;
+            let currentMatchingSet = [];
+            let selectedItemA = null;
+            let selectedItemB = null;
+            let matchedCount = 0;
+            let totalPairs = 0;
+
+            // Função para embaralhar array
+            function shuffleArray(array) { /* ... (código mantido) ... */ }
+             function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            // Função para criar item de correspondência (SIMPLIFICADA para apenas texto)
+            function createMatchItem(itemData, columnId) {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('match-item');
+                itemDiv.dataset.id = itemData.id; // ID do par
+                itemDiv.dataset.column = columnId; // Coluna A ou B
+
+                // Define o conteúdo como texto
+                itemDiv.textContent = itemData.content;
+
+                itemDiv.addEventListener('click', handleItemClick);
+                return itemDiv;
+            }
+
+
+            // Função para iniciar/reiniciar o jogo
+            function startGame() { /* ... (código mantido) ... */ }
+             function startGame() {
+                currentMatchingSet = matchingSets[currentDifficulty] || matchingSets[1];
+                totalPairs = currentMatchingSet.length;
+                selectedItemA = null;
+                selectedItemB = null;
+                matchedCount = 0;
+                feedbackDisplay.innerHTML = ' ';
+                feedbackDisplay.className = '';
+                instructionsDisplay.textContent = 'Clique em uma palavra em inglês e depois na sua tradução em português.'; // Instrução atualizada
+                winModal.classList.remove('show');
+                restartButton.classList.remove('visible');
+                columnA.innerHTML = '';
+                columnB.innerHTML = '';
+                const itemsA = [];
+                const itemsB = [];
+                currentMatchingSet.forEach(pair => {
+                    itemsA.push({ id: pair.id, ...pair.colA }); // Coluna A (Inglês)
+                    itemsB.push({ id: pair.id, ...pair.colB }); // Coluna B (Português)
+                });
+                const shuffledA = shuffleArray(itemsA);
+                const shuffledB = shuffleArray(itemsB);
+                shuffledA.forEach(item => columnA.appendChild(createMatchItem(item, 'A')));
+                shuffledB.forEach(item => columnB.appendChild(createMatchItem(item, 'B')));
+            }
+
+
+            // Função para clique no item
+            function handleItemClick(event) { /* ... (código mantido) ... */ }
+             function handleItemClick(event) {
+                const clickedItem = event.currentTarget;
+                if (clickedItem.classList.contains('matched')) return;
+
+                const column = clickedItem.dataset.column;
+
+                if (column === 'A') {
+                    if (selectedItemA) selectedItemA.classList.remove('selected');
+                    selectedItemA = clickedItem;
+                    selectedItemA.classList.add('selected');
+                    if (selectedItemB) {
+                        selectedItemB.classList.remove('selected');
+                        selectedItemB = null;
+                    }
+                    feedbackDisplay.textContent = 'Agora clique na tradução correspondente na coluna da direita.'; // Texto atualizado
+                    feedbackDisplay.className = 'feedback-prompt';
+                } else if (column === 'B') {
+                    if (!selectedItemA) {
+                        feedbackDisplay.textContent = 'Selecione uma palavra em inglês primeiro.'; // Texto atualizado
+                        feedbackDisplay.className = 'feedback-incorrect';
+                        return;
+                    }
+                    if (selectedItemB) selectedItemB.classList.remove('selected');
+                    selectedItemB = clickedItem;
+                    selectedItemB.classList.add('selected');
+                    checkMatch();
+                }
+            }
+
+
+            // Função para checar correspondência
+            function checkMatch() { /* ... (código mantido) ... */ }
+            function checkMatch() {
+                if (!selectedItemA || !selectedItemB) return;
+
+                const idA = selectedItemA.dataset.id;
+                const idB = selectedItemB.dataset.id;
+
+                if (idA === idB) {
+                    feedbackDisplay.textContent = 'Correto!';
+                    feedbackDisplay.className = 'feedback-correct';
+                    selectedItemA.classList.add('matched');
+                    selectedItemB.classList.add('matched');
+                    selectedItemA.classList.remove('selected');
+                    selectedItemB.classList.remove('selected');
+                    matchedCount++;
+                    selectedItemA = null;
+                    selectedItemB = null;
+                    if (matchedCount === totalPairs) {
+                        endGame();
+                    }
+                } else {
+                    feedbackDisplay.textContent = 'Incorreto. Tente novamente.';
+                    feedbackDisplay.className = 'feedback-incorrect';
+                    selectedItemA.classList.add('incorrect');
+                    selectedItemB.classList.add('incorrect');
+                    setTimeout(() => {
+                        if (selectedItemA) selectedItemA.classList.remove('selected', 'incorrect');
+                        if (selectedItemB) selectedItemB.classList.remove('selected', 'incorrect');
+                        selectedItemA = null;
+                        selectedItemB = null;
+                        feedbackDisplay.textContent = 'Selecione uma palavra em inglês.'; // Texto atualizado
+                        feedbackDisplay.className = 'feedback-prompt';
+                    }, 800);
+                }
+            }
+
+
+            // Função para finalizar o jogo
+            function endGame() { /* ... (código mantido) ... */ }
+             function endGame() {
+                feedbackDisplay.textContent = 'Parabéns! Você completou o jogo!';
+                feedbackDisplay.className = 'feedback-correct';
+                instructionsDisplay.textContent = 'Todos os pares foram combinados!';
+                winModal.classList.add('show');
+                restartButton.classList.add('visible');
+            }
+
+
+             // Função para mudar a dificuldade
+             function changeDifficulty(newDifficulty) { /* ... (código mantido) ... */ }
+              function changeDifficulty(newDifficulty) {
+                 currentDifficulty = parseInt(newDifficulty, 10);
+                 difficultyButtonsMatching.forEach(btn => {
+                     btn.classList.toggle('active', btn.dataset.difficulty == currentDifficulty);
+                 });
+                 console.log("Dificuldade de Correspondência alterada para:", currentDifficulty);
+                 startGame();
+             }
+
+
+            // --- Event Listeners ---
+            playAgainButton.addEventListener('click', startGame);
+            restartButton.addEventListener('click', startGame);
+            difficultyButtonsMatching.forEach(button => {
+                 button.addEventListener('click', () => {
+                     changeDifficulty(button.dataset.difficulty);
+                 });
+             });
+
+            // --- Inicialização ---
+            changeDifficulty(currentDifficulty);
+
+        }); // Fim do DOMContentLoaded
+    </script>
+
+</body>
+</html>

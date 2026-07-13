@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação de Fala - Meu Livro de Inglês</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Estilos específicos para a página de Avaliação de Fala */
+
+        main.content-area { /* Renomeado de .lesson-content para evitar conflitos */
+             padding: 30px 40px;
+        }
+
+        /* Estilo Ghost Button para Start/Stop */
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            border: 2px solid; /* Cor definida abaixo */
+            border-radius: 5px;
+            margin: 0 10px;
+            background-color: transparent;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+            line-height: 1.4;
+        }
+        .action-button i { margin-right: 8px; }
+
+        #startButton { border-color: var(--success-color); color: var(--success-color); }
+        #stopButton { border-color: var(--danger-color); color: var(--danger-color); }
+        #nextPhraseBtn { border-color: var(--primary-color); color: var(--primary-color); padding: 5px 10px; font-size: 0.9em; margin-top:10px; margin-left:0; } /* Estilo botão nova frase */
+
+
+        #startButton:hover:not(:disabled) { background-color: var(--success-color); color: var(--button-text-color); border-color: var(--success-color); }
+        #stopButton:hover:not(:disabled) { background-color: var(--danger-color); color: var(--button-text-color); border-color: var(--danger-color); }
+        #nextPhraseBtn:hover:not(:disabled) { background-color: var(--primary-color); color: var(--button-text-color); border-color: var(--primary-color); }
+
+
+        .action-button:disabled { border-color: #cccccc; color: #cccccc; cursor: not-allowed; background-color: transparent; opacity: 0.6; }
+
+        /* Dark Mode Adjustments */
+        body.dark-mode #startButton { border-color: var(--success-color); color: var(--success-color); }
+        body.dark-mode #stopButton { border-color: var(--danger-color); color: var(--danger-color); }
+        body.dark-mode #nextPhraseBtn { border-color: var(--primary-color); color: var(--primary-color); }
+        body.dark-mode #startButton:hover:not(:disabled) { background-color: var(--success-color); color: #000; }
+        body.dark-mode #stopButton:hover:not(:disabled) { background-color: var(--danger-color); color: var(--button-text-color); }
+        body.dark-mode #nextPhraseBtn:hover:not(:disabled) { background-color: var(--primary-color); color: var(--button-text-color); }
+        body.dark-mode .action-button:disabled { border-color: #555; color: #555; }
+
+        /* Outros estilos específicos */
+        .phrase-box-styled { background-color: var(--note-bg); border-left: 5px solid var(--note-border); padding: 15px 20px; margin: 25px 0; font-size: 1.1em; border-radius: 0 4px 4px 0; transition: background-color 0.3s ease, border-color 0.3s ease; color: #544510; }
+        body.dark-mode .phrase-box-styled { color: #fce588; }
+        .phrase-box-styled p:last-child { margin-bottom: 0; }
+        .phrase-box-styled strong { color: var(--primary-color); }
+        body.dark-mode .phrase-box-styled strong { color: var(--secondary-color); }
+
+        .output-display { background-color: var(--section-even-bg); border: 1px solid var(--border-color); border-left: 3px solid var(--secondary-color); border-radius: 4px; padding: 20px; margin-top: 20px; min-height: 100px; transition: background-color 0.3s ease, border-color 0.3s ease; line-height: 1.6; }
+         .output-display h3 { margin-top: 0; margin-bottom: 15px; font-size: 1.2em; color: var(--primary-color); }
+         body.dark-mode .output-display h3 { color: var(--secondary-color); }
+
+        .status-message { margin-top: 25px; text-align: center; font-style: italic; color: var(--text-muted); min-height: 1.5em; }
+        .status-message .error { color: var(--danger-color); font-weight: bold; font-style: normal; }
+        .status-message .success { color: var(--success-color); font-weight: bold; font-style: normal; }
+
+        .final-transcript { color: var(--text-color); font-weight: bold; }
+        .interim-transcript { color: var(--text-muted); margin-left: 5px; }
+        .controls { text-align: center; padding: 20px 0; }
+
+         #pronunciation-feedback { margin-top: 30px; padding: 20px; background-color: var(--section-odd-bg); border: 1px dashed var(--border-color); border-radius: 6px; transition: background-color 0.3s ease, border-color 0.3s ease; }
+        #pronunciation-feedback h4 { margin-top: 0; margin-bottom: 15px; color: var(--primary-color); }
+        body.dark-mode #pronunciation-feedback h4 { color: var(--secondary-color); }
+        .feedback-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .feedback-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .feedback-words { font-size: 1.1em; margin-bottom: 8px; }
+        .feedback-words .target-word { font-weight: bold; color: var(--primary-color); }
+         body.dark-mode .feedback-words .target-word { color: var(--secondary-color); }
+        .feedback-words .recognized-word { font-weight: bold; color: var(--danger-color); margin-left: 10px; }
+        .feedback-explanation { font-size: 0.95em; color: var(--text-muted); line-height: 1.5; }
+        .feedback-explanation strong { color: var(--text-color); }
+         body.dark-mode .feedback-explanation strong { color: var(--text-color); }
+
+        @media (max-width: 768px) {
+            main.content-area { padding: 25px 20px; }
+            .action-button { padding: 10px 15px; font-size: 0.95em; margin: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="floating-video"> <div class="video-container"> <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </div> </div>
+<div id="floating-notepad"> <textarea id="notepad-area" placeholder="Suas anotações..."></textarea> </div>
+<div id="floating-chat"> <div id="chatbox"> <div id="chatOutput"> <div class="message bot-message">Olá! Eu sou o George. Como posso ajudar?</div> </div> <div id="chatInputContainer"> <input type="text" id="chatInput" placeholder="Pergunte ao George..." autocomplete="off"> <button id="sendButton"><i class="fas fa-paper-plane"></i></button> </div> </div> </div>
+
+<div class="container">
+
+    <header class="lesson-header">
+        <h1>Avaliação de Fala</h1>
+        <div class="header-controls">
+             <a href="index.html" id="home-index-btn" title="Voltar ao Índice"><i class="fas fa-home"></i></a>
+             <a href="index.html#assessments-section" id="prev-lesson-btn" title="Voltar para Avaliações"><i class="fas fa-arrow-left"></i></a>
+             <a href="index.html#assessments-section" id="next-lesson-btn" title="Voltar para Avaliações"><i class="fas fa-arrow-right"></i></a>
+             <button id="theme-toggle-btn" title="Alternar Modo Claro/Escuro"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+             <button id="video-toggle-btn" title="Mostrar/Esconder Vídeo"><i class="fas fa-video"></i></button>
+             <button id="notepad-toggle-btn" title="Mostrar/Esconder Bloco de Notas"><i class="fas fa-pencil-alt"></i></button> <button id="chat-toggle-btn" title="Abrir Chat"><i class="fas fa-robot"></i></button>
+        </div>
+    </header>
+
+    <main class="content-area">
+
+        <div class="phrase-box-styled">
+            <p><strong>Leia esta frase em voz alta:</strong></p>
+            <p id="targetPhrase">Loading phrase...</p>
+            <button id="nextPhraseBtn" class="action-button" title="Próxima Frase">
+                 <i class="fas fa-sync-alt"></i> Nova Frase
+             </button>
+        </div>
+
+        <div class="controls">
+            <button id="startButton" class="action-button">
+                <i class="fas fa-microphone"></i> Iniciar Leitura
+            </button>
+            <button id="stopButton" class="action-button" disabled>
+                <i class="fas fa-stop"></i> Parar Leitura
+            </button>
+        </div>
+
+        <div class="output-display">
+            <h3>Texto Reconhecido:</h3>
+            <div id="output"></div>
+        </div>
+
+        <div id="pronunciation-feedback" class="hidden">
+             <h4>Análise da Pronúncia:</h4>
+             <div id="feedback-list"></div>
+        </div>
+
+        <div id="status" class="status-message">
+            Clique em "Iniciar Leitura" para começar.
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+    // === Lista de Frases ===
+    const phrases = [
+        "The quick brown fox jumps over the lazy dog.", "She sells seashells by the seashore.", "Peter Piper picked a peck of pickled peppers.", "How much wood would a woodchuck chuck if a woodchuck could chuck wood?", "Betty Botter bought some butter but she said the butter's bitter.", "I scream, you scream, we all scream for ice cream.", "Which witch is which?", "Red lorry, yellow lorry.", "He threw three free throws.", "World Wide Web is essential.", "I thought a thought, but the thought I thought wasn't the thought I thought I thought.", "Practice makes perfect, so let's practice.", "Good morning, how are you today?", "My name is Alex, what's yours?", "Where can I find the nearest supermarket?", "I live in a small town near the mountains.", "Could you please speak more slowly?", "I don't understand the question.", "This library has thousands of books.", "They are thinking about their future.", "The weather forecast predicts rain tomorrow.", "English pronunciation can be tricky.", "Remember to breathe while speaking.", "It is important to listen carefully.", "What are your favorite hobbies?", "I enjoy reading and watching movies.", "She works hard every single day.", "He finished his work before leaving.", "Let's meet at three thirty this afternoon.", "Would you like tea or coffee?", "That's a really interesting perspective.", "The children are playing happily in the garden.", "Are there any apples left in the basket?", "There is a cat sitting on the roof.", "These shoes are very comfortable.", "Can you help me with this heavy bag?"
+    ];
+
+    // === LÓGICA DOS PAINÉIS E TEMA ===
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        const notepadToggleBtn = document.getElementById('notepad-toggle-btn');
+        const videoToggleBtn = document.getElementById('video-toggle-btn');
+        const chatToggleBtn = document.getElementById('chat-toggle-btn');
+        const floatingNotepad = document.getElementById('floating-notepad');
+        const floatingVideo = document.getElementById('floating-video');
+        const floatingChat = document.getElementById('floating-chat');
+        const notepadArea = document.getElementById('notepad-area');
+        const notepadStorageKey = 'notepadContent_speech_assessment'; // Chave específica
+
+        // Aplica tema
+        const applyTheme = (theme) => { document.body.classList.toggle('dark-mode', theme === 'dark'); };
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        applyTheme(currentTheme);
+        if (themeToggleBtn) { themeToggleBtn.addEventListener('click', () => { const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark'; applyTheme(newTheme); localStorage.setItem('theme', newTheme); }); }
+
+        // Carrega notepad
+        const savedNotepadContent = localStorage.getItem(notepadStorageKey);
+        if (savedNotepadContent && notepadArea) { notepadArea.value = savedNotepadContent; }
+        if (notepadArea) { notepadArea.addEventListener('input', () => { localStorage.setItem(notepadStorageKey, notepadArea.value); }); }
+
+        // Configura toggles dos painéis (permite simultâneos)
+        const setupPanelToggle = (button, panelElement, bodyClass) => {
+            if (button && panelElement) {
+                button.addEventListener('click', () => {
+                    document.body.classList.toggle(bodyClass);
+                    button.classList.toggle('active');
+                    // Foco no input do chat ao abrir
+                    if (bodyClass === 'chat-visible' && document.body.classList.contains(bodyClass)) {
+                        const chatInputEl = document.querySelector('#floating-chat #chatInput');
+                        if (chatInputEl) setTimeout(() => chatInputEl.focus(), 50);
+                    }
+                });
+            }
+        };
+        setupPanelToggle(notepadToggleBtn, floatingNotepad, 'notepad-visible');
+        setupPanelToggle(videoToggleBtn, floatingVideo, 'video-visible');
+        setupPanelToggle(chatToggleBtn, floatingChat, 'chat-visible');
+
+        // Lógica do Chat (se elementos existirem)
+        const chatInput = document.getElementById('chatInput');
+        const chatOutput = document.getElementById('chatOutput');
+        const sendButton = document.getElementById('sendButton');
+        const WORKER_URL = 'https://george.jorgehsantonio.workers.dev/';
+        if (chatInput && chatOutput && sendButton) { /* ... (lógica completa do chat mantida aqui) ... */
+             function addMessage(message, className) { const messageDiv = document.createElement('div'); messageDiv.classList.add('message', className); messageDiv.textContent = message; chatOutput.appendChild(messageDiv); messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' }); return messageDiv; }
+             async function sendMessageToWorker() {
+                 const userMessage = chatInput.value.trim(); if (!userMessage) return;
+                 addMessage(userMessage, 'user-message'); chatInput.value = ''; chatInput.focus();
+                 const typingDiv = addMessage("George está digitando...", "typing-indicator"); chatInput.disabled = true; sendButton.disabled = true;
+                 try {
+                     const response = await fetch(WORKER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ message: userMessage }), });
+                     if (typingDiv && chatOutput.contains(typingDiv)) typingDiv.remove();
+                     if (!response.ok) { let errorText = `Erro ${response.status}: ${response.statusText}`; try { const errorData = await response.json(); errorText = `Erro do George: ${errorData.error || errorText}`; } catch (e) { /* Ignora */ } addMessage(errorText, 'error-message'); }
+                     else { const data = await response.json(); if (data.reply) { addMessage(data.reply, 'bot-message'); } else if (data.error) { addMessage(`Erro do George: ${data.error}`, 'error-message'); } else { addMessage(`George: Resposta inesperada.`, 'error-message'); } }
+                 } catch (error) { console.error('Erro ao enviar mensagem:', error); if (typingDiv && chatOutput.contains(typingDiv)) { typingDiv.remove(); } addMessage(`Erro de comunicação. Verifique sua conexão.`, 'error-message');
+                 } finally { chatInput.disabled = false; sendButton.disabled = false; chatInput.focus(); }
+             }
+             sendButton.addEventListener('click', sendMessageToWorker);
+             chatInput.addEventListener('keypress', function(event) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessageToWorker(); } });
+        }
+
+        // === LÓGICA PRINCIPAL DA AVALIAÇÃO DE FALA ===
+        let recognition;
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        const targetPhraseDiv = document.getElementById('targetPhrase');
+        const nextPhraseBtn = document.getElementById('nextPhraseBtn');
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const outputDiv = document.getElementById('output');
+        const statusDiv = document.getElementById('status');
+        const feedbackDiv = document.getElementById('pronunciation-feedback');
+        const feedbackListDiv = document.getElementById('feedback-list');
+
+        // Banco de Erros e Funções de Análise (Placeholders/Exemplos)
+        const commonErrors = { /* ... (seu banco de erros) ... */ };
+        function levenshtein(a, b) { /* ... (função levenshtein) ... */ if(a.length == 0) return b.length; if(b.length == 0) return a.length; var matrix = []; for(var i = 0; i <= b.length; i++){ matrix[i] = [i]; } for(var j = 0; j <= a.length; j++){ matrix[0][j] = j; } for(var i = 1; i <= b.length; i++){ for(var j = 1; j <= a.length; j++){ if(b.charAt(i-1) == a.charAt(j-1)){ matrix[i][j] = matrix[i-1][j-1]; } else { matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, Math.min(matrix[i][j-1] + 1, matrix[i-1][j] + 1)); } } } return matrix[b.length][a.length]; }
+        function analyzePronunciation(targetSentence, recognizedSentence) {
+             feedbackListDiv.innerHTML = ''; feedbackDiv.classList.add('hidden');
+             if (!targetSentence || !recognizedSentence) return;
+             const clean = (str) => str.toLowerCase().replace(/[.,!?;:]/g, '').trim();
+             const targetWords = clean(targetSentence).split(/\s+/).filter(w => w);
+             const recognizedWords = clean(recognizedSentence).split(/\s+/).filter(w => w);
+             let feedbackFound = false; const len = Math.min(targetWords.length, recognizedWords.length);
+             for (let i = 0; i < len; i++) {
+                 const targetWord = targetWords[i]; const recognizedWord = recognizedWords[i];
+                 if (targetWord !== recognizedWord) {
+                     if (commonErrors[targetWord] && commonErrors[targetWord][recognizedWord]) { addFeedbackItem(targetWord, recognizedWord, commonErrors[targetWord][recognizedWord]); feedbackFound = true; }
+                     else if (levenshtein(targetWord, recognizedWord) <= 2 && targetWord.length > 2 && recognizedWord.length > 2) { addFeedbackItem(targetWord, recognizedWord, `<strong>Palavras Similares:</strong> Verifique a pronúncia de "<strong>${targetWord}</strong>". Você disse algo parecido com "<strong>${recognizedWord}</strong>".`); feedbackFound = true; }
+                 }
+             }
+             if (feedbackFound) feedbackDiv.classList.remove('hidden');
+        }
+        function addFeedbackItem(target, recognized, explanation) { const itemDiv = document.createElement('div'); itemDiv.classList.add('feedback-item'); itemDiv.innerHTML = `<div class="feedback-words">Frase original: <span class="target-word">${target}</span> | Você disse: <span class="recognized-word">${recognized}</span></div><div class="feedback-explanation">${explanation}</div>`; feedbackListDiv.appendChild(itemDiv); }
+
+        // Função para carregar nova frase
+        let currentPhrase = '';
+        function loadNewPhrase() {
+            if (!phrases || phrases.length === 0) { targetPhraseDiv.textContent = "Erro: Nenhuma frase disponível."; return; }
+            const randomIndex = Math.floor(Math.random() * phrases.length);
+            currentPhrase = phrases[randomIndex];
+            targetPhraseDiv.textContent = currentPhrase;
+            outputDiv.innerHTML = '';
+            statusDiv.textContent = 'Nova frase carregada. Clique em "Iniciar Leitura".';
+            feedbackDiv.classList.add('hidden'); feedbackListDiv.innerHTML = '';
+            if (recognition && typeof recognition.abort === 'function') { try { recognition.abort(); } catch(e){} }
+            startButton.disabled = false; stopButton.disabled = true;
+        }
+
+        // Inicialização da Página de Fala
+        function initializeSpeechPage() {
+            if (!SpeechRecognition) {
+                statusDiv.innerHTML = '<span class="error">Web Speech API não suportada neste navegador.</span>';
+                startButton.disabled = true; stopButton.disabled = true; nextPhraseBtn.disabled = true;
+                return;
+            }
+            if (!startButton || !stopButton || !outputDiv || !statusDiv || !targetPhraseDiv || !nextPhraseBtn || !feedbackDiv || !feedbackListDiv) {
+                 console.error("Erro: Elementos essenciais da página de fala não encontrados!");
+                 statusDiv.innerHTML = '<span class="error">Erro interno da página.</span>';
+                 return;
+            }
+
+            loadNewPhrase(); // Carrega a primeira frase
+            nextPhraseBtn.addEventListener('click', loadNewPhrase);
+
+            try {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.continuous = false;
+                recognition.interimResults = true;
+                let final_transcript = '';
+
+                recognition.onstart = () => { /* ... (lógica mantida) ... */ final_transcript = ''; outputDiv.innerHTML = ''; statusDiv.textContent = 'Ouvindo... Fale agora!'; feedbackDiv.classList.add('hidden'); feedbackListDiv.innerHTML = ''; startButton.disabled = true; stopButton.disabled = false; };
+                recognition.onresult = (event) => { /* ... (lógica mantida) ... */ let interim_transcript = ''; final_transcript = ''; for (let i = event.resultIndex; i < event.results.length; ++i) { if (event.results[i].isFinal) final_transcript += event.results[i][0].transcript; else interim_transcript += event.results[i][0].transcript; } outputDiv.innerHTML = `<span class="final-transcript">${final_transcript}</span><span class="interim-transcript">${interim_transcript}</span>`; };
+                recognition.onerror = (event) => { /* ... (lógica mantida com mensagens de erro) ... */ let errorMessage = `Erro no reconhecimento: ${event.error}`; if (event.error === 'no-speech') errorMessage = 'Nenhuma fala detectada. Tente novamente.'; else if (event.error === 'audio-capture') errorMessage = 'Erro ao capturar áudio. Verifique seu microfone.'; else if (event.error === 'not-allowed') errorMessage = 'Permissão do microfone negada ou bloqueada.'; else if (event.error === 'service-not-allowed') errorMessage = 'Serviço de reconhecimento não permitido.'; statusDiv.innerHTML = `<span class="error">${errorMessage}</span>`; startButton.disabled = false; stopButton.disabled = true; };
+                recognition.onend = () => {
+                     if (!statusDiv.querySelector('.error')) statusDiv.textContent = 'Analisando...';
+                     startButton.disabled = false; stopButton.disabled = true;
+                     setTimeout(() => {
+                        const trimmedTranscript = final_transcript ? final_transcript.trim() : '';
+                        if (trimmedTranscript) {
+                            analyzePronunciation(currentPhrase, trimmedTranscript);
+                            if (!statusDiv.querySelector('.error')) {
+                                if (feedbackListDiv.children.length > 0) statusDiv.textContent = 'Análise concluída. Veja os pontos abaixo.';
+                                else { const cleanTarget = currentPhrase.toLowerCase().replace(/[.,!?;:]/g, '').trim(); const cleanFinal = trimmedTranscript.toLowerCase().replace(/[.,!?;:]/g, '').trim(); if (cleanTarget === cleanFinal) statusDiv.innerHTML = `<span class="success">Perfeito! Nenhuma diferença encontrada.</span>`; else statusDiv.textContent = 'Reconhecimento concluído. Nenhuma dica específica encontrada.'; }
+                            }
+                        } else if (!statusDiv.querySelector('.error')) { statusDiv.textContent = 'Não foi possível reconhecer a fala.'; }
+                     }, 100);
+                };
+
+                startButton.addEventListener('click', () => {
+                     if (statusDiv.querySelector('.error')) statusDiv.textContent = 'Clique em "Iniciar Leitura" para começar.';
+                     feedbackDiv.classList.add('hidden'); feedbackListDiv.innerHTML = '';
+                     try { if (recognition) { recognition.start(); } else { throw new Error("Recognition not initialized."); } }
+                     catch (e) { console.error("Erro ao iniciar:", e); statusDiv.innerHTML = `<span class="error">Erro ao iniciar: ${e.message}.</span>`; startButton.disabled = false; stopButton.disabled = true;}
+                });
+                stopButton.addEventListener('click', () => { try { if(recognition) recognition.stop(); } catch(e){ console.error("Erro ao parar:",e); } });
+
+            } catch (initError) {
+                 console.error("Erro fatal durante a inicialização do SpeechRecognition:", initError);
+                 if(statusDiv) statusDiv.innerHTML = `<span class="error">Erro crítico ao configurar o reconhecimento de fala.</span>`;
+                 startButton.disabled = true; stopButton.disabled = true; nextPhraseBtn.disabled = true;
+            }
+        } // Fim de initializeSpeechPage
+
+        // Executa a inicialização principal
+        initializeSpeechPage();
+
+    }); // Fim do DOMContentLoaded
+</script>
+
+</body>
+</html>

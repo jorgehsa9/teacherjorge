@@ -9,6 +9,21 @@ const StudentMaterials = () => {
   const navigate = useNavigate();
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  const [activeTab, setActiveTab] = useState('materials');
+  const [activeApp, setActiveApp] = useState(null);
+
+  const appsList = [
+    { id: 'memoria', title: 'Jogo da Memória', url: '/apps/jogo_memoria.html', icon: '🧠', desc: 'Pratique seu vocabulário brincando' },
+    { id: 'quiz', title: 'English Quiz', url: '/apps/quiz.html', icon: '🎯', desc: 'Teste seus conhecimentos gerais' },
+    { id: 'flashcards', title: 'Flashcards', url: '/apps/flashcards.html', icon: '🎴', desc: 'Memorize novas palavras' },
+    { id: 'forca', title: 'Jogo da Forca', url: '/apps/forca.html', icon: '🤔', desc: 'Descubra a palavra oculta' },
+    { id: 'anagramas', title: 'Anagramas', url: '/apps/anagramas.html', icon: '🔠', desc: 'Desembaralhe as letras' },
+    { id: 'lacunas', title: 'Preencher Lacunas', url: '/apps/preencher_lacunas.html', icon: '📝', desc: 'Complete as frases' },
+    { id: 'correspondencia', title: 'Correspondência', url: '/apps/correspondencia.html', icon: '🔗', desc: 'Ligue os significados' },
+    { id: 'speech', title: 'Treino de Pronúncia', url: '/apps/speech.html', icon: '🗣️', desc: 'Pratique falar em inglês' },
+    { id: 'cefr', title: 'Avaliação CEFR', url: '/apps/cefr_assessment.html', icon: '📊', desc: 'Descubra seu nível de inglês' }
+  ];
 
   // Add Material State
   const [isAdding, setIsAdding] = useState(false);
@@ -155,44 +170,81 @@ const StudentMaterials = () => {
         </a>
       </div>
 
-      <div className="card glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-200 flex flex-col">
-        {loading ? (
-          <div className="p-8 text-center text-muted">Carregando seus materiais...</div>
-        ) : materials.length > 0 ? (
-          <div className="p-4 overflow-y-auto flex-1">
-            <div className="flex flex-col gap-3">
-              {materials.map((mat) => (
-                <div 
-                  key={mat.id} 
-                  onClick={() => setEditingMaterial(mat)}
-                  className="flex justify-between items-center p-4 rounded-xl cursor-pointer transition-all"
-                  style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}
-                  onMouseOver={e => e.currentTarget.style.borderColor = 'var(--primary)'}
-                  onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
-                >
-                  <div className="flex items-center gap-4 overflow-hidden">
-                    <div style={{ backgroundColor: 'rgba(79, 70, 229, 0.1)', padding: '0.75rem', borderRadius: '10px', flexShrink: 0 }}>
-                      <FileText size={20} className="text-primary" />
-                    </div>
-                    <div className="overflow-hidden">
-                      <h3 className="font-bold text-main m-0 truncate text-sm sm:text-base">{mat.title}</h3>
-                      <p className="text-xs text-muted m-0 mt-1">{mat.file_type} • {formatClassDate(mat.created_at)}</p>
-                    </div>
-                  </div>
-                  <div className="text-muted flex-shrink-0" style={{ paddingLeft: '1rem' }}>
-                    <ArrowLeft size={16} style={{ transform: 'rotate(180deg)', opacity: 0.5 }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="flex-1 flex flex-col items-center justify-center p-12 text-center text-muted">
-            <FileText size={48} className="mb-4 opacity-20" />
-            <p>Seu professor não compartilhou nenhum material com você ainda.</p>
-          </div>
-        )}
+      {/* Tabs */}
+      <div className="flex gap-4 mb-6 border-b border-[rgba(255,255,255,0.1)] pb-2 animate-fade-in-up delay-150">
+        <button 
+          onClick={() => setActiveTab('materials')}
+          className={`pb-2 px-2 font-bold transition-colors ${activeTab === 'materials' ? 'text-primary border-b-2 border-primary' : 'text-muted hover:text-main'}`}
+          style={{ background: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', cursor: 'pointer' }}
+        >
+          Materiais Compartilhados
+        </button>
+        <button 
+          onClick={() => setActiveTab('apps')}
+          className={`pb-2 px-2 font-bold transition-colors flex items-center gap-2 ${activeTab === 'apps' ? 'text-primary border-b-2 border-primary' : 'text-muted hover:text-main'}`}
+          style={{ background: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', cursor: 'pointer' }}
+        >
+          Apps & Games <span className="badge bg-primary text-white text-xs px-2 py-0.5 rounded-full">Novo</span>
+        </button>
       </div>
+
+      {activeTab === 'materials' ? (
+        <div className="card glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-200 flex flex-col">
+          {loading ? (
+            <div className="p-8 text-center text-muted">Carregando seus materiais...</div>
+          ) : materials.length > 0 ? (
+            <div className="p-4 overflow-y-auto flex-1">
+              <div className="flex flex-col gap-3">
+                {materials.map((mat) => (
+                  <div 
+                    key={mat.id} 
+                    onClick={() => setEditingMaterial(mat)}
+                    className="flex justify-between items-center p-4 rounded-xl cursor-pointer transition-all"
+                    style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}
+                    onMouseOver={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+                    onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
+                  >
+                    <div className="flex items-center gap-4 overflow-hidden">
+                      <div style={{ backgroundColor: 'rgba(79, 70, 229, 0.1)', padding: '0.75rem', borderRadius: '10px', flexShrink: 0 }}>
+                        <FileText size={20} className="text-primary" />
+                      </div>
+                      <div className="overflow-hidden">
+                        <h3 className="font-bold text-main m-0 truncate text-sm sm:text-base">{mat.title}</h3>
+                        <p className="text-xs text-muted m-0 mt-1">{mat.file_type} • {formatClassDate(mat.created_at)}</p>
+                      </div>
+                    </div>
+                    <div className="text-muted flex-shrink-0" style={{ paddingLeft: '1rem' }}>
+                      <ArrowLeft size={16} style={{ transform: 'rotate(180deg)', opacity: 0.5 }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center p-12 text-center text-muted">
+              <FileText size={48} className="mb-4 opacity-20" />
+              <p>Seu professor não compartilhou nenhum material com você ainda.</p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in-up delay-200 overflow-y-auto pb-6">
+          {appsList.map((app) => (
+            <div 
+              key={app.id}
+              onClick={() => setActiveApp(app)}
+              className="card glass p-5 cursor-pointer transition-all transform hover:-translate-y-1 hover:shadow-lg flex flex-col items-center text-center"
+              style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
+              onMouseOver={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+              onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
+            >
+              <div className="text-5xl mb-4">{app.icon}</div>
+              <h3 className="font-bold text-lg mb-2 text-main">{app.title}</h3>
+              <p className="text-sm text-muted">{app.desc}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Add Material Modal */}
       {isAdding && (
@@ -316,6 +368,42 @@ const StudentMaterials = () => {
                 </div>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* App Modal Iframe (Centralizado) */}
+      {activeApp && (
+        <div className="modal-overlay flex items-center justify-center" style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          backgroundColor: 'rgba(15, 23, 42, 0.7)', zIndex: 60, backdropFilter: 'blur(8px)'
+        }}>
+          <div className="card glass animate-fade-in-up flex flex-col overflow-hidden relative" style={{
+            width: '90vw', height: '85vh', maxWidth: '1200px', backgroundColor: 'var(--bg-color)', 
+            borderRadius: '24px', border: '1px solid var(--primary-glow)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+          }}>
+            <div className="flex justify-between items-center p-4 border-b" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--surface)' }}>
+              <h2 className="text-lg font-bold text-main flex items-center gap-2 m-0">
+                <span>{activeApp.icon}</span> {activeApp.title}
+              </h2>
+              <button 
+                onClick={() => setActiveApp(null)} 
+                className="text-muted hover:text-white transition-colors flex items-center justify-center rounded-full" 
+                style={{ background: 'rgba(255,255,255,0.1)', border: 'none', cursor: 'pointer', width: '36px', height: '36px' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="flex-1 w-full bg-white relative">
+              <iframe 
+                src={activeApp.url} 
+                className="w-full h-full border-none absolute inset-0"
+                title={activeApp.title}
+                sandbox="allow-scripts allow-same-origin"
+              />
+            </div>
           </div>
         </div>
       )}

@@ -1,0 +1,233 @@
+{
+  "runSettings": {
+    "temperature": 1.0,
+    "model": "models/gemini-3-flash-preview",
+    "topP": 0.95,
+    "topK": 64,
+    "maxOutputTokens": 65536,
+    "safetySettings": [{
+      "category": "HARM_CATEGORY_HARASSMENT",
+      "threshold": "OFF"
+    }, {
+      "category": "HARM_CATEGORY_HATE_SPEECH",
+      "threshold": "OFF"
+    }, {
+      "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+      "threshold": "OFF"
+    }, {
+      "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+      "threshold": "OFF"
+    }],
+    "enableCodeExecution": false,
+    "enableSearchAsATool": true,
+    "enableBrowseAsATool": false,
+    "enableAutoFunctionResponse": false,
+    "thinkingBudget": -1,
+    "googleSearch": {
+    },
+    "outputResolution": "1K",
+    "thinkingLevel": "THINKING_HIGH",
+    "enableImageSearch": false,
+    "enableGoogleMaps": false
+  },
+  "systemInstruction": {
+  },
+  "chunkedPrompt": {
+    "chunks": [{
+      "text": "Faz um app pra uma criança de 4 anos aprende o verbo to be\n",
+      "role": "user",
+      "tokenCount": 17,
+      "createTime": "2026-03-23T19:28:52.597Z"
+    }, {
+      "text": "**Designing the App**\n\nI\u0027m focusing on the app\u0027s initial design for a preschooler, emphasizing simplicity, vibrant colors, engaging sounds, and game mechanics. My current priority is to make the content in English but translate the instructions into Portuguese, creating an interactive learning experience.\n\n\n",
+      "role": "model",
+      "tokenCount": 392,
+      "isThought": true,
+      "parts": [{
+        "text": "**Designing the App**\n\nI\u0027m focusing on the app\u0027s initial design for a preschooler, emphasizing simplicity, vibrant colors, engaging sounds, and game mechanics. My current priority is to make the content in English but translate the instructions into Portuguese, creating an interactive learning experience.\n\n\n",
+        "thought": true
+      }],
+      "createTime": "2026-03-23T19:28:52.597Z"
+    }, {
+      "text": "Criar um aplicativo para uma criança de 4 anos exige um design focado em **visual, som e repetição**, já que nessa idade a criança ainda está desenvolvendo a alfabetização.\n\nAqui está um conceito de app chamado **\"To Be Friends\"** (Amigos do To Be). Vou estruturar o design e o código básico para você entender como funcionaria.\n\n---\n\n### 1. O Conceito: \"To Be Friends\"\nA criança ajudará monstrinhos coloridos a completarem frases simples clicando no \"amigo\" correto (Am, Is ou Are).\n\n*   **Personagem Amarelo:** **AM** (Sempre anda com o \"I\")\n*   **Personagem Azul:** **IS** (Sempre anda com o \"He\", \"She\", \"It\")\n*   **Personagem Vermelho:** **ARE** (Sempre anda com o \"You\", \"We\", \"They\")\n\n---\n\n### 2. Design da Interface (UX)\n*   **Sem texto longo:** Use áudio para dar as instruções.\n*   **Cores vibrantes:** Botões grandes e fáceis de clicar.\n*   **Feedback imediato:** Se acertar, o monstrinho pula e faz um som feliz. Se errar, ele balança a cabeça suavemente.\n\n---\n\n### 3. Protótipo Simples (HTML/JavaScript)\nVocê pode copiar esse código e salvar como um arquivo `.html` para testar no navegador.\n\n```html\n\u003c!DOCTYPE html\u003e\n\u003chtml lang\u003d\"pt-br\"\u003e\n\u003chead\u003e\n    \u003cmeta charset\u003d\"UTF-8\"\u003e\n    \u003cmeta name\u003d\"viewport\" content\u003d\"width\u003ddevice-width, initial-scale\u003d1.0\"\u003e\n    \u003ctitle\u003eTo Be Friends Game\u003c/title\u003e\n    \u003cstyle\u003e\n        body { font-family: \u0027Comic Sans MS\u0027, sans-serif; background-color: #f0f8ff; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }\n        #game-container { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 5px solid #ffcc00; }\n        .sentence { font-size: 40px; margin-bottom: 30px; color: #333; }\n        .blank { border-bottom: 4px dashed #333; min-width: 80px; display: inline-block; color: #ff6600; }\n        .options { display: flex; gap: 20px; justify-content: center; }\n        button { padding: 20px 40px; font-size: 24px; cursor: pointer; border: none; border-radius: 15px; color: white; transition: transform 0.2s; }\n        button:active { transform: scale(0.9); }\n        .btn-am { background-color: #ffcc00; color: #000; } /* Amarelo */\n        .btn-is { background-color: #0088ff; } /* Azul */\n        .btn-are { background-color: #ff4444; } /* Vermelho */\n        #message { margin-top: 20px; font-size: 24px; height: 30px; }\n        img { width: 150px; margin-bottom: 10px; }\n    \u003c/style\u003e\n\u003c/head\u003e\n\u003cbody\u003e\n\n    \u003cdiv id\u003d\"game-container\"\u003e\n        \u003cdiv id\u003d\"character\"\u003e\n            \u003c!-- Representação visual do sujeito --\u003e\n            \u003cimg id\u003d\"subject-img\" src\u003d\"https://cdn-icons-png.flaticon.com/512/4140/4140047.png\" alt\u003d\"Personagem\"\u003e\n        \u003c/div\u003e\n        \n        \u003cdiv class\u003d\"sentence\"\u003e\n            \u003cspan id\u003d\"subject\"\u003eI\u003c/span\u003e \n            \u003cspan class\u003d\"blank\" id\u003d\"answer\"\u003e___\u003c/span\u003e \n            \u003cspan id\u003d\"predicate\"\u003ehappy!\u003c/span\u003e\n        \u003c/div\u003e\n\n        \u003cdiv class\u003d\"options\"\u003e\n            \u003cbutton class\u003d\"btn-am\" onclick\u003d\"check(\u0027am\u0027)\"\u003eAM\u003c/button\u003e\n            \u003cbutton class\u003d\"btn-is\" onclick\u003d\"check(\u0027is\u0027)\"\u003eIS\u003c/button\u003e\n            \u003cbutton class\u003d\"btn-are\" onclick\u003d\"check(\u0027are\u0027)\"\u003eARE\u003c/button\u003e\n        \u003c/div\u003e\n\n        \u003cdiv id\u003d\"message\"\u003e\u003c/div\u003e\n        \u003cbutton onclick\u003d\"nextLevel()\" id\u003d\"next-btn\" style\u003d\"display:none; background: #4caf50; margin-top: 20px;\"\u003ePróximo! ➔\u003c/button\u003e\n    \u003c/div\u003e\n\n    \u003cscript\u003e\n        const levels \u003d [\n            { s: \"I\", a: \"am\", p: \"happy!\", img: \"https://cdn-icons-png.flaticon.com/512/4140/4140047.png\" },\n            { s: \"She\", a: \"is\", p: \"a doctor.\", img: \"https://cdn-icons-png.flaticon.com/512/3306/3306561.png\" },\n            { s: \"They\", a: \"are\", p: \"friends.\", img: \"https://cdn-icons-png.flaticon.com/512/1256/1256650.png\" },\n            { s: \"It\", a: \"is\", p: \"a cat.\", img: \"https://cdn-icons-png.flaticon.com/512/616/616408.png\" }\n        ];\n\n        let currentLevel \u003d 0;\n\n        function check(choice) {\n            const correct \u003d levels[currentLevel].a;\n            const msg \u003d document.getElementById(\u0027message\u0027);\n            const ansDisplay \u003d document.getElementById(\u0027answer\u0027);\n\n            if (choice \u003d\u003d\u003d correct) {\n                ansDisplay.innerText \u003d choice.toUpperCase();\n                msg.innerText \u003d \"🌟 Muito bem! 🌟\";\n                msg.style.color \u003d \"green\";\n                document.getElementById(\u0027next-btn\u0027).style.display \u003d \"block\";\n                // Aqui entraria um áudio: \"I am happy!\"\n                speak(`${levels[currentLevel].s} ${levels[currentLevel].a} ${levels[currentLevel].p}`);\n            } else {\n                msg.innerText \u003d \"Ops! Tente de novo! 😊\";\n                msg.style.color \u003d \"red\";\n            }\n        }\n\n        function nextLevel() {\n            currentLevel++;\n            if (currentLevel \u003e\u003d levels.length) currentLevel \u003d 0;\n            \n            document.getElementById(\u0027subject\u0027).innerText \u003d levels[currentLevel].s;\n            document.getElementById(\u0027predicate\u0027).innerText \u003d levels[currentLevel].p;\n            document.getElementById(\u0027subject-img\u0027).src \u003d levels[currentLevel].img;\n            document.getElementById(\u0027answer\u0027).innerText \u003d \"___\";\n            document.getElementById(\u0027message\u0027).innerText \u003d \"\";\n            document.getElementById(\u0027next-btn\u0027).style.display \u003d \"none\";\n        }\n\n        function speak(text) {\n            const uttc \u003d new SpeechSynthesisUtterance(text);\n            uttc.lang \u003d \u0027en-US\u0027;\n            window.speechSynthesis.speak(uttc);\n        }\n    \u003c/script\u003e\n\u003c/body\u003e\n\u003c/html\u003e\n```\n\n---\n\n### 4. Recursos essenciais para a criança:\n\n1.  **Narração (Text-to-Speech):** No código acima, incluí a função `speak()`. Quando a criança acerta, o app lê a frase em inglês. Isso é fundamental para ela associar o som à escrita.\n2.  **Gamificação:**\n    *   **Estrelas:** A cada acerto, uma estrela aparece no topo.\n    *   **Coleção:** Ao completar 5 frases, ela ganha um \"adesivo digital\" de um animal.\n3.  **Fases por Pronomes:**\n    *   **Fase 1:** Só o \"I am\". (Foco em si mesma).\n    *   **Fase 2:** \"He/She/It\". (Foco nos outros e objetos).\n    *   **Fase 3:** Misturado.\n\n### 5. Como transformar isso em um App real?\nSe você quiser colocar isso no celular:\n1.  **Ferramenta:** Use o **Thunkable** ou **MIT App Inventor**. São ferramentas visuais onde você arrasta blocos, ideais para iniciantes.\n2.  **Exportação:** Elas permitem gerar um arquivo `.apk` (Android) ou testar no iOS.\n3.  **Gráficos:** Use sites como *Flaticon* ou *Freepik* (buscando por \"cute animals\") para as imagens.\n\nDeseja que eu aprofunde em alguma parte específica do código ou da lógica pedagógica?",
+      "role": "model",
+      "finishReason": "STOP",
+      "tokenCount": 2049,
+      "parts": [{
+        "text": "Criar um aplicativo"
+      }, {
+        "text": " para uma criança de 4 anos exige um design focado em **visual, som e repetição**, já que nessa"
+      }, {
+        "text": " idade a criança ainda está desenvolvendo a alfabetização.\n\nAqui está um conceito de app chamado **\"To Be Friends\"**"
+      }, {
+        "text": " (Amigos do To Be). Vou estruturar o design e o código básico para você entender como funcionaria.\n\n---"
+      }, {
+        "text": "\n\n### 1. O Conceito: \"To Be Friends\"\nA criança ajudará monstrinhos coloridos"
+      }, {
+        "text": " a completarem frases simples clicando no \"amigo\" correto (Am, Is ou Are).\n\n*   **Personagem"
+      }, {
+        "text": " Amarelo:** **AM** (Sempre anda com o \"I\")\n*   **Personagem Azul:** **IS"
+      }, {
+        "text": "** (Sempre anda com o \"He\", \"She\", \"It\")\n*   **Personagem Vermelho:**"
+      }, {
+        "text": " **ARE** (Sempre anda com o \"You\", \"We\", \"They\")\n\n---\n\n### 2."
+      }, {
+        "text": " Design da Interface (UX)\n*   **Sem texto longo:** Use áudio para dar as instruções.\n*   **C"
+      }, {
+        "text": "ores vibrantes:** Botões grandes e fáceis de clicar.\n*   **Feedback imediato:** Se acert"
+      }, {
+        "text": "ar, o monstrinho pula e faz um som feliz. Se errar, ele balança a cabeça suavemente."
+      }, {
+        "text": "\n\n---\n\n### 3. Protótipo Simples (HTML/JavaScript)\nVocê pode copiar esse código e"
+      }, {
+        "text": " salvar como um arquivo `.html` para testar no navegador.\n\n```html\n\u003c!DOCTYPE html\u003e\n\u003chtml lang\u003d\""
+      }, {
+        "text": "pt-br\"\u003e\n\u003chead\u003e\n    \u003cmeta charset\u003d\"UTF-8\"\u003e\n    \u003cmeta name\u003d\""
+      }, {
+        "text": "viewport\" content\u003d\"width\u003ddevice-width, initial-scale\u003d1.0\"\u003e\n    \u003ctitle\u003eTo"
+      }, {
+        "text": " Be Friends Game\u003c/title\u003e\n    \u003cstyle\u003e\n        body { font-family: \u0027Comic Sans MS\u0027, sans"
+      }, {
+        "text": "-serif; background-color: #f0f8ff; text-align: center; display: flex;"
+      }, {
+        "text": " flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin"
+      }, {
+        "text": ": 0; }\n        #game-container { background: white; padding: 30px; border"
+      }, {
+        "text": "-radius: 20px; box-shadow: 0 10px 20px rgba("
+      }, {
+        "text": "0,0,0,0.1); border: 5px solid #ffcc00; }\n        ."
+      }, {
+        "text": "sentence { font-size: 40px; margin-bottom: 30px; color: #33"
+      }, {
+        "text": "3; }\n        .blank { border-bottom: 4px dashed #333; min-width: "
+      }, {
+        "text": "80px; display: inline-block; color: #ff6600; }\n        .options"
+      }, {
+        "text": " { display: flex; gap: 20px; justify-content: center; }\n        button { padding:"
+      }, {
+        "text": " 20px 40px; font-size: 24px; cursor: pointer; border: none; border"
+      }, {
+        "text": "-radius: 15px; color: white; transition: transform 0.2s; }\n        button:active"
+      }, {
+        "text": " { transform: scale(0.9); }\n        .btn-am { background-color: #ffcc"
+      }, {
+        "text": "00; color: #000; } /* Amarelo */\n        .btn-is { background-color:"
+      }, {
+        "text": " #0088ff; } /* Azul */\n        .btn-are { background-color: #ff4"
+      }, {
+        "text": "444; } /* Vermelho */\n        #message { margin-top: 20px; font-"
+      }, {
+        "text": "size: 24px; height: 30px; }\n        img { width: 15"
+      }, {
+        "text": "0px; margin-bottom: 10px; }\n    \u003c/style\u003e\n\u003c/head\u003e\n\u003cbody\u003e\n\n"
+      }, {
+        "text": "    \u003cdiv id\u003d\"game-container\"\u003e\n        \u003cdiv id\u003d\"character\"\u003e\n            \u003c!-- Representação visual do sujeito"
+      }, {
+        "text": " --\u003e\n            \u003cimg id\u003d\"subject-img\" src\u003d\"https://cdn-icons-png.flaticon.com"
+      }, {
+        "text": "/512/4140/4140047.png\" alt\u003d\"Personagem\"\u003e"
+      }, {
+        "text": "\n        \u003c/div\u003e\n        \n        \u003cdiv class\u003d\"sentence\"\u003e\n            \u003cspan id\u003d\"subject\"\u003eI\u003c/span\u003e "
+      }, {
+        "text": "\n            \u003cspan class\u003d\"blank\" id\u003d\"answer\"\u003e___\u003c/span\u003e \n            \u003cspan id\u003d\"predicate\"\u003ehappy!"
+      }, {
+        "text": "\u003c/span\u003e\n        \u003c/div\u003e\n\n        \u003cdiv class\u003d\"options\"\u003e\n            \u003cbutton class\u003d\"btn-am\" onclick\u003d\""
+      }, {
+        "text": "check(\u0027am\u0027)\"\u003eAM\u003c/button\u003e\n            \u003cbutton class\u003d\"btn-is\" onclick\u003d\"check(\u0027is"
+      }, {
+        "text": "\u0027)\"\u003eIS\u003c/button\u003e\n            \u003cbutton class\u003d\"btn-are\" onclick\u003d\"check(\u0027are\u0027)\"\u003eARE"
+      }, {
+        "text": "\u003c/button\u003e\n        \u003c/div\u003e\n\n        \u003cdiv id\u003d\"message\"\u003e\u003c/div\u003e\n        \u003cbutton onclick\u003d\"nextLevel()\" id"
+      }, {
+        "text": "\u003d\"next-btn\" style\u003d\"display:none; background: #4caf50; margin-top: 20px"
+      }, {
+        "text": ";\"\u003ePróximo! ➔\u003c/button\u003e\n    \u003c/div\u003e\n\n    \u003cscript\u003e\n        const levels \u003d [\n            "
+      }, {
+        "text": "{ s: \"I\", a: \"am\", p: \"happy!\", img: \"https://cdn-icons-png"
+      }, {
+        "text": ".flaticon.com/512/4140/4140047.png"
+      }, {
+        "text": "\" },\n            { s: \"She\", a: \"is\", p: \"a doctor.\", img: \"https"
+      }, {
+        "text": "://cdn-icons-png.flaticon.com/512/3306/330"
+      }, {
+        "text": "6561.png\" },\n            { s: \"They\", a: \"are\", p: \""
+      }, {
+        "text": "friends.\", img: \"https://cdn-icons-png.flaticon.com/512/1"
+      }, {
+        "text": "256/1256650.png\" },\n            { s: \"It\", a: \"is"
+      }, {
+        "text": "\", p: \"a cat.\", img: \"https://cdn-icons-png.flaticon.com/"
+      }, {
+        "text": "512/616/616408.png\" }\n        ];\n\n        let currentLevel"
+      }, {
+        "text": " \u003d 0;\n\n        function check(choice) {\n            const correct \u003d levels[currentLevel].a;"
+      }, {
+        "text": "\n            const msg \u003d document.getElementById(\u0027message\u0027);\n            const ansDisplay \u003d document.getElementById(\u0027answer\u0027);\n\n"
+      }, {
+        "text": "            if (choice \u003d\u003d\u003d correct) {\n                ansDisplay.innerText \u003d choice.toUpperCase();\n                msg.innerText"
+      }, {
+        "text": " \u003d \"🌟 Muito bem! 🌟\";\n                msg.style.color \u003d \"green\";\n                document.getElementById"
+      }, {
+        "text": "(\u0027next-btn\u0027).style.display \u003d \"block\";\n                // Aqui entraria um áudio: \"I"
+      }, {
+        "text": " am happy!\"\n                speak(`${levels[currentLevel].s} ${levels[currentLevel].a} ${levels"
+      }, {
+        "text": "[currentLevel].p}`);\n            } else {\n                msg.innerText \u003d \"Ops! Tente de novo!"
+      }, {
+        "text": " 😊\";\n                msg.style.color \u003d \"red\";\n            }\n        }\n\n        function nextLevel()"
+      }, {
+        "text": " {\n            currentLevel++;\n            if (currentLevel \u003e\u003d levels.length) currentLevel \u003d 0;\n            \n"
+      }, {
+        "text": "            document.getElementById(\u0027subject\u0027).innerText \u003d levels[currentLevel].s;\n            document.getElementById(\u0027predicate\u0027)."
+      }, {
+        "text": "innerText \u003d levels[currentLevel].p;\n            document.getElementById(\u0027subject-img\u0027).src \u003d levels[current"
+      }, {
+        "text": "Level].img;\n            document.getElementById(\u0027answer\u0027).innerText \u003d \"___\";\n            document.getElementById(\u0027message"
+      }, {
+        "text": "\u0027).innerText \u003d \"\";\n            document.getElementById(\u0027next-btn\u0027).style.display \u003d \"none\";\n        }"
+      }, {
+        "text": "\n\n        function speak(text) {\n            const uttc \u003d new SpeechSynthesisUtterance(text);\n            "
+      }, {
+        "text": "uttc.lang \u003d \u0027en-US\u0027;\n            window.speechSynthesis.speak(uttc);\n        "
+      }, {
+        "text": "}\n    \u003c/script\u003e\n\u003c/body\u003e\n\u003c/html\u003e\n```\n\n---\n\n### 4. Recursos essenciais para a"
+      }, {
+        "text": " criança:\n\n1.  **Narração (Text-to-Speech):** No código acima, incluí a função "
+      }, {
+        "text": "`speak()`. Quando a criança acerta, o app lê a frase em inglês. Isso é fundamental para ela associar o som à"
+      }, {
+        "text": " escrita.\n2.  **Gamificação:**\n    *   **Estrelas:** A cada acerto, uma"
+      }, {
+        "text": " estrela aparece no topo.\n    *   **Coleção:** Ao completar 5 frases, ela ganha um \""
+      }, {
+        "text": "adesivo digital\" de um animal.\n3.  **Fases por Pronomes:**\n    *   **Fase"
+      }, {
+        "text": " 1:** Só o \"I am\". (Foco em si mesma).\n    *   **Fase 2:** \""
+      }, {
+        "text": "He/She/It\". (Foco nos outros e objetos).\n    *   **Fase 3:** Mist"
+      }, {
+        "text": "urado.\n\n### 5. Como transformar isso em um App real?\nSe você quiser colocar isso no celular:"
+      }, {
+        "text": "\n1.  **Ferramenta:** Use o **Thunkable** ou **MIT App Inventor**. São ferramentas visuais onde"
+      }, {
+        "text": " você arrasta blocos, ideais para iniciantes.\n2.  **Exportação:** Elas permitem gerar"
+      }, {
+        "text": " um arquivo `.apk` (Android) ou testar no iOS.\n3.  **Gráficos:** Use"
+      }, {
+        "text": " sites como *Flaticon* ou *Freepik* (buscando por \"cute animals\") para as imagens.\n\nD"
+      }, {
+        "text": "eseja que eu aprofunde em alguma parte específica do código ou da lógica pedagógica?"
+      }, {
+        "text": "",
+        "thoughtSignature": "EuIMCt8MAb4+9vuvb5PlnAOzUXID8u2knJMtIq7At9v/OtlruA6+a/RnqUGk/GUxNSEKQTUVhndk66PH2mdP/0fnUGEwCY0DdzqfA2MyVXx846IWH8z1JBPJ1knNElol/Qe5tV3NBc21NSbzDX4bvX/a97MXbM17HmidLnlXBtjpMnX5HvbI12LQ/M2Gs4c6ExXDZp6qE8iJGFRVwYdXxSiB9GNm972PoGdop/9wBPqRkh3Fw+UsKVPjuu41Ps5GtE3o1dBqrkbqd8FvaGw/+BsW24R61A0q4wPm89rorrl/Y3QRqJJN4Q2yExcYoedewYlcQUv2Yp1E52RdsjAhA6wq5JFiKVM1xWtLRjG542OiUH7OTfbEO5qksheyKPPuUIDSB7qNoZfgDzVLxIKOI5d36tVKqmaKKVY8GqsFVA77s21sr0lA2BqjzugD6xs57G3jYVokIJRXHwq2KPsYj50sZax0KlHplRJ0g5c9Do8Li49yjTJF2bDk8oRVSw/T/vE7qgDGh28OjVb3o0KG6GkJFeWI2WnDfwLlC59aPILrn7PRYpYgtGpLffV/DZuIBu8ivXfsBb2sJVvJMINhcpVJWnadsM7Q4ffaoCAvK0vv0+zMILJ4f8D6mDgQqkeeLoXhaNVTP5ec+OxOSa5+9ZguPwhtBbBLZ9tzoVS7DGZe/mKTXJ9hcyxnyxGDpTx2/UkidTzbvdnTz8ZWt8Y9barxvsWcPO/CCPWO7hXQeVh8/ZgAz+BarfpFmr8KaNU64WzBaKBNyzPap+JodBB+jVt7y3ciu3q1tpWgsatMxunwNGbz1RwG54K3YEsiBuTXiIFGbZ2+WNcp/LQWfaTUK07myKC6CZvoYI5C/0oDkCdeU75eRKLcZ5b3JTeW3WtUFtXCz3ESK8dMoSzvE6tnDksOAlM1X8UKDiiAO2iGAMZNdfO1bb+n3OL5Kf7HvAQc154XRJ3YzBF+kNF0atofszt3i0vNTVy1ftZVZKbrqRviimfA/QSbossarh4duYVHDPePW1z3pyMt0OdpyBR5VGx9tqITl0SSP+WK/SVE4QRByIABgkEN2iyewUPDaxlFHnFdOGI33l2SPXafeznGDRssxHM+BvIZJ6hC2sdupVjhho7hQ+sYFRFIqFuADRQfFU5TpZ7UQQMsZejqqLVCsbPmrMbTvK23NsYJJ76Q1oZ1pChWQS7usIw+aTrqOt2mojE5g7Ux7mPMsxQdJDSkYdDESIH3N9cen27H4JeL+gWjM46jlSK8BiE7XGf0XEhPxlDokWxd2yl/6pGla5phbZLlbZhmQtuJrwzkQBoOyUmTdwlKWt91LFQ4BNj8mcipHIMk0OXGurCmoouUjHYGYcBm/FNoR7PXcv2P/s88o4wcNJfm2chr5suF4ZWw5IhSy2xfomPaNTr8f43+Y2Gb9FwCZOcsZ9+Tmo2Sou9mKZpujGYIhN3VBXhZc9SE9iSsB0TieddgcXv2XntWuB9OzTwI3eKR8Jj1ex/SFh+yr2S0/nMjxRH9wESV/iMMMsYQQFypL9bP7ewyHV/0Swd5nneCIFHjQ0Nbfh0QUlr6n0QH5jaD+zPhy7uJEjY/2rqkUFUjPTUXvn+i3J0+VthBjyoMMh79AUeYgTMj/aXPb/UOFnbzISDedQoiijn1v0QAcvPu9rEasZVSOiCJCKD79q+y4UswZ6N9gSqQvxN+MTj2hg0ze2xoCC5BctFWxPMAvVVHyWlu5nScqOyNJApiqQvBn35UiewgEZsixayeP7WRctZCkzVoJF+NRMG6S9OHkCPx8MW5LEOpLT1gSq0cybxhHlDjG/DJPRXS4CTiXQZP87iUimFhVUiNmof0fmZU9r3wNuZ5dgWC+AZ5IUcTlOJed0qLNtMDnxN8tVQCtA0/h66Nr+bcLExYnNkW3Um11L8LtxzJxnPCnji7G3pfy/+3SHscSMKeduzjDaZn0TqxZyggImCwdttVlhxT+3YP6kJBsx1tiRaE7sg/B7yoXQyWBuMvHs0sUOv0f2Z0E2xC6GV4uzrdyg1qr1A4IYp/ofukFFZdWIqBgd4qJC8FUM+DoJNTrgrxiBEWwFjblOSvnL+cKYFJi4HiXEadecPlyk+eK73p2PVXc0TNHDZoXGGMBo4imlPbfe8JZo25+yE4notQPVY1z/uD+vMqsZtCrfRPMkQ="
+      }],
+      "createTime": "2026-03-23T19:28:56.242Z"
+    }],
+    "pendingInputs": [{
+      "text": "",
+      "role": "user"
+    }]
+  }
+}

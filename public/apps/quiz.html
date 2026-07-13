@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo: Quiz - Inglês</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Estilos específicos para o Quiz, complementando style.css */
+        .lesson-content {
+             padding: 30px 40px;
+             display: flex;
+             flex-direction: column;
+             align-items: center; /* Centraliza o conteúdo do jogo */
+        }
+
+        #game-container-quiz { /* ID específico */
+            background-color: var(--section-even-bg);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 700px; /* Largura um pouco maior para perguntas */
+            text-align: center;
+            margin: 20px auto;
+            box-shadow: 0 3px 8px var(--shadow-color);
+        }
+
+        /* Seletor de Dificuldade */
+        #difficulty-selector-quiz {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #difficulty-selector-quiz h3 {
+             margin-top: 0;
+             margin-bottom: 1rem;
+             font-size: 1.2em;
+             color: var(--primary-color);
+        }
+        body.dark-mode #difficulty-selector-quiz h3 {
+             color: var(--secondary-color);
+         }
+        .difficulty-button-quiz { /* Classe específica */
+            padding: 8px 15px;
+            margin: 0 5px 10px 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--white-color);
+            color: var(--text-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+        }
+        body.dark-mode .difficulty-button-quiz {
+             background-color: var(--section-even-bg);
+             border-color: var(--border-color);
+             color: var(--text-color);
+         }
+        .difficulty-button-quiz.active {
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+            border-color: var(--primary-color);
+            font-weight: bold;
+            transform: scale(1.05);
+        }
+        body.dark-mode .difficulty-button-quiz.active {
+            background-color: var(--secondary-color);
+            color: var(--button-text-color);
+            border-color: var(--secondary-color);
+        }
+
+        /* Container da Pergunta */
+        #question-container {
+            margin-bottom: 1.5rem;
+        }
+        #question-text {
+            font-size: 1.3em; /* Tamanho da pergunta */
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+        #question-counter {
+            font-size: 0.9em;
+            color: var(--text-muted);
+        }
+
+        /* Container das Opções */
+        #options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Layout responsivo */
+            gap: 1rem; /* Espaçamento entre opções */
+        }
+        .option-button {
+            padding: 12px 15px; /* Padding interno */
+            border: 2px solid var(--border-color); /* Borda padrão */
+            border-radius: 6px;
+            background-color: var(--white-color);
+            color: var(--text-color);
+            font-size: 1em;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s, transform 0.1s;
+        }
+         body.dark-mode .option-button {
+             background-color: var(--section-odd-bg);
+             border-color: var(--border-color);
+         }
+        .option-button:hover:not(.disabled) {
+            background-color: hsla(from var(--secondary-color) h s l / 0.1); /* Fundo levemente azulado no hover */
+            border-color: var(--secondary-color);
+        }
+        .option-button:active:not(.disabled) {
+            transform: scale(0.98); /* Efeito de clique */
+        }
+        /* Estilos para feedback nas opções */
+        .option-button.correct {
+            background-color: var(--success-bg-light);
+            border-color: var(--success-color);
+            color: var(--success-color); /* Texto verde */
+            font-weight: bold;
+        }
+        .option-button.incorrect {
+            background-color: var(--danger-bg-light);
+            border-color: var(--danger-color);
+            color: var(--danger-color); /* Texto vermelho */
+        }
+        /* Desabilitar cliques após a resposta */
+        #options-container.disabled .option-button {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        /* Adiciona classe ao container para desabilitar */
+        .option-button.disabled {
+             pointer-events: none;
+             opacity: 0.7;
+        }
+
+
+        /* Feedback da Resposta */
+        #feedback-quiz { /* ID específico */
+            margin-top: 1.5rem;
+            font-weight: 600;
+            min-height: 1.5rem;
+            font-size: 1.05em;
+        }
+        .feedback-correct { color: var(--success-color); }
+        .feedback-incorrect { color: var(--danger-color); }
+
+        /* Botão Próxima Pergunta / Ver Resultado */
+        #next-button-quiz { /* ID específico */
+            margin-top: 1.5rem;
+            padding: 10px 25px;
+            font-size: 1em;
+            font-weight: 500;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+        }
+        #next-button-quiz:hover {
+            background-color: var(--secondary-color);
+        }
+        #next-button-quiz:active {
+            transform: scale(0.98);
+        }
+        #next-button-quiz.hidden {
+            display: none;
+        }
+
+        /* Modal de Resultado */
+        .modal {
+            display: none; /* Escondido por padrão */
+            position: fixed; /* Fica fixo na tela */
+            z-index: 1001; /* Garante que fique sobre outros elementos */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Permite rolagem se o conteúdo for grande */
+            background-color: rgba(0,0,0,0.6); /* Fundo semi-transparente */
+            /* Flexbox para centralizar o conteúdo */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.show {
+            display: flex; /* Mostra o modal usando flexbox */
+        }
+        .modal-content {
+            background-color: var(--container-bg);
+            margin: auto; /* Margem automática ajuda na centralização */
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            width: 90%; /* Largura responsiva */
+            max-width: 500px; /* Largura máxima */
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            position: relative; /* Para posicionamento interno se necessário */
+        }
+         #result-modal .modal-content h2 { color: var(--primary-color); }
+         body.dark-mode #result-modal .modal-content h2 { color: var(--secondary-color); }
+         #result-modal .modal-content strong { color: var(--primary-color); }
+         body.dark-mode #result-modal .modal-content strong { color: var(--secondary-color); }
+         #restart-button-quiz { /* ID específico */
+             padding: 10px 25px;
+             font-size: 1em;
+             font-weight: 500;
+             border: none;
+             border-radius: 6px;
+             cursor: pointer;
+             transition: background-color 0.3s ease;
+             background-color: var(--primary-color);
+             color: var(--button-text-color);
+             margin-top: 1rem;
+         }
+         #restart-button-quiz:hover {
+             background-color: var(--secondary-color);
+         }
+
+    </style>
+</head>
+<body>
+
+    <div id="floating-video"> <div class="video-container"> <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </div> </div>
+    <div id="floating-notepad"> <textarea id="notepad-area" placeholder="Suas anotações..."></textarea> </div>
+    <div id="floating-chat"> <div id="chatbox"> <div id="chatOutput"> <div class="message bot-message">Olá! Eu sou o George. Como posso ajudar com seu inglês hoje?</div> </div> <div id="chatInputContainer"> <input type="text" id="chatInput" placeholder="Digite sua dúvida aqui..." autocomplete="off"> <button id="sendButton">Enviar</button> </div> </div> </div>
+    <div class="container">
+        <header class="lesson-header">
+            <h1>Jogo: Quiz</h1>
+            <div class="header-controls">
+                <a href="index.html" id="home-index-btn" title="Voltar ao Índice"><i class="fas fa-home"></i></a>
+                <button id="theme-toggle-btn" title="Alternar Modo Claro/Escuro"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+                <button id="video-toggle-btn" title="Mostrar/Esconder Vídeo"><i class="fas fa-video"></i></button>
+                <button id="notepad-toggle-btn" title="Mostrar/Esconder Bloco de Notas"><i class="fas fa-pencil-alt"></i></button>
+                <button id="chat-toggle-btn" title="Abrir Chat"><i class="fas fa-robot"></i></button>
+            </div>
+        </header>
+        <main class="lesson-content">
+
+            <div id="game-container-quiz">
+
+                <div id="difficulty-selector-quiz">
+                    <h3>Escolha a Dificuldade:</h3>
+                    <button class="difficulty-button-quiz active" data-difficulty="1">Nível 1</button>
+                    <button class="difficulty-button-quiz" data-difficulty="2">Nível 2</button>
+                    <button class="difficulty-button-quiz" data-difficulty="3">Nível 3</button>
+                    <button class="difficulty-button-quiz" data-difficulty="4">Nível 4</button>
+                    <button class="difficulty-button-quiz" data-difficulty="5">Nível 5</button>
+                </div>
+
+                <div id="question-container">
+                    <p id="question-text"></p>
+                    <p id="question-counter"></p>
+                </div>
+
+                <div id="options-container">
+                    </div>
+
+                <div id="feedback-quiz" class="min-h-[1.5rem]">
+                      </div>
+
+                <div class="mt-6 text-center">
+                    <button id="next-button-quiz" class="hidden">
+                        Próxima Pergunta
+                    </button>
+                </div>
+
+            </div> </main> </div> <div id="result-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-4">Quiz Concluído!</h2>
+            <p class="mb-4 text-lg">Sua pontuação: <strong id="final-score"></strong></p>
+            <p id="result-message" class="mb-6 text-gray-600"></p>
+            <button id="restart-button-quiz">
+                Jogar Novamente
+            </button>
+        </div>
+    </div>
+
+    <script>
+         document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Lógica do Tema e Painéis Flutuantes ---
+            // ... (código mantido igual ao anterior) ...
+             const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            const notepadToggleBtn = document.getElementById('notepad-toggle-btn');
+            const videoToggleBtn = document.getElementById('video-toggle-btn');
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            const floatingNotepad = document.getElementById('floating-notepad');
+            const floatingVideo = document.getElementById('floating-video');
+            const floatingChat = document.getElementById('floating-chat');
+            const notepadArea = document.getElementById('notepad-area');
+            const notepadStorageKey = 'notepadContent_quiz_game';
+
+            const applyTheme = (theme) => { if (theme === 'dark') { document.body.classList.add('dark-mode'); } else { document.body.classList.remove('dark-mode'); } };
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(currentTheme);
+            if (themeToggleBtn) { themeToggleBtn.addEventListener('click', () => { const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark'; applyTheme(newTheme); localStorage.setItem('theme', newTheme); }); }
+            const savedNotepadContent = localStorage.getItem(notepadStorageKey);
+            if (savedNotepadContent && notepadArea) { notepadArea.value = savedNotepadContent; }
+            if (notepadArea) { notepadArea.addEventListener('input', () => { localStorage.setItem(notepadStorageKey, notepadArea.value); }); }
+            const setupPanelToggle = (button, panelElement, bodyClass) => { if (button && panelElement) { button.addEventListener('click', () => { document.body.classList.toggle(bodyClass); button.classList.toggle('active'); if (bodyClass === 'chat-visible' && document.body.classList.contains(bodyClass)) { const chatInput = document.querySelector('#floating-chat #chatInput'); if (chatInput) setTimeout(() => chatInput.focus(), 50); } }); } };
+            setupPanelToggle(notepadToggleBtn, floatingNotepad, 'notepad-visible');
+            setupPanelToggle(videoToggleBtn, floatingVideo, 'video-visible');
+            setupPanelToggle(chatToggleBtn, floatingChat, 'chat-visible');
+            const chatInput = document.getElementById('chatInput');
+            const chatOutput = document.getElementById('chatOutput');
+            const sendButton = document.getElementById('sendButton');
+            const WORKER_URL = 'https://george.jorgehsantonio.workers.dev/';
+            if (chatInput && chatOutput && sendButton) { function addMessage(message, className) { const messageDiv = document.createElement('div'); messageDiv.classList.add('message', className); messageDiv.textContent = message; chatOutput.appendChild(messageDiv); messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' }); return messageDiv; } async function sendMessageToWorker() { const userMessage = chatInput.value.trim(); if (!userMessage) return; addMessage(userMessage, 'user-message'); chatInput.value = ''; chatInput.focus(); const typingDiv = addMessage("George está digitando...", "typing-indicator"); chatInput.disabled = true; sendButton.disabled = true; try { const response = await fetch(WORKER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ message: userMessage }), }); if (typingDiv && chatOutput.contains(typingDiv)) typingDiv.remove(); if (!response.ok) { let errorText = `Erro ${response.status}: ${response.statusText}`; try { const errorData = await response.json(); errorText = `Erro do George: ${errorData.error || errorText}`; } catch (e) { /* Ignora */ } addMessage(errorText, 'error-message'); } else { const data = await response.json(); if (data.reply) { addMessage(data.reply, 'bot-message'); } else if (data.error) { addMessage(`Erro do George: ${data.error}`, 'error-message'); } else { addMessage(`George: Resposta inesperada.`, 'error-message'); } } } catch (error) { console.error('Erro ao enviar mensagem:', error); if (typingDiv && chatOutput.contains(typingDiv)) { typingDiv.remove(); } addMessage(`Erro de comunicação. Verifique sua conexão.`, 'error-message'); } finally { chatInput.disabled = false; sendButton.disabled = false; chatInput.focus(); } } sendButton.addEventListener('click', sendMessageToWorker); chatInput.addEventListener('keypress', function(event) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessageToWorker(); } }); } else { console.warn("Elementos do chat flutuante não encontrados."); }
+
+
+            // --- Lógica Específica do Jogo Quiz ---
+
+            // Conjuntos de Perguntas por Dificuldade (EXPANDIDOS)
+            const quizSets = {
+                1: [ // Nível 1: Presente Simples (to be, have), Vocabulário Básico (cores, animais, números 1-10)
+                    { question: "'Dog' é um animal.", options: ["True", "False"], answer: "True" },
+                    { question: "Qual cor é 'azul' em inglês?", options: ["Red", "Green", "Blue", "Yellow"], answer: "Blue" },
+                    { question: "I ___ happy.", options: ["is", "are", "am"], answer: "am" },
+                    { question: "She ___ a cat.", options: ["have", "has", "is"], answer: "has" },
+                    { question: "We ___ students.", options: ["is", "are", "am"], answer: "are" },
+                    { question: "Qual número vem depois de 'two'?", options: ["One", "Three", "Four", "Five"], answer: "Three" },
+                    { question: "'Red' significa 'verde'.", options: ["True", "False"], answer: "False" },
+                    { question: "They ___ friends.", options: ["is", "are", "am"], answer: "are" },
+                    { question: "He ___ a brother.", options: ["have", "has", "is"], answer: "has" },
+                    { question: "Qual animal faz 'Miau'?", options: ["Dog", "Cat", "Bird", "Fish"], answer: "Cat" },
+                ],
+                2: [ // Nível 2: Presente Simples (outros verbos), Vocabulário (comida, família), Perguntas com Do/Does, Preposições (in/on)
+                    { question: "They ___ English every day.", options: ["study", "studies", "studying"], answer: "study" },
+                    { question: "He ___ (not like) coffee.", options: ["don't like", "doesn't like", "not like"], answer: "doesn't like" },
+                    { question: "___ she work here?", options: ["Do", "Does", "Is"], answer: "Does" },
+                    { question: "Qual é a tradução de 'bread'?", options: ["Pão", "Leite", "Água", "Maçã"], answer: "Pão" },
+                    { question: "'Father' significa 'irmão'.", options: ["True", "False"], answer: "False" },
+                    { question: "I ___ (play) soccer on weekends.", options: ["play", "plays", "playing"], answer: "play" },
+                    { question: "___ you speak Spanish?", options: ["Do", "Does", "Are"], answer: "Do" },
+                    { question: "My mother ___ (cook) well.", options: ["cook", "cooks", "cooking"], answer: "cooks" },
+                    { question: "The cat sleeps ___ the chair.", options: ["in", "on", "at"], answer: "on" },
+                    { question: "We live ___ a big city.", options: ["in", "on", "at"], answer: "in" },
+                ],
+                3: [ // Nível 3: Presente Contínuo, Vocabulário (lugares, roupas), Preposições (in, on, at), Adjetivos básicos
+                    { question: "I ___ (watch) TV now.", options: ["watch", "watches", "am watching"], answer: "am watching" },
+                    { question: "She isn't ___ (sleep) at the moment.", options: ["sleep", "sleeping", "sleeps"], answer: "sleeping" },
+                    { question: "The book is ___ the table.", options: ["in", "on", "at"], answer: "on" },
+                    { question: "They live ___ Brazil.", options: ["in", "on", "at"], answer: "in" },
+                    { question: "What are you ___ (wear)?", options: ["wear", "wears", "wearing"], answer: "wearing" },
+                    { question: "He ___ (run) in the park right now.", options: ["run", "runs", "is running"], answer: "is running" },
+                    { question: "Are they ___ (eat) pizza?", options: ["eat", "eats", "eating"], answer: "eating" },
+                    { question: "This is a ___ (beautiful) flower.", options: ["beauty", "beautiful", "beautifully"], answer: "beautiful" },
+                    { question: "My shoes ___ (be) blue.", options: ["is", "are", "am"], answer: "are" },
+                    { question: "We are ___ the supermarket.", options: ["in", "on", "at"], answer: "at" }, // ou 'in' dependendo do contexto
+                ],
+                4: [ // Nível 4: Passado Simples (regulares e irregulares), Vocabulário (viagem, adjetivos), Expressões de tempo passado, Modais (can/could)
+                    { question: "We ___ (go) to the park yesterday.", options: ["go", "goes", "went"], answer: "went" },
+                    { question: "She ___ (not study) last night.", options: ["didn't study", "doesn't study", "not studied"], answer: "didn't study" },
+                    { question: "Did you ___ (see) the movie?", options: ["see", "saw", "seen"], answer: "see" },
+                    { question: "The opposite of 'happy' is ___.", options: ["Angry", "Sad", "Tired", "Hungry"], answer: "Sad" },
+                    { question: "I visited London ___.", options: ["Tomorrow", "Now", "Last year", "Every day"], answer: "Last year" },
+                    { question: "He ___ (buy) a new car last week.", options: ["buy", "buys", "bought"], answer: "bought" },
+                    { question: "They ___ (be) tired after the trip.", options: ["was", "were", "be"], answer: "were" },
+                    { question: "I ___ swim when I was five.", options: ["can", "could", "should"], answer: "could" },
+                    { question: "You ___ be quiet in the library.", options: ["can", "should", "must"], answer: "should" }, // ou must
+                    { question: "The weather was ___ (cold) yesterday.", options: ["cold", "colder", "coldest"], answer: "cold" },
+                ],
+                5: [ // Nível 5: Present Perfect, Past Perfect, For/Since, Comparativos/Superlativos, Vocabulário mais complexo
+                    { question: "He ___ (live) here for five years.", options: ["lives", "lived", "has lived"], answer: "has lived" },
+                    { question: "They haven't ___ (finish) the project yet.", options: ["finish", "finished", "finishing"], answer: "finished" },
+                    { question: "I have known her ___ 2010.", options: ["for", "since", "ago"], answer: "since" },
+                    { question: "This car is ___ (expensive) than that one.", options: ["expensiver", "more expensive", "most expensive"], answer: "more expensive" },
+                    { question: "'Vocabulary' means 'gramática'.", options: ["True", "False"], answer: "False" },
+                    { question: "She ___ (already eat) breakfast.", options: ["already ate", "has already eaten", "already eats"], answer: "has already eaten" },
+                    { question: "By the time I arrived, the movie ___ (start).", options: ["started", "has started", "had started"], answer: "had started" },
+                    { question: "This is the ___ (good) book I've ever read.", options: ["good", "better", "best"], answer: "best" },
+                    { question: "If you heat water, it ___ (boil).", options: ["boil", "boils", "will boil"], answer: "boils" }, // Zero conditional
+                    { question: "Have you ever ___ (be) to Japan?", options: ["be", "was/were", "been"], answer: "been" },
+                ]
+            };
+
+            // Elementos do DOM do Jogo
+            const quizContainer = document.getElementById('game-container-quiz');
+            const questionText = document.getElementById('question-text');
+            const questionCounter = document.getElementById('question-counter');
+            const optionsContainer = document.getElementById('options-container');
+            const feedbackDisplay = document.getElementById('feedback-quiz');
+            const nextButton = document.getElementById('next-button-quiz');
+            const resultModal = document.getElementById('result-modal');
+            const finalScoreDisplay = document.getElementById('final-score');
+            const resultMessageDisplay = document.getElementById('result-message');
+            const restartButton = document.getElementById('restart-button-quiz');
+            const difficultyButtonsQuiz = document.querySelectorAll('.difficulty-button-quiz');
+
+            // Variáveis de Estado do Jogo
+            let currentDifficulty = 1;
+            let currentQuestionIndex = 0;
+            let score = 0;
+            let questions = []; // Array para guardar as 5 perguntas selecionadas
+            let fullQuestionSet = []; // Array para guardar todas as perguntas do nível
+
+            // Função para embaralhar
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            // Função para iniciar/reiniciar o quiz (MODIFICADA para selecionar 5 perguntas)
+            function startQuiz() {
+                currentQuestionIndex = 0;
+                score = 0;
+                // Seleciona o conjunto completo de perguntas da dificuldade atual
+                const currentQuizSet = quizSets[currentDifficulty] || quizSets[1];
+                 if (!currentQuizSet || currentQuizSet.length === 0) {
+                     console.error("Conjunto de perguntas vazio ou inválido para o nível:", currentDifficulty);
+                     questionText.textContent = "Erro: Nenhuma pergunta encontrada para este nível.";
+                     optionsContainer.innerHTML = '';
+                     return;
+                 }
+                fullQuestionSet = shuffleArray([...currentQuizSet]); // Embaralha o conjunto completo
+
+                // Seleciona as primeiras 5 perguntas (ou menos, se não houver 5)
+                questions = fullQuestionSet.slice(0, 5);
+
+                resultModal.classList.remove('show');
+                nextButton.classList.add('hidden');
+                feedbackDisplay.innerHTML = ' ';
+                feedbackDisplay.className = 'min-h-[1.5rem]'; // Reseta classes de feedback
+                 quizContainer.style.display = 'block'; // Garante que o quiz esteja visível
+                displayQuestion();
+            }
+
+            // Função para exibir a pergunta atual
+            function displayQuestion() {
+                optionsContainer.classList.remove('disabled'); // Habilita opções
+                feedbackDisplay.innerHTML = ' ';
+                feedbackDisplay.className = 'min-h-[1.5rem]';
+                nextButton.classList.add('hidden');
+
+                // Verifica se ainda há perguntas na lista selecionada (máximo 5)
+                if (currentQuestionIndex < questions.length) {
+                    const currentQuestion = questions[currentQuestionIndex];
+                    questionText.textContent = currentQuestion.question;
+                    // Mostra o contador baseado nas 5 perguntas selecionadas
+                    questionCounter.textContent = `Pergunta ${currentQuestionIndex + 1} de ${questions.length}`;
+                    optionsContainer.innerHTML = '';
+
+                    // Embaralha as opções antes de exibir (opcional, mas bom)
+                    const shuffledOptions = shuffleArray([...currentQuestion.options]);
+
+                    shuffledOptions.forEach(option => {
+                        const button = document.createElement('button');
+                        button.textContent = option;
+                        button.classList.add('option-button');
+                        // Passa a resposta correta original para a função handleAnswer
+                        button.addEventListener('click', () => handleAnswer(button, option, currentQuestion.answer));
+                        optionsContainer.appendChild(button);
+                    });
+                } else {
+                    showResults(); // Fim das 5 perguntas
+                }
+            }
+
+            // Função para lidar com a resposta
+            function handleAnswer(button, selectedOption, correctAnswer) { /* ... (código mantido) ... */ }
+             function handleAnswer(button, selectedOption, correctAnswer) {
+                optionsContainer.classList.add('disabled');
+
+                const allButtons = optionsContainer.querySelectorAll('.option-button');
+
+                if (selectedOption === correctAnswer) {
+                    score++;
+                    button.classList.add('correct');
+                    feedbackDisplay.textContent = 'Correto!';
+                    feedbackDisplay.className = 'min-h-[1.5rem] feedback-correct';
+                } else {
+                    button.classList.add('incorrect');
+                    feedbackDisplay.textContent = `Incorreto. A resposta era: ${correctAnswer}`;
+                    feedbackDisplay.className = 'min-h-[1.5rem] feedback-incorrect';
+                    allButtons.forEach(btn => {
+                        if (btn.textContent === correctAnswer) {
+                            btn.classList.add('correct');
+                            btn.classList.add('disabled');
+                        }
+                    });
+                }
+                 allButtons.forEach(btn => btn.classList.add('disabled'));
+
+
+                nextButton.classList.remove('hidden');
+                if (currentQuestionIndex === questions.length - 1) {
+                    nextButton.textContent = 'Ver Resultado';
+                } else {
+                    nextButton.textContent = 'Próxima Pergunta';
+                }
+            }
+
+
+            // Função para ir para a próxima pergunta
+            function nextQuestion() { /* ... (código mantido) ... */ }
+             function nextQuestion() {
+                currentQuestionIndex++;
+                displayQuestion();
+            }
+
+            // Função para mostrar resultados
+            function showResults() { /* ... (código mantido) ... */ }
+             function showResults() {
+                quizContainer.style.display = 'none';
+                // Mostra a pontuação baseada nas 5 perguntas jogadas
+                finalScoreDisplay.textContent = `${score} de ${questions.length}`;
+
+                const percentage = questions.length > 0 ? (score / questions.length) * 100 : 0;
+                let message = '';
+                if (percentage === 100) message = 'Excelente! Você acertou todas!';
+                else if (percentage >= 70) message = 'Muito bem! Continue praticando.';
+                else if (percentage >= 50) message = 'Bom esforço! Revise os erros.';
+                else message = 'Não desanime! Continue estudando.';
+                resultMessageDisplay.textContent = message;
+
+                resultModal.classList.add('show');
+            }
+
+
+            // Função para mudar a dificuldade
+             function changeDifficulty(newDifficulty) { /* ... (código mantido) ... */ }
+              function changeDifficulty(newDifficulty) {
+                 currentDifficulty = parseInt(newDifficulty, 10);
+                 difficultyButtonsQuiz.forEach(btn => {
+                     btn.classList.toggle('active', btn.dataset.difficulty == currentDifficulty);
+                 });
+                 console.log("Dificuldade do Quiz alterada para:", currentDifficulty);
+                 startQuiz();
+             }
+
+
+            // --- Event Listeners ---
+            nextButton.addEventListener('click', () => {
+                if (currentQuestionIndex === questions.length - 1) {
+                    showResults();
+                } else {
+                    nextQuestion();
+                }
+            });
+            restartButton.addEventListener('click', startQuiz);
+
+             difficultyButtonsQuiz.forEach(button => {
+                 button.addEventListener('click', () => {
+                     changeDifficulty(button.dataset.difficulty);
+                 });
+             });
+
+            // --- Inicialização ---
+            changeDifficulty(currentDifficulty);
+
+        }); // Fim do DOMContentLoaded
+    </script>
+
+</body>
+</html>

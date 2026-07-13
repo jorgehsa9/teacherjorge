@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação de Nível de Inglês (Estimativa CEFR)</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Estilos adicionais ou ajustes específicos para a página de avaliação */
+        .assessment-container {
+            padding: 30px 40px; /* Espaçamento interno */
+        }
+        .assessment-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background-color: var(--section-odd-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        body.dark-mode .assessment-section {
+             background-color: var(--section-even-bg);
+        }
+        .assessment-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            font-size: 1.4em;
+        }
+        /* Removido estilo específico para assessment-instructions ul/li, pois agora estarão dentro de limitation-note */
+
+        .limitation-note { /* Estilo da caixa amarela */
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--note-bg);
+            border-left: 5px solid var(--note-border);
+            font-size: 0.9em;
+            color: #544510;
+            border-radius: 0 4px 4px 0;
+        }
+        body.dark-mode .limitation-note {
+            color: #fce588;
+        }
+         /* Adiciona estilo para lista dentro da caixa amarela */
+         .limitation-note ul {
+            margin-left: 20px;
+            margin-top: 10px; /* Espaço acima da lista */
+            margin-bottom: 0;
+            padding-left: 5px; /* Pequeno ajuste no padding */
+        }
+         .limitation-note li {
+            margin-bottom: 8px;
+        }
+         .limitation-note strong { /* Garante que o strong tenha cor */
+             color: var(--primary-color);
+         }
+         body.dark-mode .limitation-note strong {
+             color: var(--secondary-color);
+         }
+
+
+        #assessment-results {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: var(--section-even-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            text-align: center;
+            display: none; /* Inicialmente escondido */
+        }
+         body.dark-mode #assessment-results {
+             background-color: var(--section-odd-bg);
+        }
+
+        #assessment-results h2 {
+             margin-bottom: 15px;
+             color: var(--primary-color);
+        }
+        #assessment-score {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        #estimated-cefr-level {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+         body.dark-mode #estimated-cefr-level {
+             color: var(--primary-color);
+         }
+        #cefr-descriptor {
+            font-style: italic;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #result-links a {
+             display: inline-block;
+             margin: 5px;
+             padding: 8px 15px;
+             background-color: var(--secondary-color);
+             color: var(--button-text-color);
+             border-radius: 4px;
+             text-decoration: none;
+             font-size: 0.9em;
+             transition: background-color 0.3s ease;
+        }
+         #result-links a:hover {
+             background-color: var(--primary-color);
+         }
+         body.dark-mode #result-links a {
+              color: var(--button-text-color); /* Garante texto legível */
+         }
+
+        /* Ajuste para botão de submissão */
+         #submit-assessment-btn {
+             display: block;
+             width: fit-content;
+             margin: 30px auto 0 auto; /* Espaçamento e centralização */
+             padding: 12px 30px; /* Mais padding */
+             background-color: var(--success-color); /* Cor de sucesso */
+             color: var(--button-text-color);
+             border: none;
+             border-radius: 5px;
+             font-size: 1.1em; /* Tamanho maior */
+             font-weight: 600; /* Mais negrito */
+             cursor: pointer;
+             transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+             box-shadow: 0 2px 4px var(--shadow-color);
+         }
+         #submit-assessment-btn:hover {
+             background-color: #218838; /* Verde mais escuro no hover */
+             box-shadow: 0 3px 6px var(--shadow-color);
+         }
+         #submit-assessment-btn:active {
+             transform: scale(0.98);
+         }
+         #submit-assessment-btn i {
+             margin-right: 8px;
+         }
+
+         /* Esconder feedback individual das questões */
+         .feedback-icon, .correct-answer-display {
+             display: none !important;
+         }
+         .question-item.correct, .question-item.incorrect {
+             border-left-color: transparent !important; /* Remove borda colorida */
+             background-color: var(--section-odd-bg) !important; /* Reseta fundo */
+             box-shadow: 0 2px 4px var(--shadow-color) !important; /* Reseta sombra */
+         }
+          body.dark-mode .question-item.correct, body.dark-mode .question-item.incorrect {
+             background-color: var(--section-even-bg) !important;
+         }
+         .gap-fill-input.correct-input, .error-correction-input.correct-input, .unscramble-input.correct-input,
+         .gap-fill-input.incorrect-input, .error-correction-input.incorrect-input, .unscramble-input.incorrect-input {
+             border-color: var(--border-color) !important; /* Reseta borda do input */
+             background-color: var(--white-color) !important; /* Reseta fundo do input */
+         }
+          body.dark-mode .gap-fill-input.correct-input, body.dark-mode .error-correction-input.correct-input, body.dark-mode .unscramble-input.correct-input,
+          body.dark-mode .gap-fill-input.incorrect-input, body.dark-mode .error-correction-input.incorrect-input, body.dark-mode .unscramble-input.incorrect-input {
+             background-color: var(--bg-color) !important; /* Reseta fundo do input no dark mode */
+         }
+
+         /* Estilo para textos de leitura */
+         .assessment-reading-text {
+             background-color: var(--section-even-bg);
+             padding: 20px;
+             border-radius: 5px;
+             border: 1px solid var(--border-color);
+             margin-bottom: 25px;
+             box-shadow: 0 1px 3px var(--shadow-color);
+             transition: background-color 0.3s ease, border-color 0.3s ease;
+             line-height: 1.8;
+         }
+          body.dark-mode .assessment-reading-text {
+             background-color: var(--section-odd-bg);
+         }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="lesson-header">
+            <h1>Avaliação de Nível (Estimativa CEFR)</h1>
+            <div class="header-controls">
+                <a href="index.html" id="home-index-btn" title="Voltar ao Índice"><i class="fas fa-home"></i></a>
+                <button id="theme-toggle-btn" title="Alternar Modo Claro/Escuro"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+            </div>
+        </header>
+
+        <main class="assessment-container">
+
+            <section id="instructions" class="assessment-section">
+                <h2><i class="fas fa-info-circle"></i> Instruções</h2>
+                <div class="limitation-note">
+                    <p>Bem-vindo à avaliação de nível de inglês!</p>
+                    <ul>
+                        <li>Este teste visa fornecer uma **estimativa informal** do seu nível de proficiência de acordo com o CEFR (Quadro Europeu Comum de Referência para Línguas).</li>
+                        <li>Responda a todas as questões da melhor forma possível.</li>
+                        <li>O teste inclui questões de Gramática, Vocabulário e Leitura.</li>
+                        <li>Não há limite de tempo estrito, mas tente completar em aproximadamente 30-40 minutos.</li>
+                        <li>Após submeter, você verá sua pontuação e um nível CEFR estimado.</li>
+                    </ul>
+                     </div>
+                 </section>
+
+            <form id="assessment-form">
+
+                <section id="grammar-section" class="assessment-section">
+                    <h2><i class="fas fa-pencil-ruler"></i> Gramática (10 Questões)</h2>
+                    <div class="interactive-exercise" id="grammar-exercises">
+                        <div class="question-item" data-question-id="g1">
+                            <p class="question-text">1. She ____ (not play) tennis on weekends.</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="doesn't play">
+                        </div>
+                        <div class="question-item" data-question-id="g2">
+                            <p class="question-text">2. Look! The children ____ (swim) in the pool.</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="are swimming">
+                        </div>
+                        <div class="question-item" data-question-id="g3">
+                            <p class="question-text">3. We ____ (go) to the cinema yesterday.</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="g3" value="a"> a) goed</label>
+                                <label><input type="radio" name="g3" value="b"> b) went</label> <label><input type="radio" name="g3" value="c"> c) gone</label>
+                            </div>
+                        </div>
+                        <div class="question-item" data-question-id="g4">
+                            <p class="question-text">4. I ____ (never visit) Japan before.</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="have never visited">
+                        </div>
+                         <div class="question-item" data-question-id="g5">
+                            <p class="question-text">5. By the time the police arrived, the thief ____ (escape).</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="had escaped">
+                        </div>
+                        <div class="question-item" data-question-id="g6">
+                            <p class="question-text">6. I think it ____ (rain) tomorrow.</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="g6" value="a"> a) is raining</label>
+                                <label><input type="radio" name="g6" value="b"> b) will rain</label> <label><input type="radio" name="g6" value="c"> c) rains</label>
+                            </div>
+                        </div>
+                        <div class="question-item" data-question-id="g7">
+                            <p class="question-text">7. You ____ smoke in here. It's forbidden.</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="g7" value="a"> a) shouldn't</label>
+                                <label><input type="radio" name="g7" value="b"> b) might not</label>
+                                <label><input type="radio" name="g7" value="c"> c) mustn't</label> </div>
+                        </div>
+                        <div class="question-item" data-question-id="g8">
+                            <p class="question-text">8. If she ____ (study) harder, she would have passed the exam.</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="had studied">
+                        </div>
+                        <div class="question-item" data-question-id="g9">
+                            <p class="question-text">9. English ____ (speak) all over the world.</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="is spoken">
+                        </div>
+                        <div class="question-item" data-question-id="g10">
+                            <p class="question-text">10. That's the hotel ____ we stayed last summer.</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="g10" value="a"> a) which</label>
+                                <label><input type="radio" name="g10" value="b"> b) who</label>
+                                <label><input type="radio" name="g10" value="c"> c) where</label> </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="vocabulary-section" class="assessment-section">
+                    <h2><i class="fas fa-spell-check"></i> Vocabulário (10 Questões)</h2>
+                    <div class="interactive-exercise" id="vocabulary-exercises">
+                         <div class="question-item" data-question-id="v11">
+                            <p class="question-text">11. A common yellow fruit, often found in bunches.</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="v11" value="a"> a) Apple</label>
+                                <label><input type="radio" name="v11" value="b"> b) Orange</label>
+                                <label><input type="radio" name="v11" value="c"> c) Banana</label> </div>
+                        </div>
+                        <div class="question-item" data-question-id="v12">
+                             <p class="question-text">12. The meal you eat in the morning.</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="breakfast">
+                        </div>
+                        <div class="question-item" data-question-id="v13">
+                            <p class="question-text">13. A person who works in an office and manages correspondence and appointments.</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="secretary/assistant"> </div>
+                        <div class="question-item" data-question-id="v14">
+                            <p class="question-text">14. The document you need to show when you travel to another country.</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="v14" value="a"> a) Ticket</label>
+                                <label><input type="radio" name="v14" value="b"> b) Passport</label> <label><input type="radio" name="v14" value="c"> c) Suitcase</label>
+                            </div>
+                        </div>
+                        <div class="question-item" data-question-id="v15">
+                            <p class="question-text">15. If something costs a lot of money, it is ____.</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="expensive">
+                        </div>
+                         <div class="question-item" data-question-id="v16">
+                            <p class="question-text">16. The process of cutting down forests is called ____.</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="deforestation">
+                        </div>
+                        <div class="question-item" data-question-id="v17">
+                            <p class="question-text">17. Please ____ the lights when you leave the room.</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="v17" value="a"> a) turn on</label>
+                                <label><input type="radio" name="v17" value="b"> b) turn off</label> <label><input type="radio" name="v17" value="c"> c) turn up</label>
+                            </div>
+                        </div>
+                        <div class="question-item" data-question-id="v18">
+                            <p class="question-text">18. It's raining ____ and dogs! (Meaning: It's raining very heavily)</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="cats">
+                        </div>
+                        <div class="question-item" data-question-id="v19">
+                            <p class="question-text">19. Can you give me some ____ on how to improve my writing?</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="v19" value="a"> a) advices</label>
+                                <label><input type="radio" name="v19" value="b"> b) advise</label>
+                                <label><input type="radio" name="v19" value="c"> c) advice</label> </div>
+                        </div>
+                        <div class="question-item" data-question-id="v20">
+                            <p class="question-text">20. A more formal word for "start" or "begin" is ____.</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="commence">
+                        </div>
+                    </div>
+                </section>
+
+                <section id="reading-section" class="assessment-section">
+                    <h2><i class="fas fa-book-reader"></i> Leitura (10 Questões)</h2>
+                    <div class="assessment-reading-text" id="reading-text-1">
+                        <p><strong>Texto 1: Urban Gardening</strong></p>
+                        <p>Urban gardening, the practice of growing plants in city environments, has gained significant popularity in recent years. From rooftop farms to small balcony containers, city dwellers are finding innovative ways to cultivate fresh produce and greenery. This trend is driven by several factors, including a desire for healthier, locally sourced food, an interest in sustainability, and the simple therapeutic benefits of interacting with nature. Community gardens also play a vital role, fostering social connections and providing access to fresh food in areas known as "food deserts," where supermarkets are scarce. While space limitations and soil quality can pose challenges, solutions like vertical gardening and hydroponics are making urban agriculture increasingly feasible. The greening of cities not only improves aesthetics but can also contribute to biodiversity and help mitigate the urban heat island effect.</p>
+                    </div>
+                    <div class="interactive-exercise" id="reading-exercises-1">
+                         <div class="question-item" data-question-id="r21">
+                            <p class="question-text">21. What is the main subject of Text 1?</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="r21" value="a"> a) The challenges of farming in the countryside.</label>
+                                <label><input type="radio" name="r21" value="b"> b) The growing trend of gardening in cities.</label> <label><input type="radio" name="r21" value="c"> c) The history of hydroponics.</label>
+                            </div>
+                        </div>
+                        <div class="question-item" data-question-id="r22">
+                            <p class="question-text">22. According to the text, why are people interested in urban gardening?</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="r22" value="a"> a) Only because it makes cities look better.</label>
+                                <label><input type="radio" name="r22" value="b"> b) For health, sustainability, and well-being reasons.</label> <label><input type="radio" name="r22" value="c"> c) Because it is easier than traditional farming.</label>
+                            </div>
+                        </div>
+                        <div class="question-item" data-question-id="r23">
+                             <p class="question-text">23. What does "food deserts" refer to?</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="areas with few supermarkets/areas without access to fresh food"> </div>
+                         <div class="question-item" data-question-id="r24">
+                            <p class="question-text">24. What is mentioned as a solution to space limitations in urban gardening?</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="r24" value="a"> a) Community gardens.</label>
+                                <label><input type="radio" name="r24" value="b"> b) Vertical gardening.</label> <label><input type="radio" name="r24" value="c"> c) The urban heat island effect.</label>
+                            </div>
+                        </div>
+                         <div class="question-item" data-question-id="r25">
+                            <p class="question-text">25. Besides food, what is another benefit of community gardens mentioned?</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="social connections/fostering social connections"> </div>
+                    </div>
+
+                    <div class="assessment-reading-text" id="reading-text-2" style="margin-top: 30px;">
+                         <p><strong>Texto 2: The Gig Economy</strong></p>
+                         <p>The term "gig economy" refers to a labor market characterized by the prevalence of short-term contracts or freelance work, as opposed to permanent jobs. Driven largely by digital platforms that connect workers directly with clients or tasks, this model offers flexibility for workers who can often choose their own hours and projects. Examples include ride-sharing drivers, freelance writers, and graphic designers finding projects online. Proponents argue that it fosters entrepreneurship and allows individuals to diversify their income streams. However, the gig economy also faces criticism regarding job security, lack of benefits (like health insurance or paid leave), and inconsistent income. The classification of gig workers – whether they are independent contractors or employees – is a contentious legal issue in many countries, impacting their rights and protections. Balancing the flexibility desired by many workers with the need for fair labor standards remains a central challenge.</p>
+                    </div>
+                    <div class="interactive-exercise" id="reading-exercises-2">
+                         <div class="question-item" data-question-id="r26">
+                            <p class="question-text">26. What defines the "gig economy" according to Text 2?</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="r26" value="a"> a) A market dominated by large corporations.</label>
+                                <label><input type="radio" name="r26" value="b"> b) A labor market based on permanent, full-time jobs.</label>
+                                <label><input type="radio" name="r26" value="c"> c) A labor market with mostly short-term or freelance work.</label> </div>
+                        </div>
+                         <div class="question-item" data-question-id="r27">
+                            <p class="question-text">27. What has significantly driven the growth of the gig economy?</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="digital platforms">
+                        </div>
+                         <div class="question-item" data-question-id="r28">
+                            <p class="question-text">28. What is mentioned as an advantage for workers in the gig economy?</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="r28" value="a"> a) Guaranteed income.</label>
+                                <label><input type="radio" name="r28" value="b"> b) Flexibility in hours and projects.</label> <label><input type="radio" name="r28" value="c"> c) Comprehensive health benefits.</label>
+                            </div>
+                        </div>
+                         <div class="question-item" data-question-id="r29">
+                            <p class="question-text">29. What is a common criticism of the gig economy mentioned in the text?</p>
+                            <div class="mcq-options">
+                                <label><input type="radio" name="r29" value="a"> a) Too much regulation.</label>
+                                <label><input type="radio" name="r29" value="b"> b) Lack of job security and benefits.</label> <label><input type="radio" name="r29" value="c"> c) Limited opportunities for entrepreneurship.</label>
+                            </div>
+                        </div>
+                         <div class="question-item" data-question-id="r30">
+                            <p class="question-text">30. What is described as a "central challenge" regarding the gig economy?</p>
+                             <input type="text" class="gap-fill-input" data-correct-answer="balancing flexibility and fair labor standards"> </div>
+                    </div>
+                </section>
+
+                <button type="button" id="submit-assessment-btn"><i class="fas fa-check-circle"></i> Ver Resultado</button>
+
+            </form>
+
+            <section id="assessment-results">
+                <h2>Resultado da Avaliação</h2>
+                <div id="assessment-score">Pontuação: 0 / 30</div>
+                <div id="estimated-cefr-level">Nível CEFR Estimado: (Aguardando resultado)</div>
+                <div id="cefr-descriptor">(Descrição do nível aparecerá aqui)</div>
+                <div class="limitation-note" style="text-align: left; margin-top: 25px; background-color: rgba(220, 53, 69, 0.1); border-left-color: var(--danger-color);"> <strong style="color: var(--danger-color);"><i class="fas fa-exclamation-triangle"></i> Lembrete Importante:</strong> Este é um nível estimado informalmente e possui limitações técnicas (segurança, validação). Não substitui uma avaliação CEFR oficial. Use os resultados como um guia para seus estudos.
+                </div>
+                 <div id="result-links">
+                     <p style="margin-top: 20px; font-weight: 500;">Recursos sugeridos:</p>
+                     <a href="index.html">Voltar ao Índice de Lições</a>
+                 </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Seletores Globais ---
+            const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            const assessmentForm = document.getElementById('assessment-form');
+            const submitButton = document.getElementById('submit-assessment-btn');
+            const resultsSection = document.getElementById('assessment-results');
+            const scoreDisplay = document.getElementById('assessment-score');
+            const levelDisplay = document.getElementById('estimated-cefr-level');
+            const descriptorDisplay = document.getElementById('cefr-descriptor');
+            const resultLinks = document.getElementById('result-links');
+
+            // --- Dados da Avaliação (Respostas Corretas e Níveis) ---
+            const correctAnswers = {
+                // Gramática (10)
+                g1: "doesn't play", g2: "are swimming", g3: 'b', g4: "have never visited", g5: "had escaped",
+                g6: 'b', g7: 'c', g8: "had studied", g9: "is spoken", g10: 'c',
+                // Vocabulário (10)
+                v11: 'c', v12: 'breakfast', v13: 'secretary/assistant', v14: 'b', v15: 'expensive',
+                v16: 'deforestation', v17: 'b', v18: 'cats', v19: 'c', v20: 'commence',
+                // Leitura (10)
+                r21: 'b', r22: 'b', r23: 'areas with few supermarkets/areas without access to fresh food', r24: 'b', r25: 'social connections/fostering social connections',
+                r26: 'c', r27: 'digital platforms', r28: 'b', r29: 'b', r30: 'balancing flexibility and fair labor standards'
+            };
+            const totalQuestions = Object.keys(correctAnswers).length;
+
+            // Mapeamento de pontuação para Nível CEFR Estimado e Descritor Global
+            const cefrMapping = [
+                { scoreMin: 0, scoreMax: 8, level: "A1 (Iniciante)", descriptor: "Consegue compreender e usar expressões familiares e quotidianas, assim como frases muito básicas visando satisfazer necessidades concretas." },
+                { scoreMin: 9, scoreMax: 16, level: "A2 (Elementar)", descriptor: "Consegue compreender frases e expressões de uso frequente relacionadas com áreas de relevância imediata (p. ex.: informações pessoais e familiares básicas, compras, geografia local, emprego)." },
+                { scoreMin: 17, scoreMax: 24, level: "B1 (Intermediário)", descriptor: "Consegue compreender as questões principais, quando é usada uma linguagem clara e estandardizada e os assuntos lhe são familiares (temas abordados no trabalho, na escola e nos momentos de lazer, etc.)." },
+                { scoreMin: 25, scoreMax: 28, level: "B2 (Intermediário Superior)", descriptor: "Consegue compreender as ideias principais em textos complexos sobre assuntos concretos e abstratos, incluindo discussões técnicas na sua área de especialidade." },
+                { scoreMin: 29, scoreMax: 30, level: "C1 (Avançado)", descriptor: "Consegue compreender um vasto número de textos longos e exigentes, reconhecendo os seus significados implícitos. (Nota: Este teste ainda tem limitações para avaliar C1 de forma completa)." }
+            ];
+
+             // --- Modo Claro/Escuro ---
+             const applyTheme = (theme) => {
+                 if (theme === 'dark') { document.body.classList.add('dark-mode'); }
+                 else { document.body.classList.remove('dark-mode'); }
+             };
+             const currentTheme = localStorage.getItem('theme') || 'light';
+             applyTheme(currentTheme);
+             if (themeToggleBtn) {
+                 themeToggleBtn.addEventListener('click', () => {
+                     const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+                     applyTheme(newTheme);
+                     localStorage.setItem('theme', newTheme);
+                 });
+             }
+
+            // --- Lógica de Submissão e Verificação ---
+            if (submitButton && assessmentForm) {
+                submitButton.addEventListener('click', () => {
+                    let score = 0;
+                    const questions = assessmentForm.querySelectorAll('.question-item');
+
+                    questions.forEach(question => {
+                        const questionId = question.dataset.questionId;
+                        if (!questionId || !correctAnswers.hasOwnProperty(questionId)) return;
+
+                        const correctAnswerString = correctAnswers[questionId];
+                        let userAnswer = null;
+                        let isCorrect = false;
+
+                        // Verifica tipo MCQ
+                        const mcqInput = question.querySelector('input[type="radio"]:checked');
+                        if (mcqInput) {
+                            userAnswer = mcqInput.value.trim().toLowerCase();
+                            isCorrect = userAnswer === correctAnswerString.toLowerCase();
+                        }
+
+                        // Verifica tipo Gap-fill
+                        const gapInput = question.querySelector('.gap-fill-input');
+                        if (gapInput) {
+                            userAnswer = gapInput.value.trim().toLowerCase().replace(/[.,!?;:]+$/, ''); // Remove pontuação final
+                            const correctAnswersList = correctAnswerString.split('/').map(ans => ans.trim().toLowerCase().replace(/[.,!?;:]+$/, ''));
+                            isCorrect = correctAnswersList.includes(userAnswer);
+                        }
+
+                        if (isCorrect) {
+                            score++;
+                        }
+                    });
+
+                    // Exibe os resultados
+                    displayResults(score, totalQuestions);
+                });
+            }
+
+             // --- Função para Exibir Resultados ---
+             function displayResults(score, total) {
+                 scoreDisplay.textContent = `Pontuação: ${score} / ${total}`;
+
+                 let estimatedLevel = "N/A";
+                 let levelDescriptor = "Não foi possível estimar o nível.";
+
+                 // Encontra o nível CEFR correspondente usando as faixas atualizadas
+                 for (const mapping of cefrMapping) {
+                     if (score >= mapping.scoreMin && score <= mapping.scoreMax) {
+                         estimatedLevel = mapping.level;
+                         levelDescriptor = mapping.descriptor;
+                         break;
+                     }
+                 }
+
+                 levelDisplay.textContent = `Nível CEFR Estimado: ${estimatedLevel}`;
+                 descriptorDisplay.textContent = levelDescriptor;
+
+                 // Limpa links antigos e adiciona novos (exemplo)
+                 const existingLinks = resultLinks.querySelectorAll('a:not([href="index.html"])');
+                 existingLinks.forEach(link => link.remove());
+
+                 // Adiciona links relevantes baseados no nível (exemplo simples)
+                 if (score < 17) { // Abaixo de B1
+                     addResultLink('Revisar Fundamentos (A1/A2)', 'index.html#complementary-lessons-index');
+                     addResultLink('Lições Principais Iniciais', 'index.html#main-lessons-index');
+                 } else if (score < 25) { // Nível B1
+                     addResultLink('Revisar Tempos Perfect (Lições 5-8)', 'index.html#main-lessons-index');
+                     addResultLink('Lições Complementares B1/B1+', 'index.html#complementary-lessons-index');
+                 } else { // Nível B2 ou acima
+                     addResultLink('Explorar Condicionais e Voz Passiva', 'index.html#complementary-lessons-index');
+                     addResultLink('Lições Principais Avançadas', 'index.html#main-lessons-index');
+                 }
+
+                 resultsSection.style.display = 'block';
+                 resultsSection.scrollIntoView({ behavior: 'smooth' });
+             }
+
+             // Função auxiliar para adicionar links de resultado
+             function addResultLink(text, url) {
+                 const link = document.createElement('a');
+                 link.href = url;
+                 link.textContent = text;
+                 const indexLink = resultLinks.querySelector('a[href="index.html"]');
+                 if (indexLink) {
+                     resultLinks.insertBefore(link, indexLink);
+                 } else {
+                     resultLinks.appendChild(link);
+                 }
+             }
+
+        }); // Fim do DOMContentLoaded
+    </script>
+
+</body>
+</html>

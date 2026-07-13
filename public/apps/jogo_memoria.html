@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo: Memória - Inglês</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Estilos específicos para o Jogo da Memória, complementando style.css */
+        .lesson-content {
+             padding: 30px 40px;
+        }
+
+        #game-container-memory {
+            background-color: var(--section-even-bg);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            margin: 20px auto;
+            box-shadow: 0 3px 8px var(--shadow-color);
+        }
+
+        /* Seletor de Dificuldade */
+        #difficulty-selector-memory {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #difficulty-selector-memory h3 {
+             margin-top: 0;
+             margin-bottom: 1rem;
+             font-size: 1.2em;
+             color: var(--primary-color);
+        }
+        body.dark-mode #difficulty-selector-memory h3 {
+             color: var(--secondary-color);
+         }
+        .difficulty-button-memory {
+            padding: 8px 15px;
+            margin: 0 5px 10px 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--white-color);
+            color: var(--text-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+        }
+        body.dark-mode .difficulty-button-memory {
+             background-color: var(--section-even-bg);
+             border-color: var(--border-color);
+             color: var(--text-color);
+         }
+        .difficulty-button-memory.active {
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+            border-color: var(--primary-color);
+            font-weight: bold;
+            transform: scale(1.05);
+        }
+        body.dark-mode .difficulty-button-memory.active {
+            background-color: var(--secondary-color);
+            color: var(--button-text-color);
+            border-color: var(--secondary-color);
+        }
+
+        /* Informações do Jogo (Apenas Tentativas) */
+        .game-info {
+            display: flex;
+            justify-content: center; /* Centraliza tentativas */
+            margin-bottom: 1rem;
+            font-size: 1.1em;
+            color: var(--text-muted);
+        }
+        .game-info span {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+         body.dark-mode .game-info span {
+             color: var(--text-color);
+         }
+
+        /* Feedback */
+        #feedback-memory {
+             min-height: 1.5rem;
+             margin-bottom: 1.5rem;
+             font-weight: 600;
+        }
+        .feedback-correct { color: var(--success-color); }
+        .feedback-incorrect { color: var(--danger-color); }
+        .feedback-prompt { color: var(--text-muted); }
+
+        /* Tabuleiro do Jogo */
+        #game-board {
+            display: grid;
+            gap: 10px;
+            margin: 0 auto;
+            max-width: 100%;
+            /* grid-template-columns definido via JS */
+        }
+
+        /* Estilo das Cartas */
+        .card {
+            aspect-ratio: 4 / 3;
+            perspective: 1000px;
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            border-radius: 8px;
+        }
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            padding: 5px;
+            overflow: hidden;
+            text-align: center;
+            font-size: 0.9em;
+            line-height: 1.3;
+            word-break: break-word;
+            border: 2px solid transparent; /* Adiciona borda transparente para espaço */
+        }
+        .card-front {
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+            font-size: 2rem;
+        }
+        .card-back {
+            background-color: var(--section-odd-bg);
+            color: var(--text-color);
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, border-color 0.3s ease; /* Transição para o verde */
+        }
+        .card-back img {
+            max-width: 80%;
+            max-height: 60%;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+        /* Estilo para cartas combinadas */
+        .card.matched .card-inner {
+            transform: rotateY(180deg);
+            cursor: default;
+            box-shadow: 0 2px 5px var(--shadow-color);
+        }
+         .card.matched .card-back {
+             background-color: var(--success-bg-light); /* Fundo verde claro */
+             border-color: var(--success-color); /* Borda verde */
+         }
+         /* Garante que o clique seja desabilitado */
+        .card.matched {
+             pointer-events: none;
+        }
+        .card.disabled-click {
+            pointer-events: none;
+        }
+
+        /* Botão Reiniciar */
+        #reset-button-memory {
+             margin-top: 1.5rem;
+             padding: 10px 25px;
+             font-size: 1em;
+             font-weight: 500;
+             border: none;
+             border-radius: 6px;
+             cursor: pointer;
+             transition: background-color 0.3s ease, transform 0.1s ease;
+             background-color: var(--secondary-color);
+             color: var(--button-text-color);
+        }
+         body.dark-mode #reset-button-memory {
+             color: var(--button-text-color);
+         }
+        #reset-button-memory:hover {
+            background-color: var(--primary-color);
+        }
+        #reset-button-memory:active {
+            transform: scale(0.98);
+        }
+
+        /* Modal de Fim de Jogo */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background-color: var(--container-bg);
+            margin: auto;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            position: relative;
+        }
+         .modal-content h2 {
+             color: var(--success-color);
+             margin-bottom: 1rem;
+             font-size: 1.8em;
+         }
+         .modal-content p {
+             color: var(--text-color);
+             margin-bottom: 1rem;
+             font-size: 1.1em;
+         }
+         .modal-content strong {
+             color: var(--primary-color);
+             font-weight: bold;
+         }
+         body.dark-mode .modal-content strong {
+             color: var(--secondary-color);
+         }
+         #play-again-button-memory {
+             padding: 10px 25px;
+             font-size: 1em;
+             font-weight: 500;
+             border: none;
+             border-radius: 6px;
+             cursor: pointer;
+             transition: background-color 0.3s ease;
+             background-color: var(--success-color);
+             color: var(--button-text-color);
+             margin-top: 1rem;
+         }
+         #play-again-button-memory:hover {
+             background-color: #218838;
+         }
+
+    </style>
+</head>
+<body>
+
+    <div id="floating-video"> <div class="video-container"> <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </div> </div>
+    <div id="floating-notepad"> <textarea id="notepad-area" placeholder="Suas anotações..."></textarea> </div>
+    <div id="floating-chat"> <div id="chatbox"> <div id="chatOutput"> <div class="message bot-message">Olá! Eu sou o George. Como posso ajudar com seu inglês hoje?</div> </div> <div id="chatInputContainer"> <input type="text" id="chatInput" placeholder="Digite sua dúvida aqui..." autocomplete="off"> <button id="sendButton">Enviar</button> </div> </div> </div>
+    <div class="container">
+        <header class="lesson-header">
+            <h1>Jogo: Memória</h1>
+            <div class="header-controls">
+                <a href="index.html" id="home-index-btn" title="Voltar ao Índice"><i class="fas fa-home"></i></a>
+                <a href="index.html#games-section" id="prev-lesson-btn" title="Voltar aos Jogos"><i class="fas fa-arrow-left"></i></a>
+                <a href="index.html#games-section" id="next-lesson-btn" title="Voltar aos Jogos"><i class="fas fa-arrow-right"></i></a>
+                <button id="theme-toggle-btn" title="Alternar Modo Claro/Escuro"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+                <button id="video-toggle-btn" title="Mostrar/Esconder Vídeo"><i class="fas fa-video"></i></button>
+                <button id="notepad-toggle-btn" title="Mostrar/Esconder Bloco de Notas"><i class="fas fa-pencil-alt"></i></button>
+                <button id="chat-toggle-btn" title="Abrir Chat"><i class="fas fa-robot"></i></button>
+            </div>
+        </header>
+        <main class="lesson-content">
+
+            <div id="game-container-memory">
+
+                <div id="difficulty-selector-memory">
+                    <h3>Escolha a Dificuldade (Nº de Pares):</h3>
+                    <button class="difficulty-button-memory active" data-difficulty="1" data-pairs="4">Nível 1 (4)</button>
+                    <button class="difficulty-button-memory" data-difficulty="2" data-pairs="6">Nível 2 (6)</button>
+                    <button class="difficulty-button-memory" data-difficulty="3" data-pairs="8">Nível 3 (8)</button>
+                    <button class="difficulty-button-memory" data-difficulty="4" data-pairs="10">Nível 4 (10)</button>
+                    <button class="difficulty-button-memory" data-difficulty="5" data-pairs="12">Nível 5 (12)</button>
+                </div>
+
+                <div class="game-info">
+                    <div>Tentativas: <span id="attempts">0</span></div>
+                    </div>
+
+                <div id="feedback-memory" class="feedback-prompt">Escolha uma dificuldade e comece!</div>
+
+                <div id="game-board">
+                    </div>
+
+                <button id="reset-button-memory">
+                     <i class="fas fa-redo"></i> Reiniciar Jogo
+                </button>
+
+            </div> </main> </div> <div id="win-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-4">Parabéns!</h2>
+            <p class="mb-2">Você encontrou todos os pares!</p>
+            <p class="mb-4">Pares encontrados: <strong id="final-pairs"></strong></p>
+            <p class="mb-4">Você usou <strong id="final-attempts"></strong> tentativas.</p>
+            <button id="play-again-button-memory">
+                Jogar Novamente
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Lógica do Tema e Painéis Flutuantes ---
+            // ... (código mantido igual ao anterior) ...
+             const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            const notepadToggleBtn = document.getElementById('notepad-toggle-btn');
+            const videoToggleBtn = document.getElementById('video-toggle-btn');
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            const floatingNotepad = document.getElementById('floating-notepad');
+            const floatingVideo = document.getElementById('floating-video');
+            const floatingChat = document.getElementById('floating-chat');
+            const notepadArea = document.getElementById('notepad-area');
+            const notepadStorageKey = 'notepadContent_memory_game';
+
+            const applyTheme = (theme) => { if (theme === 'dark') { document.body.classList.add('dark-mode'); } else { document.body.classList.remove('dark-mode'); } };
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(currentTheme);
+            if (themeToggleBtn) { themeToggleBtn.addEventListener('click', () => { const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark'; applyTheme(newTheme); localStorage.setItem('theme', newTheme); }); }
+            const savedNotepadContent = localStorage.getItem(notepadStorageKey);
+            if (savedNotepadContent && notepadArea) { notepadArea.value = savedNotepadContent; }
+            if (notepadArea) { notepadArea.addEventListener('input', () => { localStorage.setItem(notepadStorageKey, notepadArea.value); }); }
+            const setupPanelToggle = (button, panelElement, bodyClass) => { if (button && panelElement) { button.addEventListener('click', () => { document.body.classList.toggle(bodyClass); button.classList.toggle('active'); if (bodyClass === 'chat-visible' && document.body.classList.contains(bodyClass)) { const chatInput = document.querySelector('#floating-chat #chatInput'); if (chatInput) setTimeout(() => chatInput.focus(), 50); } }); } };
+            setupPanelToggle(notepadToggleBtn, floatingNotepad, 'notepad-visible');
+            setupPanelToggle(videoToggleBtn, floatingVideo, 'video-visible');
+            setupPanelToggle(chatToggleBtn, floatingChat, 'chat-visible');
+            const chatInput = document.getElementById('chatInput');
+            const chatOutput = document.getElementById('chatOutput');
+            const sendButton = document.getElementById('sendButton');
+            const WORKER_URL = 'https://george.jorgehsantonio.workers.dev/';
+            if (chatInput && chatOutput && sendButton) { function addMessage(message, className) { const messageDiv = document.createElement('div'); messageDiv.classList.add('message', className); messageDiv.textContent = message; chatOutput.appendChild(messageDiv); messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' }); return messageDiv; } async function sendMessageToWorker() { const userMessage = chatInput.value.trim(); if (!userMessage) return; addMessage(userMessage, 'user-message'); chatInput.value = ''; chatInput.focus(); const typingDiv = addMessage("George está digitando...", "typing-indicator"); chatInput.disabled = true; sendButton.disabled = true; try { const response = await fetch(WORKER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ message: userMessage }), }); if (typingDiv && chatOutput.contains(typingDiv)) typingDiv.remove(); if (!response.ok) { let errorText = `Erro ${response.status}: ${response.statusText}`; try { const errorData = await response.json(); errorText = `Erro do George: ${errorData.error || errorText}`; } catch (e) { /* Ignora */ } addMessage(errorText, 'error-message'); } else { const data = await response.json(); if (data.reply) { addMessage(data.reply, 'bot-message'); } else if (data.error) { addMessage(`Erro do George: ${data.error}`, 'error-message'); } else { addMessage(`George: Resposta inesperada.`, 'error-message'); } } } catch (error) { console.error('Erro ao enviar mensagem:', error); if (typingDiv && chatOutput.contains(typingDiv)) { typingDiv.remove(); } addMessage(`Erro de comunicação. Verifique sua conexão.`, 'error-message'); } finally { chatInput.disabled = false; sendButton.disabled = false; chatInput.focus(); } } sendButton.addEventListener('click', sendMessageToWorker); chatInput.addEventListener('keypress', function(event) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessageToWorker(); } }); } else { console.warn("Elementos do chat flutuante não encontrados."); }
+
+
+            // --- Lógica Específica do Jogo da Memória ---
+
+            // Conjuntos de Pares por Dificuldade
+            const pairSets = { /* ... (código mantido igual ao anterior) ... */
+                 1: [ { type: 'text', content: 'Red', matchId: 'color1' }, { type: 'text', content: 'Vermelho', matchId: 'color1' }, { type: 'text', content: 'Blue', matchId: 'color2' }, { type: 'text', content: 'Azul', matchId: 'color2' }, { type: 'text', content: 'Dog', matchId: 'animal1' }, { type: 'image', content: 'https://placehold.co/100x80/aabbcc/000?text=Dog', description: 'Cachorro', matchId: 'animal1' }, { type: 'text', content: 'Cat', matchId: 'animal2' }, { type: 'image', content: 'https://placehold.co/100x80/ccbbaa/000?text=Cat', description: 'Gato', matchId: 'animal2' }, ],
+                2: [ { type: 'text', content: 'Apple', matchId: 'fruit1' }, { type: 'text', content: 'Maçã', matchId: 'fruit1' }, { type: 'text', content: 'Bread', matchId: 'food1' }, { type: 'text', content: 'Pão', matchId: 'food1' }, { type: 'text', content: 'Water', matchId: 'drink1' }, { type: 'image', content: 'https://placehold.co/100x80/aaddff/000?text=Water', description: 'Água', matchId: 'drink1' }, { type: 'text', content: 'Book', matchId: 'object1' }, { type: 'text', content: 'Livro', matchId: 'object1' }, { type: 'text', content: 'Chair', matchId: 'object2' }, { type: 'text', content: 'Cadeira', matchId: 'object2' }, { type: 'text', content: 'Car', matchId: 'vehicle1' }, { type: 'image', content: 'https://placehold.co/100x80/ffccdd/000?text=Car', description: 'Carro', matchId: 'vehicle1' }, ],
+                3: [ { type: 'text', content: 'House', matchId: 'place1' }, { type: 'text', content: 'Casa', matchId: 'place1' }, { type: 'text', content: 'School', matchId: 'place2' }, { type: 'text', content: 'Escola', matchId: 'place2' }, { type: 'text', content: 'Eat', matchId: 'verb1' }, { type: 'text', content: 'Comer', matchId: 'verb1' }, { type: 'text', content: 'Drink', matchId: 'verb2' }, { type: 'text', content: 'Beber', matchId: 'verb2' }, { type: 'text', content: 'Tree', matchId: 'nature1' }, { type: 'image', content: 'https://placehold.co/100x80/90ee90/000?text=Árvore', description: 'Árvore', matchId: 'nature1' }, { type: 'text', content: 'Sun', matchId: 'nature2' }, { type: 'image', content: 'https://placehold.co/100x80/f0e68c/000?text=Sol', description: 'Sol', matchId: 'nature2' }, { type: 'text', content: 'Table', matchId: 'object3' }, { type: 'text', content: 'Mesa', matchId: 'object3' }, { type: 'text', content: 'Phone', matchId: 'tech1' }, { type: 'text', content: 'Telefone', matchId: 'tech1' }, ],
+                4: [ { type: 'text', content: 'Shirt', matchId: 'cloth1' }, { type: 'text', content: 'Camisa', matchId: 'cloth1' }, { type: 'text', content: 'Shoes', matchId: 'cloth2' }, { type: 'text', content: 'Sapatos', matchId: 'cloth2' }, { type: 'text', content: 'Head', matchId: 'body1' }, { type: 'text', content: 'Cabeça', matchId: 'body1' }, { type: 'text', content: 'Hand', matchId: 'body2' }, { type: 'image', content: 'https://placehold.co/100x80/f5deb3/000?text=Hand', description: 'Mão', matchId: 'body2' }, { type: 'text', content: 'Study', matchId: 'verb3' }, { type: 'text', content: 'Estudar', matchId: 'verb3' }, { type: 'text', content: 'Write', matchId: 'verb4' }, { type: 'text', content: 'Escrever', matchId: 'verb4' }, { type: 'text', content: 'Computer', matchId: 'tech2' }, { type: 'image', content: 'https://placehold.co/100x80/d3d3d3/000?text=PC', description: 'Computador', matchId: 'tech2' }, { type: 'text', content: 'Happy', matchId: 'adj1' }, { type: 'text', content: 'Feliz', matchId: 'adj1' }, { type: 'text', content: 'Sad', matchId: 'adj2' }, { type: 'text', content: 'Triste', matchId: 'adj2' }, { type: 'text', content: 'Banana', matchId: 'fruit2' }, { type: 'image', content: 'https://placehold.co/100x80/ffff99/000?text=Banana', description: 'Banana', matchId: 'fruit2' }, ],
+                5: [ { type: 'text', content: 'Doctor', matchId: 'job1' }, { type: 'text', content: 'Médico(a)', matchId: 'job1' }, { type: 'text', content: 'Teacher', matchId: 'job2' }, { type: 'text', content: 'Professor(a)', matchId: 'job2' }, { type: 'text', content: 'Engineer', matchId: 'job3' }, { type: 'image', content: 'https://placehold.co/100x80/add8e6/000?text=Eng', description: 'Engenheiro(a)', matchId: 'job3' }, { type: 'text', content: 'Beautiful', matchId: 'adj3' }, { type: 'text', content: 'Bonito(a)', matchId: 'adj3' }, { type: 'text', content: 'Difficult', matchId: 'adj4' }, { type: 'text', content: 'Difícil', matchId: 'adj4' }, { type: 'text', content: 'Interesting', matchId: 'adj5' }, { type: 'text', content: 'Interessante', matchId: 'adj5' }, { type: 'text', content: 'Understand', matchId: 'verb5' }, { type: 'text', content: 'Entender', matchId: 'verb5' }, { type: 'text', content: 'Remember', matchId: 'verb6' }, { type: 'text', content: 'Lembrar', matchId: 'verb6' }, { type: 'text', content: 'Programming', matchId: 'concept1' }, { type: 'text', content: 'Programação', matchId: 'concept1' }, { type: 'text', content: 'Language', matchId: 'concept2' }, { type: 'text', content: 'Idioma', matchId: 'concept2' }, { type: 'text', content: 'Vocabulary', matchId: 'concept3' }, { type: 'text', content: 'Vocabulário', matchId: 'concept3' }, { type: 'text', content: 'Grammar', matchId: 'concept4' }, { type: 'text', content: 'Gramática', matchId: 'concept4' }, ]
+            };
+
+            // Elementos do DOM do Jogo
+            const gameBoard = document.getElementById('game-board');
+            const attemptsDisplay = document.getElementById('attempts');
+            const feedbackDisplay = document.getElementById('feedback-memory');
+            const resetButton = document.getElementById('reset-button-memory');
+            const winModal = document.getElementById('win-modal');
+            const finalAttemptsDisplay = document.getElementById('final-attempts');
+            const finalPairsDisplay = document.getElementById('final-pairs');
+            const playAgainButton = document.getElementById('play-again-button-memory');
+            const difficultyButtonsMemory = document.querySelectorAll('.difficulty-button-memory');
+
+            // Variáveis de Estado do Jogo
+            let currentDifficulty = 1;
+            let currentPairSet = [];
+            let cards = [];
+            let firstCard = null;
+            let secondCard = null;
+            let lockBoard = false;
+            let matchedPairs = 0;
+            let attempts = 0;
+
+            // Função para embaralhar
+            function shuffle(array) { /* ... (código mantido) ... */ }
+             function shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            // Função para criar carta
+            function createCardElement(item) { /* ... (código mantido) ... */ }
+             function createCardElement(item) {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.matchId = item.matchId;
+
+                const cardInner = document.createElement('div');
+                cardInner.classList.add('card-inner');
+
+                const cardFront = document.createElement('div');
+                cardFront.classList.add('card-face', 'card-front');
+                cardFront.innerHTML = '?';
+
+                const cardBack = document.createElement('div');
+                cardBack.classList.add('card-face', 'card-back');
+
+                if (item.type === 'text') {
+                    const textSpan = document.createElement('span');
+                    textSpan.textContent = item.content;
+                    cardBack.appendChild(textSpan);
+                } else if (item.type === 'image') {
+                    const img = document.createElement('img');
+                    img.src = item.content;
+                    img.alt = item.description || 'Imagem do jogo';
+                    img.onerror = () => {
+                        cardBack.innerHTML = '';
+                        const errorSpan = document.createElement('span');
+                        errorSpan.textContent = item.description || 'Erro Img';
+                        errorSpan.style.color = 'var(--danger-color)';
+                        errorSpan.style.fontSize = '0.8em';
+                        cardBack.appendChild(errorSpan);
+                    };
+                    cardBack.appendChild(img);
+                }
+
+                cardInner.appendChild(cardFront);
+                cardInner.appendChild(cardBack);
+                card.appendChild(cardInner);
+
+                card.addEventListener('click', handleCardClick);
+                return card;
+            }
+
+             // Função para definir layout da grade
+             function setGridLayout(numberOfCards) { /* ... (código mantido) ... */ }
+              function setGridLayout(numberOfCards) {
+                 let columns;
+                 if (numberOfCards <= 8) columns = 4;
+                 else if (numberOfCards <= 12) columns = 4;
+                 else if (numberOfCards <= 16) columns = 4;
+                 else if (numberOfCards <= 20) columns = 5;
+                 else columns = 6;
+
+                 gameBoard.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+                 gameBoard.style.maxWidth = `${columns * (90 + 10)}px`;
+             }
+
+            // Função para iniciar/reiniciar jogo
+            function startGame() {
+                currentPairSet = pairSets[currentDifficulty] || pairSets[1];
+                if (!currentPairSet || currentPairSet.length === 0) {
+                    console.error("Conjunto de pares inválido ou vazio para o nível:", currentDifficulty);
+                    feedbackDisplay.textContent = "Erro: Não foi possível carregar as cartas.";
+                    feedbackDisplay.className = 'feedback-incorrect';
+                    gameBoard.innerHTML = '';
+                    return;
+                }
+
+                firstCard = null;
+                secondCard = null;
+                lockBoard = false;
+                matchedPairs = 0;
+                attempts = 0;
+                attemptsDisplay.textContent = attempts;
+                feedbackDisplay.textContent = 'Escolha duas cartas!';
+                feedbackDisplay.className = 'feedback-prompt';
+                gameBoard.innerHTML = '';
+                winModal.classList.remove('show');
+
+                 setGridLayout(currentPairSet.length);
+
+                const shuffledPairs = shuffle([...currentPairSet]);
+
+                shuffledPairs.forEach(item => {
+                    const cardElement = createCardElement(item);
+                    gameBoard.appendChild(cardElement);
+                });
+
+                cards = gameBoard.querySelectorAll('.card');
+            }
+
+            // Função para clique na carta
+            function handleCardClick() { /* ... (código mantido) ... */ }
+             function handleCardClick() {
+                if (lockBoard || this === firstCard || this.classList.contains('matched')) {
+                    return;
+                }
+                this.classList.add('flipped');
+
+                if (!firstCard) {
+                    firstCard = this;
+                    feedbackDisplay.textContent = 'Escolha a segunda carta.';
+                    feedbackDisplay.className = 'feedback-prompt';
+                    return;
+                }
+
+                secondCard = this;
+                lockBoard = true;
+                attempts++;
+                attemptsDisplay.textContent = attempts;
+                feedbackDisplay.textContent = 'Verificando...';
+                feedbackDisplay.className = '';
+
+                checkForMatch();
+            }
+
+            // Função para checar par
+            function checkForMatch() { /* ... (código mantido) ... */ }
+             function checkForMatch() {
+                const isMatch = firstCard.dataset.matchId === secondCard.dataset.matchId;
+
+                if (isMatch) {
+                    feedbackDisplay.textContent = 'Par encontrado!';
+                    feedbackDisplay.className = 'feedback-correct';
+                    disableMatchedCards();
+                } else {
+                    feedbackDisplay.textContent = 'Não combinam. Tente novamente!';
+                    feedbackDisplay.className = 'feedback-incorrect';
+                    unflipCards();
+                }
+            }
+
+            // Função para desabilitar cartas combinadas
+            function disableMatchedCards() { /* ... (código mantido) ... */ }
+             function disableMatchedCards() {
+                firstCard.classList.add('matched');
+                secondCard.classList.add('matched');
+
+                matchedPairs++;
+                resetTurn();
+
+                if (matchedPairs === currentPairSet.length / 2) {
+                    endGame();
+                }
+            }
+
+            // Função para desvirar cartas
+            function unflipCards() { /* ... (código mantido) ... */ }
+             function unflipCards() {
+                setTimeout(() => {
+                    if (firstCard) firstCard.classList.remove('flipped');
+                    if (secondCard) secondCard.classList.remove('flipped');
+                    resetTurn();
+                    feedbackDisplay.textContent = 'Escolha duas cartas!';
+                    feedbackDisplay.className = 'feedback-prompt';
+                }, 1200);
+            }
+
+            // Função para resetar turno
+            function resetTurn() { /* ... (código mantido) ... */ }
+             function resetTurn() {
+                [firstCard, secondCard] = [null, null];
+                lockBoard = false;
+            }
+
+            // Função para finalizar o jogo
+            function endGame() {
+                feedbackDisplay.textContent = 'Jogo Concluído!';
+                feedbackDisplay.className = 'feedback-correct';
+                finalPairsDisplay.textContent = `${matchedPairs} / ${currentPairSet.length / 2}`;
+                finalAttemptsDisplay.textContent = attempts;
+                winModal.classList.add('show');
+            }
+
+             // Função para mudar a dificuldade
+             function changeDifficulty(newDifficulty) { /* ... (código mantido) ... */ }
+              function changeDifficulty(newDifficulty) {
+                 currentDifficulty = parseInt(newDifficulty, 10);
+                 difficultyButtonsMemory.forEach(btn => {
+                     btn.classList.toggle('active', btn.dataset.difficulty == currentDifficulty);
+                 });
+                 console.log("Dificuldade do Jogo da Memória alterada para:", currentDifficulty);
+                 startGame();
+             }
+
+            // --- Event Listeners do Jogo ---
+            resetButton.addEventListener('click', startGame);
+            playAgainButton.addEventListener('click', startGame);
+            difficultyButtonsMemory.forEach(button => {
+                 button.addEventListener('click', () => {
+                     changeDifficulty(button.dataset.difficulty);
+                 });
+             });
+
+            // --- Inicialização ---
+            changeDifficulty(currentDifficulty); // Inicia com nível 1
+
+        }); // Fim do DOMContentLoaded
+    </script>
+
+</body>
+</html>
