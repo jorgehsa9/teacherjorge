@@ -68,6 +68,42 @@ const DashboardLayout = () => {
     localStorage.setItem('isDarkMode', JSON.stringify(isDarkMode));
   }, [isDarkMode]);
 
+  // Session duration heartbeat
+  useEffect(() => {
+    if (user?.role !== 'student' || !user?.email) return;
+
+    const heartbeat = async () => {
+      try {
+        const { data: student } = await supabase
+          .from('Students')
+          .select('login_history')
+          .ilike('email', user.email)
+          .single();
+
+        if (student && student.login_history && Array.isArray(student.login_history) && student.login_history.length > 0) {
+          const currentHistory = [...student.login_history];
+          const latestEntry = currentHistory[0];
+          
+          if (typeof latestEntry === 'object' && latestEntry.loginAt) {
+            latestEntry.lastSeenAt = new Date().toISOString();
+            currentHistory[0] = latestEntry;
+            
+            await supabase
+              .from('Students')
+              .update({ login_history: currentHistory })
+              .ilike('email', user.email);
+          }
+        }
+      } catch (err) {
+        console.error("Heartbeat error:", err);
+      }
+    };
+
+    const intervalId = setInterval(heartbeat, 60000); // 1 minute
+
+    return () => clearInterval(intervalId);
+  }, [user]);
+
   const handleLogout = async () => {
     await logout();
     navigate('/login');

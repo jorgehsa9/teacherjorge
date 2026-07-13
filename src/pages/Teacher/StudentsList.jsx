@@ -415,16 +415,40 @@ const StudentsList = () => {
                 <div className="max-h-32 overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin' }}>
                   {editingStudent.login_history && Array.isArray(editingStudent.login_history) && editingStudent.login_history.length > 0 ? (
                     <ul className="flex flex-col gap-2">
-                      {editingStudent.login_history.map((loginDate, idx) => (
-                        <li key={idx} className="text-sm flex items-center justify-between border-b pb-1 last:border-0" style={{ borderColor: 'var(--border-light)' }}>
-                          <span className="text-main font-medium">
-                            {new Date(loginDate).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' })}
-                          </span>
-                          <span className="text-muted text-xs bg-bg px-2 py-1 rounded">
-                            {new Date(loginDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                        </li>
-                      ))}
+                      {editingStudent.login_history.map((entry, idx) => {
+                        const isObject = typeof entry === 'object' && entry !== null;
+                        const loginDate = isObject ? entry.loginAt : entry;
+                        const loginTime = new Date(loginDate);
+                        
+                        let durationText = '';
+                        if (isObject && entry.lastSeenAt) {
+                          const seenTime = new Date(entry.lastSeenAt);
+                          const diffMinutes = Math.floor((seenTime - loginTime) / 60000);
+                          if (diffMinutes > 0) {
+                            if (diffMinutes >= 60) {
+                              const hours = Math.floor(diffMinutes / 60);
+                              const mins = diffMinutes % 60;
+                              durationText = ` (${hours}h ${mins}m)`;
+                            } else {
+                              durationText = ` (${diffMinutes} min)`;
+                            }
+                          } else {
+                            durationText = ` (< 1 min)`;
+                          }
+                        }
+
+                        return (
+                          <li key={idx} className="text-sm flex items-center justify-between border-b pb-1 last:border-0" style={{ borderColor: 'var(--border-light)' }}>
+                            <span className="text-main font-medium">
+                              {loginTime.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' })}
+                            </span>
+                            <span className="text-muted text-xs bg-bg px-2 py-1 rounded">
+                              {loginTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                              {durationText && <span style={{ color: 'var(--primary)', marginLeft: '4px' }}>{durationText}</span>}
+                            </span>
+                          </li>
+                        );
+                      })}
                     </ul>
                   ) : (
                     <p className="text-muted text-sm italic">Nenhum login registrado ainda.</p>

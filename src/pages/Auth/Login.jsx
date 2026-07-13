@@ -37,7 +37,8 @@ const Login = () => {
           
         if (student) {
           const currentHistory = Array.isArray(student.login_history) ? student.login_history : [];
-          const newHistory = [new Date().toISOString(), ...currentHistory].slice(0, 50); // Keep last 50 logins
+          const now = new Date().toISOString();
+          const newHistory = [{ loginAt: now, lastSeenAt: now }, ...currentHistory].slice(0, 50); // Keep last 50 logins
           await supabase
             .from('Students')
             .update({ login_history: newHistory })
