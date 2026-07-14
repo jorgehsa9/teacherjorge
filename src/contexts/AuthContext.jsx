@@ -30,6 +30,23 @@ export const AuthProvider = ({ children }) => {
             role = 'teacher';
             defaultName = teacher.name || 'Professor';
             is_admin = !!teacher.is_admin;
+          } else {
+            // Check if student exists, if not create one
+            const { data: student } = await supabase
+              .from('Students')
+              .select('id')
+              .ilike('email', session.user.email)
+              .maybeSingle();
+
+            if (!student) {
+              const newName = session.user.user_metadata?.full_name || session.user.user_metadata?.name || defaultName;
+              await supabase.from('Students').insert([{
+                email: session.user.email,
+                name: newName,
+                status: 'Pending',
+                level: 'Beginner (A1)'
+              }]);
+            }
           }
         } catch (err) {
           console.error("Erro ao checar permissões:", err);
@@ -72,6 +89,17 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
+  const loginWithGoogle = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + '/dashboard'
+      }
+    });
+    if (error) throw error;
+    return data;
+  };
+
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -81,6 +109,7 @@ export const AuthProvider = ({ children }) => {
     user,
     loading,
     login,
+    loginWithGoogle,
     logout,
     isTeacher: user?.role === 'teacher',
   };

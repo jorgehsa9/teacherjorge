@@ -203,6 +203,8 @@ const TeacherDashboard = () => {
     return 'Boa noite,';
   };
 
+  const pendingStudents = students.filter(s => s.status === 'Pending');
+
   const recentLogins = [];
   if (students && students.length > 0) {
     students.forEach(student => {
@@ -418,6 +420,37 @@ const TeacherDashboard = () => {
         {/* Side Column - Materials */}
         <div className="side-col">
           
+          {/* Pending Students Widget */}
+          {pendingStudents.length > 0 && (
+            <div className="card glass mb-6" style={{ borderTop: '4px solid var(--primary)' }}>
+              <h3 className="mb-4 flex items-center gap-2"><Users className="text-primary"/> Matrículas Pendentes</h3>
+              <div className="flex flex-col gap-3">
+                {pendingStudents.map(student => (
+                  <div key={student.id} className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(79, 70, 229, 0.05)', border: '1px solid rgba(79, 70, 229, 0.2)' }}>
+                    <div className="font-semibold mb-1">{student.name}</div>
+                    <div className="text-xs text-muted mb-3 flex items-center gap-1">
+                      {student.email}
+                    </div>
+                    <div className="flex gap-2">
+                      <button 
+                        className="btn btn-sm w-full flex justify-center items-center gap-1" 
+                        style={{ backgroundColor: 'var(--success)', color: 'white' }} 
+                        onClick={async () => {
+                          if(!window.confirm(`Aprovar a matrícula de ${student.name}?`)) return;
+                          setLoading(true);
+                          await supabase.from('Students').update({ status: 'Active' }).eq('email', student.email);
+                          window.location.reload();
+                        }}
+                      >
+                        <CheckCircle size={14} /> Aprovar
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Pending Requests Widget */}
           <div className="card glass mb-6" style={{ borderTop: '4px solid var(--warning)' }}>
             <h3 className="mb-4 flex items-center gap-2"><Clock className="text-warning"/> Solicitações Pendentes</h3>

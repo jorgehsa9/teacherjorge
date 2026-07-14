@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
-import { Play, Download, Book, Award, Calendar, MessageSquare } from 'lucide-react';
+import { Play, Download, Book, Award, Calendar, MessageSquare, Clock } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import './StudentDashboard.css';
 
@@ -14,6 +14,8 @@ const StudentDashboard = () => {
   const [nextClass, setNextClass] = useState(null);
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [teachers, setTeachers] = useState([]);
+  const [requestingTeacher, setRequestingTeacher] = useState(false);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -33,6 +35,11 @@ const StudentDashboard = () => {
             sData.completed_lessons = [];
           }
           setStudentData(sData);
+
+          if (sData.status === 'Pending' || !sData.teacher_email) {
+            const { data: tData } = await supabase.from('Teachers').select('email, name').eq('status', 'Active');
+            if (tData) setTeachers(tData);
+          }
         }
 
         // 2. Fetch Next Class
@@ -149,6 +156,50 @@ const StudentDashboard = () => {
     return (
       <div className="dashboard-wrapper flex justify-center items-center h-full">
         <p className="text-muted text-lg">Carregando seu painel...</p>
+      </div>
+    );
+  }
+
+  if (studentData && (studentData.status === 'Pending' || !studentData.teacher_email)) {
+    return (
+      <div className="dashboard-wrapper flex justify-center items-center h-full animate-fade-in-up">
+        <div className="card glass text-center" style={{maxWidth: '500px', width: '100%', padding: '2rem'}}>
+          <h2 className="mb-2">Bem-vindo(a), {user?.name?.split(' ')[0] || 'Aluno'}!</h2>
+          <p className="text-muted mb-6">Para iniciar sua jornada, você precisa escolher um professor.</p>
+          
+          {studentData.teacher_email ? (
+            <div className="p-4 rounded-lg mb-4" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', border: '1px solid var(--warning)' }}>
+              <Clock size={32} className="mx-auto text-warning mb-2" />
+              <h3 className="text-warning mb-1">Solicitação Pendente</h3>
+              <p className="text-sm">Você solicitou ingressar nas turmas deste professor. Aguarde a aprovação.</p>
+            </div>
+          ) : (
+            <div className="text-left">
+              <label className="block mb-2 font-medium">Selecione um Professor Disponível</label>
+              <div className="flex flex-col gap-3 max-h-60 overflow-y-auto mb-4 p-2">
+                {teachers.map(t => (
+                  <button 
+                    key={t.email}
+                    onClick={async () => {
+                      if (!window.confirm(`Deseja solicitar aulas com ${t.name}?`)) return;
+                      setRequestingTeacher(true);
+                      await supabase.from('Students').update({ teacher_email: t.email }).eq('email', user.email);
+                      window.location.reload();
+                    }}
+                    disabled={requestingTeacher}
+                    className="btn btn-outline text-left justify-start hover:bg-primary hover:text-white transition-colors"
+                  >
+                    <div className="avatar bg-primary-light text-primary font-bold rounded-full w-8 h-8 flex items-center justify-center mr-3">
+                      {t.name.charAt(0)}
+                    </div>
+                    {t.name}
+                  </button>
+                ))}
+                {teachers.length === 0 && <p className="text-muted text-sm">Nenhum professor disponível no momento.</p>}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
