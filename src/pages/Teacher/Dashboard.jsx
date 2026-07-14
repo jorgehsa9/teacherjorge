@@ -203,6 +203,36 @@ const TeacherDashboard = () => {
     return 'Boa noite,';
   };
 
+  const recentLogins = [];
+  if (students && students.length > 0) {
+    students.forEach(student => {
+      if (student.login_history && Array.isArray(student.login_history) && student.login_history.length > 0) {
+        const latest = student.login_history[0];
+        const isObject = typeof latest === 'object' && latest !== null;
+        const loginDateStr = isObject ? latest.loginAt : latest;
+        
+        if (loginDateStr) {
+           recentLogins.push({
+             student,
+             date: new Date(loginDateStr)
+           });
+        }
+      }
+    });
+    recentLogins.sort((a, b) => b.date - a.date);
+  }
+
+  const formatTimeAgo = (date) => {
+    const diffMins = Math.floor((new Date() - date) / 60000);
+    if (diffMins < 1) return 'Agora mesmo';
+    if (diffMins < 60) return `Há ${diffMins} min`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `Há ${diffHours}h`;
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays === 1) return 'Ontem';
+    return `Há ${diffDays} dias`;
+  };
+
   return (
     <div className="dashboard-wrapper animate-fade-in-up">
       <div className="dashboard-header mb-8 flex justify-between items-end">
@@ -436,25 +466,27 @@ const TeacherDashboard = () => {
           </div>
           
           <div className="card glass mt-6">
-            <h3 className="mb-4 flex items-center gap-2"><Users className="text-primary"/> Alunos Recentes</h3>
+            <h3 className="mb-4 flex items-center gap-2"><Users className="text-primary"/> Últimos Logins</h3>
             <div className="recent-students-list">
               {loading ? (
                 <p className="text-muted text-sm p-4 text-center">Carregando...</p>
-              ) : students.length > 0 ? students.slice(0, 3).map((student) => (
-                <div key={student.id} className="student-list-item flex items-center justify-between p-3 border-b border-border hover:bg-surface transition-colors rounded">
+              ) : recentLogins.length > 0 ? recentLogins.slice(0, 4).map(({student, date}, idx) => (
+                <div key={idx} className="student-list-item flex items-center justify-between p-3 border-b border-border hover:bg-surface transition-colors rounded">
                   <div className="flex items-center gap-3">
                     <div className="avatar bg-primary-light text-primary font-bold rounded-full w-10 h-10 flex items-center justify-center">
                       {student.name.charAt(0)}
                     </div>
                     <div>
                       <div className="font-semibold">{student.name}</div>
-                      <div className="text-xs text-muted">{student.level}</div>
+                      <div className="text-xs text-muted flex items-center gap-1">
+                        <Clock size={12} /> {formatTimeAgo(date)}
+                      </div>
                     </div>
                   </div>
                   <button className="btn btn-outline btn-sm" onClick={() => navigate('/dashboard/students')}>Ver</button>
                 </div>
               )) : (
-                <p className="text-muted text-sm text-center pt-2">Nenhum aluno.</p>
+                <p className="text-muted text-sm text-center pt-2">Nenhum login registrado.</p>
               )}
             </div>
           </div>
