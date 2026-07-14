@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { Folder, FileText, Link as LinkIcon, Trash, Plus, Search, ExternalLink, Gamepad2, Mic, CheckCircle, PenTool, Brain, ArrowRight, Video, File, Type, Layers, MoreHorizontal, Edit, X } from 'lucide-react';
+import { Folder, FileText, Link as LinkIcon, Trash, Plus, Search, ExternalLink, Gamepad2, Mic, CheckCircle, PenTool, Brain, ArrowRight, Video, File, Type, Layers, MoreHorizontal, Edit, X, Download, Edit2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import '../Teacher/TeacherDashboard.css';
 
@@ -66,6 +66,13 @@ const Materials = () => {
       let query = supabase.from('Materials').select('*').order('created_at', { ascending: false });
       if (selectedStudentEmail !== 'ALL') {
         query = query.ilike('student_email', selectedStudentEmail);
+      } else if (!user?.is_admin) {
+        if (students.length > 0) {
+          const studentEmails = students.map(s => s.email);
+          query = query.in('student_email', studentEmails);
+        } else {
+          query = query.eq('student_email', 'nobody@nowhere.com');
+        }
       }
       
       const { data, error } = await query;
@@ -76,7 +83,7 @@ const Materials = () => {
     };
     
     fetchMaterials();
-  }, [selectedStudentEmail]);
+  }, [selectedStudentEmail, user, students]);
 
   const handleAddMaterial = async (e) => {
     e.preventDefault();
@@ -100,6 +107,13 @@ const Materials = () => {
       let query = supabase.from('Materials').select('*').order('created_at', { ascending: false });
       if (selectedStudentEmail !== 'ALL') {
         query = query.ilike('student_email', selectedStudentEmail);
+      } else if (!user?.is_admin) {
+        if (students.length > 0) {
+          const studentEmails = students.map(s => s.email);
+          query = query.in('student_email', studentEmails);
+        } else {
+          query = query.eq('student_email', 'nobody@nowhere.com');
+        }
       }
       const { data } = await query;
       if (data) setMaterials(data);
