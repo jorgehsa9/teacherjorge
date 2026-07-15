@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../../../contexts/AuthContext';
 import { supabase } from '../../../lib/supabase';
-import { CheckCircle, Clock, QrCode, Copy } from 'lucide-react';
+import { CheckCircle, Clock, QrCode, Copy, FileText } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { generatePixPayload } from '../../../utils/pix';
 
@@ -9,6 +10,8 @@ const StudentFinancial = () => {
   const { user } = useAuth();
   const [monthsData, setMonthsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
+  const [activeMonthData, setActiveMonthData] = useState(null);
   const classPrice = 40; // 40 reais por hora/aula
   const pixKey = '40170238865';
   const pixName = 'Jorge Antonio';
@@ -60,7 +63,8 @@ const StudentFinancial = () => {
           totalAmount,
           pixPayload,
           isPaid: isCurrentMonthPaid,
-          paymentRecord
+          paymentRecord,
+          classes: monthClasses
         });
       }
       setMonthsData(generatedMonths);
@@ -161,11 +165,96 @@ const StudentFinancial = () => {
                   <span className="font-bold text-white">Total</span>
                   <span className="font-bold text-primary">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(month.totalAmount)}</span>
                 </div>
+                
+                <button 
+                  className="btn btn-outline w-full mt-4 flex items-center justify-center gap-2"
+                  onClick={() => {
+                    setActiveMonthData(month);
+                    setIsReceiptModalOpen(true);
+                  }}
+                >
+                  <FileText size={18} />
+                  Ver Comprovante
+                </button>
               </div>
             </div>
           </div>
         </div>
       ))}
+
+      {/* Receipt Modal */}
+      {isReceiptModalOpen && activeMonthData && createPortal(
+        <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay">
+          <div className="card w-full flex flex-col receipt-card relative tf-receipt-card general">
+            <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200 tf-receipt-header">
+              <h2 className="text-black font-bold m-0 text-xl">Comprovante</h2>
+              <button onClick={() => setIsReceiptModalOpen(false)} className="text-gray-500 hover:text-black transition-colors" style={{background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem'}}>
+                ✕
+              </button>
+            </div>
+
+            <div id="receipt-content" className="p-6 receipt-content" style={{fontFamily: 'monospace', overflowY: 'auto', flex: 1}}>
+              <div className="text-center mb-6">
+                <h1 className="text-2xl font-bold uppercase tracking-widest mb-1 text-black">Teacher Jorge</h1>
+                <p className="text-sm text-gray-500">Recibo de Pagamento - Aulas de Inglês</p>
+              </div>
+
+              <div className="mb-6 border-y py-4 border-gray-200">
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-500">Aluno:</span>
+                  <span className="font-bold text-black">{user.name}</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-500">Email:</span>
+                  <span className="text-black">{user.email}</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-500">Referência:</span>
+                  <span className="capitalize text-black">{activeMonthData.monthLabel}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Data de Emissão:</span>
+                  <span className="text-black">{new Date().toLocaleDateString('pt-BR')}</span>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h3 className="font-bold border-b border-gray-200 pb-2 mb-3 text-black text-sm uppercase">Aulas Realizadas ({activeMonthData.classesCount})</h3>
+                {activeMonthData.classes.map((cls, idx) => (
+                  <div key={idx} className="flex justify-between mb-2 text-sm text-black">
+                    <span>{new Date(cls.scheduled_at).toLocaleDateString('pt-BR')} - {new Date(cls.scheduled_at).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</span>
+                    <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(classPrice)}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t-2 border-dashed border-gray-300 pt-4 mb-8 mt-6">
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-bold text-black">TOTAL</span>
+                  <span className="text-2xl font-bold text-black">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(activeMonthData.totalAmount)}</span>
+                </div>
+                <div className="flex justify-between items-center mt-2">
+                  <span className="text-sm text-gray-500">Status:</span>
+                  <span className={`text-sm font-bold uppercase ${activeMonthData.isPaid ? 'text-green-600' : 'text-orange-500'}`}>{activeMonthData.isPaid ? 'Pago' : 'A Receber'}</span>
+                </div>
+              </div>
+              
+              <div className="text-center text-sm text-gray-400 mt-8">
+                <p>Obrigado pela preferência!</p>
+                <p>Este recibo serve como comprovante de prestação de serviços.</p>
+              </div>
+            </div>
+
+            <div className="no-print mt-2 pt-4 border-t border-gray-200 flex justify-between gap-3" style={{padding: '0 1.5rem 1.5rem', flexShrink: 0}}>
+              <button className="btn btn-outline text-gray-700 border-gray-300 hover:bg-gray-100" onClick={() => setIsReceiptModalOpen(false)}>Voltar</button>
+              <button className="btn btn-primary" onClick={() => window.print()} style={{backgroundColor: '#3b82f6', color: 'white', border: 'none'}}>
+                Imprimir / PDF
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 };
