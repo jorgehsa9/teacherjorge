@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { ChevronLeft, ChevronRight, Plus, X, Trash2, Repeat, Calendar as CalendarIcon, Clock, LayoutGrid, Columns, List } from 'lucide-react';
@@ -33,6 +34,7 @@ const Calendar = () => {
   
   const [classes, setClasses] = useState([]);
   const [students, setStudents] = useState([]);
+  const [allTeachers, setAllTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Modal States
@@ -96,6 +98,12 @@ const Calendar = () => {
     const { start, end } = getVisibleRange();
 
     let studentsData = students;
+    
+    if (user?.is_admin && allTeachers.length === 0) {
+      const { data: tData } = await supabase.from('Teachers').select('email, name');
+      if (tData) setAllTeachers(tData);
+    }
+
     if (isTeacher && students.length === 0) {
       let studentQuery = supabase.from('Students').select('email, name');
       if (!user?.is_admin) {
@@ -146,10 +154,16 @@ const Calendar = () => {
     return currentDate.toLocaleString('pt-BR', opts).replace(/^\w/, c => c.toUpperCase());
   };
 
-  const getStudentName = (email) => {
-    if (!email) return 'Evento Pessoal';
-    if (!isTeacher) return 'Sua Aula';
-    return students.find(s => s.email === email)?.name || email;
+  const getStudentName = (cls) => {
+    if (!cls) return '';
+    let title = cls.student_email ? (students.find(s => s.email === cls.student_email)?.name || cls.student_email) : 'Evento Pessoal';
+    if (!isTeacher && !user?.is_admin) return 'Sua Aula';
+    
+    if (user?.is_admin) {
+      const teacherName = allTeachers.find(t => t.email === cls.teacher_email)?.name || cls.teacher_email || 'Prof.';
+      title += ` (${teacherName})`;
+    }
+    return title;
   };
 
   // --- Drag and Drop Logic ---
@@ -413,7 +427,7 @@ const Calendar = () => {
         onClick={(e) => { e.stopPropagation(); openEditClassModal(cls); }}
       >
         <div className="event-time">{hour.toString().padStart(2,'0')}:{minutes.toString().padStart(2,'0')}</div>
-        <div className="event-title">{getStudentName(cls.student_email)}</div>
+        <div className="event-title">{getStudentName(cls)}</div>
         
         {isTeacher && (
           <div className="resize-handle" onMouseDown={(e) => startResizing(e, cls)} />
@@ -450,7 +464,7 @@ const Calendar = () => {
                   const timeStr = new Date(cls.scheduled_at).toTimeString().substring(0,5);
                   return (
                     <div key={cls.id} className={`month-event ${colorClass}`} onClick={(e) => { e.stopPropagation(); openEditClassModal(cls); }}>
-                      {timeStr} {getStudentName(cls.student_email)}
+                      {timeStr} {getStudentName(cls)}
                     </div>
                   )
                 })}
@@ -565,7 +579,7 @@ const Calendar = () => {
                   <div className="flex-1 flex flex-col justify-center pl-2">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-bold text-base md:text-lg" style={{ color: 'var(--text-main)' }}>
-                        {getStudentName(cls.student_email)}
+                        {getStudentName(cls)}
                       </span>
                       {cls.type === 'Reunião' && <span>🤝</span>}
                       {(!cls.type || cls.type === 'Aula') && <span>📚</span>}
@@ -699,8 +713,8 @@ const Calendar = () => {
       </div>
 
       {/* Modal Adicionar/Editar Aula */}
-      {isModalOpen && (
-        <div className="modal-overlay flex items-center justify-center bottom-sheet-modal" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)' }}>
+      {isModalOpen && createPortal(
+        <div className="modal-overlay flex items-center justify-center bottom-sheet-modal" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 9999, backdropFilter: 'blur(4px)' }}>
           <div className="card glass w-full" style={{maxWidth: '450px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
             <div className="flex justify-between items-center mb-6">
               <h2 style={{margin: 0}}>{editMode ? (isTeacher ? 'Editar Aula' : 'Detalhes do Evento') : (isTeacher ? 'Agendar Aula' : 'Novo Evento')}</h2>
@@ -855,7 +869,8 @@ const Calendar = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

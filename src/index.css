@@ -164,7 +164,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: none; }
 }
 
 /* Typography */
@@ -380,3 +380,25 @@ body.light .data-table tbody tr:hover {
   }
 }
 
+/* Global Modal Fixes (Mobile & Desktop) */
+.modal-overlay, .tf-modal-overlay, .tf-receipt-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 99999 !important; /* Ensure it's above EVERYTHING, including mobile nav bars */
+  overscroll-behavior: contain; /* Prevent scroll chaining */
+}
+
+/* Block scrolling on body and main content when a modal is open */
+body:has(.modal-overlay), body:has(.tf-modal-overlay), body:has(.tf-receipt-overlay) {
+  overflow: hidden !important;
+}
+
+body:has(.modal-overlay) .app-container, 
+body:has(.tf-modal-overlay) .app-container, 
+body:has(.tf-receipt-overlay) .app-container {
+  overflow: hidden !important;
+  pointer-events: none; /* Prevent any underlying interactions */
+}

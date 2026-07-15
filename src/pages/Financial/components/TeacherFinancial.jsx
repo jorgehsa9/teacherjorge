@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Copy, QrCode, FileText, CheckCircle, Clock, Edit2, DollarSign } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
@@ -394,7 +395,7 @@ const TeacherFinancial = () => {
       ))}
 
       {/* Billing Details Modal */}
-      {isBillingModalOpen && activeStudent && (
+      {isBillingModalOpen && activeStudent && createPortal(
         <div className="tf-modal-overlay">
           <div className="card glass tf-modal-card">
             
@@ -537,11 +538,12 @@ const TeacherFinancial = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Receipt Modal */}
-      {isReceiptModalOpen && activeStudent && (
+      {isReceiptModalOpen && activeStudent && createPortal(
         <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay">
           <div className="card w-full flex flex-col receipt-card relative tf-receipt-card">
             <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200 tf-receipt-header">
@@ -610,10 +612,11 @@ const TeacherFinancial = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
       {/* General Receipt Modal */}
-      {isGeneralReceiptModalOpen && activeMonthData && (
+      {isGeneralReceiptModalOpen && activeMonthData && createPortal(
         <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay">
           <div className="card w-full flex flex-col receipt-card relative tf-receipt-card general">
             <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200 tf-receipt-header">
@@ -687,7 +690,8 @@ const TeacherFinancial = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

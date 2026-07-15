@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase, secondarySupabase } from '../../lib/supabase';
 import { Search, Edit, Trash, X, Phone, Clock, FileText, Calendar, UploadCloud } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -283,7 +284,7 @@ const StudentsList = () => {
       </div>
 
       {/* Add Student Modal */}
-      {isModalOpen && (
+      {isModalOpen && createPortal(
         <div className="modal-overlay flex items-center justify-center" style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
@@ -345,11 +346,12 @@ const StudentsList = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Edit Student Modal */}
-      {isEditModalOpen && editingStudent && (
+      {isEditModalOpen && editingStudent && createPortal(
         <div className="modal-overlay flex items-center justify-center" style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
@@ -524,11 +526,12 @@ const StudentsList = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Schedule Class Modal */}
-      {isClassModalOpen && selectedStudentForAction && (
+      {isClassModalOpen && selectedStudentForAction && createPortal(
         <div className="modal-overlay flex items-center justify-center" style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
@@ -574,7 +577,8 @@ const StudentsList = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
     </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase, secondarySupabase } from '../../lib/supabase';
 import { Search, Edit, Trash, X, Shield } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -202,7 +203,7 @@ const TeachersList = () => {
       </div>
 
       {/* Modal - Adicionar Professor */}
-      {isModalOpen && (
+      {isModalOpen && createPortal(
         <div className="modal-overlay" onClick={(e) => { if (e.target.className === 'modal-overlay') setIsModalOpen(false); }}>
           <div className="modal-content glass animate-scale-in max-w-md">
             <div className="flex justify-between items-center mb-6">
@@ -251,11 +252,12 @@ const TeachersList = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Modal - Editar Professor */}
-      {isEditModalOpen && editingTeacher && (
+      {isEditModalOpen && editingTeacher && createPortal(
         <div className="modal-overlay" onClick={(e) => { if (e.target.className === 'modal-overlay') setIsEditModalOpen(false); }}>
           <div className="modal-content glass animate-scale-in max-w-md">
             <div className="flex justify-between items-center mb-6">
@@ -304,7 +306,8 @@ const TeachersList = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
     </div>
