@@ -117,12 +117,7 @@ const Calendar = () => {
     if (!isTeacher) {
       query = query.ilike('student_email', user.email);
     } else if (!user?.is_admin) {
-      const studentEmails = studentsData.map(s => s.email);
-      if (studentEmails.length > 0) {
-        query = query.in('student_email', studentEmails);
-      } else {
-        query = query.eq('student_email', 'nobody@nowhere.com');
-      }
+      query = query.eq('teacher_email', user.email);
     }
 
     const { data: classesData, error: classesError } = await query;
@@ -152,6 +147,7 @@ const Calendar = () => {
   };
 
   const getStudentName = (email) => {
+    if (!email) return 'Evento Pessoal';
     if (!isTeacher) return 'Sua Aula';
     return students.find(s => s.email === email)?.name || email;
   };
@@ -305,8 +301,15 @@ const Calendar = () => {
     
     let baseDate = new Date(`${classForm.date}T${classForm.startHour}:${classForm.startMinute}:00`);
 
+    let tEmail = isTeacher ? user.email : null;
+    if (!isTeacher) {
+      const { data: studentData } = await supabase.from('Students').select('teacher_email').eq('email', user.email).single();
+      if (studentData) tEmail = studentData.teacher_email;
+    }
+
     const classData = { 
-      student_email: classForm.student_email,
+      student_email: classForm.student_email || null,
+      teacher_email: tEmail,
       scheduled_at: baseDate.toISOString(),
       duration: parseInt(classForm.duration),
       status: classForm.status,
@@ -395,7 +398,7 @@ const Calendar = () => {
 
     const topPosition = ((hour - START_HOUR) * 60 + minutes) * PIXELS_PER_MINUTE;
     const height = (cls.duration || 60) * PIXELS_PER_MINUTE;
-    const colorClass = COLORS[cls.student_email.length % COLORS.length];
+    const colorClass = cls.student_email ? COLORS[cls.student_email.length % COLORS.length] : 'bg-purple';
 
     const isDragging = resizingClass?.id === cls.id;
 
@@ -443,7 +446,7 @@ const Calendar = () => {
                    onClick={() => { openNewClassModal(day.toISOString().split('T')[0]); }}>
                 <div className="month-date">{day.getDate()}</div>
                 {dayClasses.map(cls => {
-                  const colorClass = COLORS[cls.student_email.length % COLORS.length];
+                  const colorClass = cls.student_email ? COLORS[cls.student_email.length % COLORS.length] : 'bg-purple';
                   const timeStr = new Date(cls.scheduled_at).toTimeString().substring(0,5);
                   return (
                     <div key={cls.id} className={`month-event ${colorClass}`} onClick={(e) => { e.stopPropagation(); openEditClassModal(cls); }}>
@@ -540,7 +543,7 @@ const Calendar = () => {
           <div className="flex flex-col gap-3">
             {dayClasses.map((cls, index) => {
               const classTime = new Date(cls.scheduled_at);
-              const colorClass = COLORS[cls.student_email.length % COLORS.length];
+              const colorClass = cls.student_email ? COLORS[cls.student_email.length % COLORS.length] : 'bg-purple';
               const dotColor = colorClass === 'bg-primary' ? 'var(--primary)' : 
                                colorClass === 'bg-warning' ? 'var(--warning)' : 
                                colorClass === 'bg-success' ? 'var(--success)' : 
@@ -725,9 +728,9 @@ const Calendar = () => {
               )}
               {isTeacher && (
                 <div className="input-group">
-                  <label>Aluno</label>
-                  <select className="input w-full" required value={classForm.student_email} onChange={(e) => setClassForm({...classForm, student_email: e.target.value})}>
-                    <option value="">Selecione um aluno...</option>
+                  <label>Aluno (Opcional)</label>
+                  <select className="input w-full" value={classForm.student_email || ''} onChange={(e) => setClassForm({...classForm, student_email: e.target.value})}>
+                    <option value="">Sem aluno (Evento Pessoal)</option>
                     {students.map(s => <option key={s.email} value={s.email}>{s.name} ({s.email})</option>)}
                   </select>
                 </div>
