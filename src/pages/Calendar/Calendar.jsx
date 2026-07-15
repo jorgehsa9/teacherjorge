@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { ChevronLeft, ChevronRight, Plus, X, Trash2, Repeat, Calendar as CalendarIcon, Clock, LayoutGrid, Columns, List } from 'lucide-react';
@@ -699,8 +700,8 @@ const Calendar = () => {
       </div>
 
       {/* Modal Adicionar/Editar Aula */}
-      {isModalOpen && (
-        <div className="modal-overlay flex items-center justify-center bottom-sheet-modal" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)' }}>
+      {isModalOpen && createPortal(
+        <div className="modal-overlay flex items-center justify-center bottom-sheet-modal" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 9999, backdropFilter: 'blur(4px)' }}>
           <div className="card glass w-full" style={{ maxWidth: '450px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
             <div className="flex justify-between items-center mb-6">
               <h2 style={{ margin: 0 }}>{editMode ? (isTeacher ? 'Editar Aula' : 'Detalhes do Evento') : (isTeacher ? 'Agendar Aula' : 'Novo Evento')}</h2>
@@ -855,7 +856,8 @@ const Calendar = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

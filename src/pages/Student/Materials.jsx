@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { FileText, Download, ArrowLeft, BookOpen, ExternalLink, Plus, X, Trash } from 'lucide-react';
@@ -247,7 +248,7 @@ const StudentMaterials = () => {
       )}
 
       {/* Add Material Modal */}
-      {isAdding && (
+      {isAdding && createPortal(
         <div className="modal-overlay flex items-center justify-center" style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
@@ -296,11 +297,12 @@ const StudentMaterials = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Edit Material Modal */}
-      {editingMaterial && (
+      {editingMaterial && createPortal(
         <div className="modal-overlay flex items-center justify-center" style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
@@ -369,11 +371,12 @@ const StudentMaterials = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* App Modal Iframe (Centralizado) */}
-      {activeApp && (
+      {activeApp && createPortal(
         <div className="modal-overlay flex items-center justify-center" style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.7)', zIndex: 60, backdropFilter: 'blur(8px)'
@@ -405,7 +408,8 @@ const StudentMaterials = () => {
               />
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
