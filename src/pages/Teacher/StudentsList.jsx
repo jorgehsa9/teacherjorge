@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { supabase, secondarySupabase } from '../../lib/supabase';
 import { Search, Edit, Trash, X, Phone, Clock, FileText, Calendar, UploadCloud } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -9,30 +8,30 @@ const StudentsList = () => {
   const [students, setStudents] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClassModalOpen, setIsClassModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [newStudent, setNewStudent] = useState({ name: '', email: '', level: 'Beginner (A1)', status: 'Active', teacher_email: user?.email || '' });
   const [editingStudent, setEditingStudent] = useState(null);
   const [selectedStudentForAction, setSelectedStudentForAction] = useState(null);
-  
+
   const [newClass, setNewClass] = useState({ date: '', time: '', duration: 60 });
-  
+
   const [searchQuery, setSearchQuery] = useState('');
 
   const fetchStudents = async () => {
     setLoading(true);
     let query = supabase.from('Students').select('*');
-    
+
     if (!user?.is_admin) {
       query = query.eq('teacher_email', user?.email);
     }
-    
+
     const { data, error } = await query;
     if (data) setStudents(data);
     else console.error('Error fetching students:', error);
@@ -53,7 +52,7 @@ const StudentsList = () => {
   const handleAddStudent = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     let studentEmail = newStudent.email.trim();
     if (!studentEmail.includes('@')) {
       studentEmail = `${studentEmail}@teacherjorge.com`;
@@ -69,16 +68,16 @@ const StudentsList = () => {
       console.error('Auth Error:', authError);
       alert('Aviso: Falha ao criar login de acesso (Supabase Auth) para o aluno: ' + authError.message);
     }
-    
+
     const selectedTeacher = user?.is_admin ? teachers.find(t => t.email === newStudent.teacher_email) : null;
     const teacherName = user?.is_admin ? (selectedTeacher?.name || user?.name) : user?.name;
     const teacherEmailToSave = user?.is_admin ? newStudent.teacher_email : user?.email;
 
     const { error } = await supabase.from('Students').insert([
-      { 
-        name: newStudent.name, 
-        email: studentEmail, 
-        level: newStudent.level, 
+      {
+        name: newStudent.name,
+        email: studentEmail,
+        level: newStudent.level,
         status: newStudent.status,
         teacher_email: teacherEmailToSave,
         teacher_name: teacherName
@@ -111,7 +110,7 @@ const StudentsList = () => {
   const handleUpdateStudent = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     const matchColumn = editingStudent.id ? 'id' : 'email';
     const matchValue = editingStudent.id || editingStudent.email;
 
@@ -157,12 +156,12 @@ const StudentsList = () => {
   const handleScheduleClass = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     // Combine date and time into a single ISO timestamp
     const scheduledAt = new Date(`${newClass.date}T${newClass.time}`).toISOString();
 
     const { error } = await supabase.from('Classes').insert([
-      { 
+      {
         student_email: selectedStudentForAction.email,
         scheduled_at: scheduledAt,
         duration: parseInt(newClass.duration),
@@ -195,8 +194,8 @@ const StudentsList = () => {
     }
   };
 
-  const filteredStudents = students.filter(s => 
-    (s.name && s.name.toLowerCase().includes(searchQuery.toLowerCase())) || 
+  const filteredStudents = students.filter(s =>
+    (s.name && s.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (s.email && s.email.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
@@ -210,9 +209,9 @@ const StudentsList = () => {
         <div className="flex gap-4 items-center">
           <div className="search-container" style={{ position: 'relative' }}>
             <Search size={18} className="text-muted" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-            <input 
-              type="text" 
-              placeholder="Buscar alunos..." 
+            <input
+              type="text"
+              placeholder="Buscar alunos..."
               className="input glass"
               style={{
                 width: '280px',
@@ -248,7 +247,7 @@ const StudentsList = () => {
                 {filteredStudents.length > 0 ? filteredStudents.map((student, i) => (
                   <tr key={student.id || i}>
                     <td>
-                      <span className="font-medium text-main" style={{fontSize: '1.05rem', letterSpacing: '0.02em'}}>
+                      <span className="font-medium text-main" style={{ fontSize: '1.05rem', letterSpacing: '0.02em' }}>
                         {student.name}
                       </span>
                     </td>
@@ -257,7 +256,7 @@ const StudentsList = () => {
                       <td className="text-muted text-sm">{student.teacher_name || student.teacher_email || '-'}</td>
                     )}
                     <td>
-                      <span className="badge" style={{backgroundColor: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)'}}>
+                      <span className="badge" style={{ backgroundColor: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)' }}>
                         {student.level}
                       </span>
                     </td>
@@ -267,14 +266,14 @@ const StudentsList = () => {
                       </span>
                     </td>
                     <td className="text-right">
-                      <button onClick={() => openClassModal(student)} title="Agendar Aula" className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}><Calendar size={16} /></button>
-                      <button onClick={() => openEditModal(student)} title="Editar Perfil" className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}><Edit size={16} /></button>
-                      <button onClick={() => handleDeleteStudent(student)} title="Excluir Aluno" className="btn-icon text-muted hover:text-danger" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none'}}><Trash size={16} /></button>
+                      <button onClick={() => openClassModal(student)} title="Agendar Aula" className="btn-icon text-muted hover:text-primary" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px' }}><Calendar size={16} /></button>
+                      <button onClick={() => openEditModal(student)} title="Editar Perfil" className="btn-icon text-muted hover:text-primary" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px' }}><Edit size={16} /></button>
+                      <button onClick={() => handleDeleteStudent(student)} title="Excluir Aluno" className="btn-icon text-muted hover:text-danger" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none' }}><Trash size={16} /></button>
                     </td>
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan="5" className="p-8 text-center text-muted" style={{background: 'transparent', boxShadow: 'none'}}>Nenhum aluno encontrado no banco de dados.</td>
+                    <td colSpan="5" className="p-8 text-center text-muted" style={{ background: 'transparent', boxShadow: 'none' }}>Nenhum aluno encontrado no banco de dados.</td>
                   </tr>
                 )}
               </tbody>
@@ -284,43 +283,43 @@ const StudentsList = () => {
       </div>
 
       {/* Add Student Modal */}
-      {isModalOpen && createPortal(
+      {isModalOpen && (
         <div className="modal-overlay flex items-center justify-center" style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full" style={{maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
+          <div className="card glass w-full" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
             <div className="flex justify-between items-center mb-6">
-              <h2 style={{margin: 0}}>Adicionar Novo Aluno</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+              <h2 style={{ margin: 0 }}>Adicionar Novo Aluno</h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                 <X size={24} />
               </button>
             </div>
-            
+
             <form onSubmit={handleAddStudent}>
               <div className="input-group">
                 <label>Nome Completo</label>
                 <input type="text" className="input w-full" required placeholder="Ex: Maria Santos"
-                  value={newStudent.name} onChange={(e) => setNewStudent({...newStudent, name: e.target.value})}
+                  value={newStudent.name} onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
                 />
               </div>
               <div className="input-group">
                 <label>ID do Aluno ou E-mail</label>
                 <input type="text" className="input w-full" required placeholder="Ex: lucas ou aluno@exemplo.com"
-                  value={newStudent.email} onChange={(e) => setNewStudent({...newStudent, email: e.target.value})}
+                  value={newStudent.email} onChange={(e) => setNewStudent({ ...newStudent, email: e.target.value })}
                 />
               </div>
-              
-              <div className="grid-cols-2" style={{marginBottom: '1.25rem'}}>
-                <div className="input-group" style={{marginBottom: 0}}>
+
+              <div className="grid-cols-2" style={{ marginBottom: '1.25rem' }}>
+                <div className="input-group" style={{ marginBottom: 0 }}>
                   <label>Nível de Inglês</label>
-                  <select className="input w-full" value={newStudent.level} onChange={(e) => setNewStudent({...newStudent, level: e.target.value})}>
+                  <select className="input w-full" value={newStudent.level} onChange={(e) => setNewStudent({ ...newStudent, level: e.target.value })}>
                     <option>Beginner (A1)</option><option>Pre-Intermediate (A2)</option><option>Intermediate (B1)</option><option>Upper-Intermediate (B2)</option><option>Advanced (C1)</option>
                   </select>
                 </div>
-                <div className="input-group" style={{marginBottom: 0}}>
+                <div className="input-group" style={{ marginBottom: 0 }}>
                   <label>Status</label>
-                  <select className="input w-full" value={newStudent.status} onChange={(e) => setNewStudent({...newStudent, status: e.target.value})}>
+                  <select className="input w-full" value={newStudent.status} onChange={(e) => setNewStudent({ ...newStudent, status: e.target.value })}>
                     <option>Active</option><option>Pending</option><option>Inactive</option>
                   </select>
                 </div>
@@ -329,7 +328,7 @@ const StudentsList = () => {
               {user?.is_admin && (
                 <div className="input-group">
                   <label>Professor Responsável</label>
-                  <select className="input w-full" value={newStudent.teacher_email} onChange={(e) => setNewStudent({...newStudent, teacher_email: e.target.value})}>
+                  <select className="input w-full" value={newStudent.teacher_email} onChange={(e) => setNewStudent({ ...newStudent, teacher_email: e.target.value })}>
                     <option value={user.email}>Mim ({user.name})</option>
                     {teachers.filter(t => t.email !== user.email).map(t => (
                       <option key={t.email} value={t.email}>{t.name}</option>
@@ -346,36 +345,35 @@ const StudentsList = () => {
               </div>
             </form>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
 
       {/* Edit Student Modal */}
-      {isEditModalOpen && editingStudent && createPortal(
+      {isEditModalOpen && editingStudent && (
         <div className="modal-overlay flex items-center justify-center" style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full" style={{maxWidth: '600px', backgroundColor: 'var(--surface)', margin: '1rem', maxHeight: '90vh', overflowY: 'auto'}}>
+          <div className="card glass w-full" style={{ maxWidth: '600px', backgroundColor: 'var(--surface)', margin: '1rem', maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="flex justify-between items-center mb-6">
-              <h2 style={{margin: 0}}>Editar Perfil do Aluno</h2>
-              <button onClick={() => setIsEditModalOpen(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+              <h2 style={{ margin: 0 }}>Editar Perfil do Aluno</h2>
+              <button onClick={() => setIsEditModalOpen(false)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                 <X size={24} />
               </button>
             </div>
-            
+
             <form onSubmit={handleUpdateStudent}>
               <div className="grid-cols-2">
                 <div className="input-group">
                   <label>Nome Completo</label>
                   <input type="text" className="input w-full" required
-                    value={editingStudent.name || ''} onChange={(e) => setEditingStudent({...editingStudent, name: e.target.value})}
+                    value={editingStudent.name || ''} onChange={(e) => setEditingStudent({ ...editingStudent, name: e.target.value })}
                   />
                 </div>
                 <div className="input-group">
                   <label>Endereço de E-mail</label>
                   <input type="email" className="input w-full" required
-                    value={editingStudent.email || ''} onChange={(e) => setEditingStudent({...editingStudent, email: e.target.value})}
+                    value={editingStudent.email || ''} onChange={(e) => setEditingStudent({ ...editingStudent, email: e.target.value })}
                   />
                 </div>
               </div>
@@ -383,7 +381,7 @@ const StudentsList = () => {
               {user?.is_admin && (
                 <div className="input-group mb-4">
                   <label>Professor Responsável</label>
-                  <select className="input w-full" value={editingStudent.teacher_email || user.email} onChange={(e) => setEditingStudent({...editingStudent, teacher_email: e.target.value})}>
+                  <select className="input w-full" value={editingStudent.teacher_email || user.email} onChange={(e) => setEditingStudent({ ...editingStudent, teacher_email: e.target.value })}>
                     <option value={user.email}>Mim ({user.name})</option>
                     {teachers.filter(t => t.email !== user.email).map(t => (
                       <option key={t.email} value={t.email}>{t.name}</option>
@@ -394,86 +392,86 @@ const StudentsList = () => {
 
               <div className="grid-cols-2">
                 <div className="input-group">
-                  <label className="flex items-center gap-2"><Phone size={14}/> Número de Telefone</label>
+                  <label className="flex items-center gap-2"><Phone size={14} /> Número de Telefone</label>
                   <input type="text" className="input w-full" placeholder="+55 11 99999-9999"
-                    value={editingStudent.phone_number || ''} onChange={(e) => setEditingStudent({...editingStudent, phone_number: e.target.value})}
+                    value={editingStudent.phone_number || ''} onChange={(e) => setEditingStudent({ ...editingStudent, phone_number: e.target.value })}
                   />
                 </div>
                 <div className="input-group">
-                  <label className="flex items-center gap-2"><Clock size={14}/> Fuso Horário</label>
+                  <label className="flex items-center gap-2"><Clock size={14} /> Fuso Horário</label>
                   <input type="text" className="input w-full" placeholder="Ex: America/Sao_Paulo"
-                    value={editingStudent.timezone || ''} onChange={(e) => setEditingStudent({...editingStudent, timezone: e.target.value})}
+                    value={editingStudent.timezone || ''} onChange={(e) => setEditingStudent({ ...editingStudent, timezone: e.target.value })}
                   />
                 </div>
               </div>
-              
-              <div className="grid-cols-2" style={{marginBottom: '1.25rem'}}>
-                <div className="input-group" style={{marginBottom: 0}}>
+
+              <div className="grid-cols-2" style={{ marginBottom: '1.25rem' }}>
+                <div className="input-group" style={{ marginBottom: 0 }}>
                   <label>Nível de Inglês</label>
-                  <select className="input w-full" value={editingStudent.level} onChange={(e) => setEditingStudent({...editingStudent, level: e.target.value})}>
+                  <select className="input w-full" value={editingStudent.level} onChange={(e) => setEditingStudent({ ...editingStudent, level: e.target.value })}>
                     <option>Beginner (A1)</option><option>Pre-Intermediate (A2)</option><option>Intermediate (B1)</option><option>Upper-Intermediate (B2)</option><option>Advanced (C1)</option>
                   </select>
                 </div>
-                <div className="input-group" style={{marginBottom: 0}}>
+                <div className="input-group" style={{ marginBottom: 0 }}>
                   <label>Status</label>
-                  <select className="input w-full" value={editingStudent.status} onChange={(e) => setEditingStudent({...editingStudent, status: e.target.value})}>
+                  <select className="input w-full" value={editingStudent.status} onChange={(e) => setEditingStudent({ ...editingStudent, status: e.target.value })}>
                     <option>Active</option><option>Pending</option><option>Inactive</option>
                   </select>
                 </div>
               </div>
 
               <div className="input-group mt-4">
-                <label className="flex items-center gap-2"><Phone size={14}/> Link Único do Google Meet</label>
+                <label className="flex items-center gap-2"><Phone size={14} /> Link Único do Google Meet</label>
                 <input type="url" className="input w-full" placeholder="https://meet.google.com/xxx-xxxx-xxx"
-                  value={editingStudent.meet_link || ''} onChange={(e) => setEditingStudent({...editingStudent, meet_link: e.target.value})}
+                  value={editingStudent.meet_link || ''} onChange={(e) => setEditingStudent({ ...editingStudent, meet_link: e.target.value })}
                 />
               </div>
 
-              <div className="grid-cols-2 mt-4" style={{marginBottom: '1.25rem'}}>
-                <div className="input-group" style={{marginBottom: 0}}>
+              <div className="grid-cols-2 mt-4" style={{ marginBottom: '1.25rem' }}>
+                <div className="input-group" style={{ marginBottom: 0 }}>
                   <label>Módulo Atual</label>
                   <input type="text" className="input w-full" placeholder="Ex: Phrasal Verbs"
-                    value={editingStudent.current_module || ''} onChange={(e) => setEditingStudent({...editingStudent, current_module: e.target.value})}
+                    value={editingStudent.current_module || ''} onChange={(e) => setEditingStudent({ ...editingStudent, current_module: e.target.value })}
                   />
                 </div>
-                <div className="input-group" style={{marginBottom: 0}}>
+                <div className="input-group" style={{ marginBottom: 0 }}>
                   <label>Progresso do Módulo (%)</label>
                   <input type="number" min="0" max="100" className="input w-full" placeholder="75"
-                    value={editingStudent.module_progress || ''} onChange={(e) => setEditingStudent({...editingStudent, module_progress: e.target.value})}
+                    value={editingStudent.module_progress || ''} onChange={(e) => setEditingStudent({ ...editingStudent, module_progress: e.target.value })}
                   />
                 </div>
               </div>
 
-              <div className="grid-cols-2" style={{marginBottom: '1.25rem'}}>
-                <div className="input-group" style={{marginBottom: 0}}>
+              <div className="grid-cols-2" style={{ marginBottom: '1.25rem' }}>
+                <div className="input-group" style={{ marginBottom: 0 }}>
                   <label>Horas Estudadas</label>
                   <input type="number" min="0" className="input w-full" placeholder="24"
-                    value={editingStudent.hours_studied || ''} onChange={(e) => setEditingStudent({...editingStudent, hours_studied: e.target.value})}
+                    value={editingStudent.hours_studied || ''} onChange={(e) => setEditingStudent({ ...editingStudent, hours_studied: e.target.value })}
                   />
                 </div>
-                <div className="input-group" style={{marginBottom: 0}}>
+                <div className="input-group" style={{ marginBottom: 0 }}>
                   <label>Medalhas Conquistadas</label>
                   <input type="number" min="0" className="input w-full" placeholder="8"
-                    value={editingStudent.badges_earned || ''} onChange={(e) => setEditingStudent({...editingStudent, badges_earned: e.target.value})}
+                    value={editingStudent.badges_earned || ''} onChange={(e) => setEditingStudent({ ...editingStudent, badges_earned: e.target.value })}
                   />
                 </div>
               </div>
 
               <div className="input-group mt-4">
-                <label className="flex items-center gap-2"><FileText size={14}/> Notas Internas do Professor</label>
-                <textarea 
-                  className="input w-full" 
-                  rows="3" 
+                <label className="flex items-center gap-2"><FileText size={14} /> Notas Internas do Professor</label>
+                <textarea
+                  className="input w-full"
+                  rows="3"
                   placeholder="Anotações sobre perfil de aprendizado, dificuldades, etc. (Invisível para o aluno)"
-                  value={editingStudent.internal_notes || ''} 
-                  onChange={(e) => setEditingStudent({...editingStudent, internal_notes: e.target.value})}
-                  style={{resize: 'vertical', fontFamily: 'inherit'}}
+                  value={editingStudent.internal_notes || ''}
+                  onChange={(e) => setEditingStudent({ ...editingStudent, internal_notes: e.target.value })}
+                  style={{ resize: 'vertical', fontFamily: 'inherit' }}
                 ></textarea>
               </div>
 
               {/* Login History Section */}
               <div className="input-group mt-4 p-4 rounded-lg" style={{ backgroundColor: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)' }}>
-                <label className="flex items-center gap-2 mb-3"><Clock size={14}/> Histórico de Login (Últimos acessos)</label>
+                <label className="flex items-center gap-2 mb-3"><Clock size={14} /> Histórico de Login (Últimos acessos)</label>
                 <div className="max-h-32 overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin' }}>
                   {editingStudent.login_history && Array.isArray(editingStudent.login_history) && editingStudent.login_history.length > 0 ? (
                     <ul className="flex flex-col gap-2">
@@ -481,7 +479,7 @@ const StudentsList = () => {
                         const isObject = typeof entry === 'object' && entry !== null;
                         const loginDate = isObject ? entry.loginAt : entry;
                         const loginTime = new Date(loginDate);
-                        
+
                         let durationText = '';
                         if (isObject && entry.lastSeenAt) {
                           const seenTime = new Date(entry.lastSeenAt);
@@ -518,7 +516,7 @@ const StudentsList = () => {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 mt-6 border-t pt-4" style={{borderColor: 'var(--border)'}}>
+              <div className="flex justify-end gap-2 mt-6 border-t pt-4" style={{ borderColor: 'var(--border)' }}>
                 <button type="button" className="btn btn-outline" onClick={() => setIsEditModalOpen(false)}>Cancelar</button>
                 <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
                   {isSubmitting ? 'Salvando...' : 'Salvar Alterações'}
@@ -526,45 +524,44 @@ const StudentsList = () => {
               </div>
             </form>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
 
       {/* Schedule Class Modal */}
-      {isClassModalOpen && selectedStudentForAction && createPortal(
+      {isClassModalOpen && selectedStudentForAction && (
         <div className="modal-overlay flex items-center justify-center" style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full" style={{maxWidth: '400px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
+          <div className="card glass w-full" style={{ maxWidth: '400px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
             <div className="flex justify-between items-center mb-6">
-              <h2 style={{margin: 0}}>Agendar Aula</h2>
-              <button onClick={() => setIsClassModalOpen(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+              <h2 style={{ margin: 0 }}>Agendar Aula</h2>
+              <button onClick={() => setIsClassModalOpen(false)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                 <X size={24} />
               </button>
             </div>
-            
+
             <p className="text-sm text-muted mb-4">Agendando para <strong>{selectedStudentForAction.name}</strong></p>
 
             <form onSubmit={handleScheduleClass}>
               <div className="input-group">
                 <label>Data</label>
                 <input type="date" className="input w-full" required
-                  value={newClass.date} onChange={(e) => setNewClass({...newClass, date: e.target.value})}
+                  value={newClass.date} onChange={(e) => setNewClass({ ...newClass, date: e.target.value })}
                 />
               </div>
-              
-              <div className="grid-cols-2" style={{marginBottom: '1.25rem'}}>
-                <div className="input-group" style={{marginBottom: 0}}>
+
+              <div className="grid-cols-2" style={{ marginBottom: '1.25rem' }}>
+                <div className="input-group" style={{ marginBottom: 0 }}>
                   <label>Horário</label>
                   <input type="time" className="input w-full" required
-                    value={newClass.time} onChange={(e) => setNewClass({...newClass, time: e.target.value})}
+                    value={newClass.time} onChange={(e) => setNewClass({ ...newClass, time: e.target.value })}
                   />
                 </div>
-                <div className="input-group" style={{marginBottom: 0}}>
+                <div className="input-group" style={{ marginBottom: 0 }}>
                   <label>Duração (mins)</label>
                   <input type="number" className="input w-full" min="15" step="15" required
-                    value={newClass.duration} onChange={(e) => setNewClass({...newClass, duration: parseInt(e.target.value)})}
+                    value={newClass.duration} onChange={(e) => setNewClass({ ...newClass, duration: parseInt(e.target.value) })}
                   />
                 </div>
               </div>
@@ -577,8 +574,7 @@ const StudentsList = () => {
               </div>
             </form>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
 
     </div>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Copy, QrCode, FileText, CheckCircle, Clock, Edit2, DollarSign } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
@@ -17,7 +16,7 @@ const TeacherFinancial = () => {
   const fetchFinancialData = async () => {
     setLoading(true);
     const today = new Date();
-    
+
     const endOfCurrentMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
     const startOf6MonthsAgo = new Date(today.getFullYear(), today.getMonth() - 5, 1, 0, 0, 0, 0);
 
@@ -26,9 +25,9 @@ const TeacherFinancial = () => {
       studentsQuery = studentsQuery.eq('teacher_email', user?.email);
     }
     const { data: students } = await studentsQuery;
-    
+
     const studentEmails = students ? students.map(s => s.email) : [];
-    
+
     let classesQuery = supabase
       .from('Classes')
       .select('*')
@@ -58,9 +57,9 @@ const TeacherFinancial = () => {
         const monthLabel = refDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
         const monthClasses = classes.filter(c => {
-           const d = new Date(c.scheduled_at);
-           const isBillable = !c.type || c.type === 'Aula';
-           return d.getFullYear() === refDate.getFullYear() && d.getMonth() === refDate.getMonth() && isBillable;
+          const d = new Date(c.scheduled_at);
+          const isBillable = !c.type || c.type === 'Aula';
+          return d.getFullYear() === refDate.getFullYear() && d.getMonth() === refDate.getMonth() && isBillable;
         });
         const monthPayments = payments?.filter(p => p.reference_month === refMonthStr) || [];
 
@@ -68,10 +67,10 @@ const TeacherFinancial = () => {
           const studentClasses = monthClasses.filter(c => c.student_email === student.email);
           const totalAmount = studentClasses.length * classPrice;
           const paymentRecord = monthPayments.find(p => p.student_email === student.email);
-          
+
           return {
             ...student,
-            classes: studentClasses.sort((a,b) => new Date(a.scheduled_at) - new Date(b.scheduled_at)),
+            classes: studentClasses.sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at)),
             classesCount: studentClasses.length,
             totalAmount,
             status: paymentRecord?.status || 'A Receber',
@@ -118,12 +117,12 @@ const TeacherFinancial = () => {
     setSelectedStudentEmail(email);
     setSelectedMonthStr(refMonthStr);
     setIsAddingClass(false);
-    
+
     // Initialize notes
     const month = monthsData.find(m => m.refMonthStr === refMonthStr);
     const stud = month?.studentsData.find(s => s.email === email);
     setNotes(stud?.paymentRecord?.notes || '');
-    
+
     setIsBillingModalOpen(true);
   };
 
@@ -132,18 +131,18 @@ const TeacherFinancial = () => {
 
   const handleUpdatePaymentStatus = async (studentEmail, refMonthStr, newStatus) => {
     setIsSubmitting(true);
-    
+
     const targetMonth = monthsData.find(m => m.refMonthStr === refMonthStr);
     if (!targetMonth) { setIsSubmitting(false); return; }
-    
+
     const studentData = targetMonth.studentsData.find(s => s.email === studentEmail);
     const existingPayment = studentData?.paymentRecord;
     const amount = studentData?.totalAmount;
 
     let errorObj;
     if (existingPayment) {
-      const { error } = await supabase.from('Payments').update({ 
-        status: newStatus, 
+      const { error } = await supabase.from('Payments').update({
+        status: newStatus,
         amount: amount,
         paid_at: newStatus === 'Pago' ? new Date().toISOString() : null
       }).eq('id', existingPayment.id);
@@ -172,9 +171,9 @@ const TeacherFinancial = () => {
     e.preventDefault();
     if (!activeMonthData) return;
     setIsSubmitting(true);
-    
+
     const baseDate = new Date(`${manualClassForm.date}T${manualClassForm.time}:00`);
-    
+
     const { error } = await supabase.from('Classes').insert([{
       student_email: selectedStudentEmail,
       scheduled_at: baseDate.toISOString(),
@@ -189,28 +188,28 @@ const TeacherFinancial = () => {
       setManualClassForm({ date: '', time: '08:00', duration: 60 });
       setIsAddingClass(false);
       await fetchFinancialData();
-      
+
       if (activeStudent?.paymentRecord) {
-         const newTotal = activeStudent.totalAmount + classPrice;
-         await supabase.from('Payments').update({ amount: newTotal }).eq('id', activeStudent.paymentRecord.id);
-         await fetchFinancialData();
+        const newTotal = activeStudent.totalAmount + classPrice;
+        await supabase.from('Payments').update({ amount: newTotal }).eq('id', activeStudent.paymentRecord.id);
+        await fetchFinancialData();
       }
     }
     setIsSubmitting(false);
   };
 
   const handleRemoveClass = async (classId) => {
-    if(!window.confirm("Remover esta aula?")) return;
+    if (!window.confirm("Remover esta aula?")) return;
     if (!activeMonthData) return;
     setIsSubmitting(true);
     const { error } = await supabase.from('Classes').delete().eq('id', classId);
-    if(error) alert('Erro ao remover aula.');
+    if (error) alert('Erro ao remover aula.');
     else {
       await fetchFinancialData();
       if (activeStudent?.paymentRecord) {
-         const newTotal = activeStudent.totalAmount - classPrice;
-         await supabase.from('Payments').update({ amount: newTotal }).eq('id', activeStudent.paymentRecord.id);
-         await fetchFinancialData();
+        const newTotal = activeStudent.totalAmount - classPrice;
+        await supabase.from('Payments').update({ amount: newTotal }).eq('id', activeStudent.paymentRecord.id);
+        await fetchFinancialData();
       }
     }
     setIsSubmitting(false);
@@ -230,7 +229,7 @@ const TeacherFinancial = () => {
     e.preventDefault();
     if (!editingClassId) return;
     setIsSubmitting(true);
-    
+
     const classDateStr = `${editClassForm.date}T${editClassForm.time}:00`;
     const scheduledAt = new Date(classDateStr).toISOString();
 
@@ -280,20 +279,20 @@ const TeacherFinancial = () => {
     <div>
       {/* Financial Chart */}
       <div className="card glass mb-12">
-        <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><DollarSign className="text-primary"/> Evolução do Faturamento</h2>
+        <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><DollarSign className="text-primary" /> Evolução do Faturamento</h2>
         <div style={{ height: '300px', width: '100%' }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
               <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis 
-                stroke="var(--text-muted)" 
-                fontSize={12} 
-                tickLine={false} 
+              <YAxis
+                stroke="var(--text-muted)"
+                fontSize={12}
+                tickLine={false}
                 axisLine={false}
                 tickFormatter={(value) => `R$ ${value}`}
               />
-              <RechartsTooltip 
+              <RechartsTooltip
                 contentStyle={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', borderRadius: '8px', color: 'var(--text-main)' }}
                 itemStyle={{ color: 'var(--text-main)' }}
                 formatter={(value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)}
@@ -309,12 +308,12 @@ const TeacherFinancial = () => {
         <div key={monthData.refMonthStr} className="mb-12">
           <div className="tf-month-header">
             {index === 0 ? (
-               <h2 className="text-2xl font-bold text-white m-0">Mês Atual: {monthData.monthLabel}</h2>
+              <h2 className="text-2xl font-bold text-white m-0">Mês Atual: {monthData.monthLabel}</h2>
             ) : (
-               <h2 className="text-xl font-bold text-muted m-0 capitalize">{monthData.monthLabel}</h2>
+              <h2 className="text-xl font-bold text-muted m-0 capitalize">{monthData.monthLabel}</h2>
             )}
             <button className="btn btn-outline btn-sm" onClick={() => openGeneralReceipt(monthData.refMonthStr)}>
-              <FileText size={14} className="mr-2" style={{display: 'inline'}} />
+              <FileText size={14} className="mr-2" style={{ display: 'inline' }} />
               Gerar Relatório
             </button>
           </div>
@@ -347,25 +346,25 @@ const TeacherFinancial = () => {
             <h3 className="mb-4 font-bold text-white uppercase text-sm tracking-wider">Tabela de Cobranças</h3>
             <table className="w-full text-left border-collapse tf-billing-table">
               <thead>
-                <tr className="text-muted" style={{borderBottom: '1px solid var(--border)'}}>
-                  <th className="pb-3" style={{paddingBottom: '1rem'}}>Aluno</th>
-                  <th className="pb-3" style={{paddingBottom: '1rem'}}>Qtd. Aulas</th>
-                  <th className="pb-3" style={{paddingBottom: '1rem'}}>Valor Total</th>
-                  <th className="pb-3" style={{paddingBottom: '1rem'}}>Status</th>
-                  <th className="pb-3 text-right" style={{paddingBottom: '1rem'}}>Ações</th>
+                <tr className="text-muted" style={{ borderBottom: '1px solid var(--border)' }}>
+                  <th className="pb-3" style={{ paddingBottom: '1rem' }}>Aluno</th>
+                  <th className="pb-3" style={{ paddingBottom: '1rem' }}>Qtd. Aulas</th>
+                  <th className="pb-3" style={{ paddingBottom: '1rem' }}>Valor Total</th>
+                  <th className="pb-3" style={{ paddingBottom: '1rem' }}>Status</th>
+                  <th className="pb-3 text-right" style={{ paddingBottom: '1rem' }}>Ações</th>
                 </tr>
               </thead>
               <tbody>
                 {monthData.studentsData.length > 0 ? (
                   monthData.studentsData.map((student, i) => (
-                    <tr key={i} style={{borderBottom: '1px solid var(--border)'}}>
-                      <td className="py-4 font-medium" style={{padding: '1rem 0'}}>{student.name}</td>
-                      <td className="py-4 text-muted" style={{padding: '1rem 0'}}>{student.classesCount} aulas</td>
-                      <td className="py-4 font-bold" style={{padding: '1rem 0'}}>
+                    <tr key={i} style={{ borderBottom: '1px solid var(--border)' }}>
+                      <td className="py-4 font-medium" style={{ padding: '1rem 0' }}>{student.name}</td>
+                      <td className="py-4 text-muted" style={{ padding: '1rem 0' }}>{student.classesCount} aulas</td>
+                      <td className="py-4 font-bold" style={{ padding: '1rem 0' }}>
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(student.totalAmount)}
                       </td>
-                      <td className="py-4" style={{padding: '1rem 0'}}>
-                        <span 
+                      <td className="py-4" style={{ padding: '1rem 0' }}>
+                        <span
                           className={`badge cursor-pointer hover:opacity-80 transition-opacity ${student.status === 'Pago' ? 'success' : 'warning'}`}
                           title="Clique para alterar o status"
                           onClick={() => handleUpdatePaymentStatus(student.email, monthData.refMonthStr, student.status === 'Pago' ? 'A Receber' : 'Pago')}
@@ -374,12 +373,12 @@ const TeacherFinancial = () => {
                           {student.status}
                         </span>
                       </td>
-                      <td className="py-4 text-right" style={{padding: '1rem 0'}}>
-                        <button 
-                          className="btn btn-outline btn-sm" 
+                      <td className="py-4 text-right" style={{ padding: '1rem 0' }}>
+                        <button
+                          className="btn btn-outline btn-sm"
                           onClick={() => openBillingDetails(student.email, monthData.refMonthStr)}
                         >
-                          <FileText size={14} className="mr-1" style={{display: 'inline'}} />
+                          <FileText size={14} className="mr-1" style={{ display: 'inline' }} />
                           Ver Detalhes
                         </button>
                       </td>
@@ -395,10 +394,10 @@ const TeacherFinancial = () => {
       ))}
 
       {/* Billing Details Modal */}
-      {isBillingModalOpen && activeStudent && createPortal(
+      {isBillingModalOpen && activeStudent && (
         <div className="tf-modal-overlay">
           <div className="card glass tf-modal-card">
-            
+
             {/* Header - Fixed */}
             <div className="tf-modal-header">
               <h2>Detalhes da Cobrança</h2>
@@ -406,10 +405,10 @@ const TeacherFinancial = () => {
                 ✕
               </button>
             </div>
-            
+
             {/* Scrollable Content */}
             <div className="tf-modal-content">
-              
+
               <div className="tf-student-summary">
                 <div>
                   <h3 style={{ margin: '0 0 0.25rem 0', fontSize: '1.1rem', fontWeight: 'bold' }}>{activeStudent.name}</h3>
@@ -428,14 +427,14 @@ const TeacherFinancial = () => {
                     + Adicionar Manual
                   </button>
                 </div>
-                
+
                 {isAddingClass && (
                   <form onSubmit={handleAddManualClass} style={{ padding: '1.25rem', background: 'var(--surface)', border: '1px solid var(--primary)', borderRadius: '12px', marginBottom: '1.5rem' }}>
                     <h4 style={{ margin: '0 0 1rem 0', fontSize: '0.9rem', fontWeight: 'bold' }}>Adicionar Aula Avulsa</h4>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Data</label><input type="date" required className="input" style={{ padding: '0.5rem' }} value={manualClassForm.date} onChange={e => setManualClassForm({...manualClassForm, date: e.target.value})} /></div>
-                      <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Hora</label><input type="time" required className="input" style={{ padding: '0.5rem' }} value={manualClassForm.time} onChange={e => setManualClassForm({...manualClassForm, time: e.target.value})} /></div>
-                      <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Duração</label><select className="input" required style={{ padding: '0.5rem' }} value={manualClassForm.duration} onChange={e => setManualClassForm({...manualClassForm, duration: e.target.value})}>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Data</label><input type="date" required className="input" style={{ padding: '0.5rem' }} value={manualClassForm.date} onChange={e => setManualClassForm({ ...manualClassForm, date: e.target.value })} /></div>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Hora</label><input type="time" required className="input" style={{ padding: '0.5rem' }} value={manualClassForm.time} onChange={e => setManualClassForm({ ...manualClassForm, time: e.target.value })} /></div>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Duração</label><select className="input" required style={{ padding: '0.5rem' }} value={manualClassForm.duration} onChange={e => setManualClassForm({ ...manualClassForm, duration: e.target.value })}>
                         <option value="30">30 min</option>
                         <option value="45">45 min</option>
                         <option value="60">60 min</option>
@@ -454,9 +453,9 @@ const TeacherFinancial = () => {
                       {editingClassId === cls.id ? (
                         <form onSubmit={handleEditClassSave}>
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Data</label><input type="date" required className="input" style={{ padding: '0.5rem' }} value={editClassForm.date} onChange={e => setEditClassForm({...editClassForm, date: e.target.value})} /></div>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Hora</label><input type="time" required className="input" style={{ padding: '0.5rem' }} value={editClassForm.time} onChange={e => setEditClassForm({...editClassForm, time: e.target.value})} /></div>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Duração</label><select className="input" required style={{ padding: '0.5rem' }} value={editClassForm.duration} onChange={e => setEditClassForm({...editClassForm, duration: e.target.value})}>
+                            <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Data</label><input type="date" required className="input" style={{ padding: '0.5rem' }} value={editClassForm.date} onChange={e => setEditClassForm({ ...editClassForm, date: e.target.value })} /></div>
+                            <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Hora</label><input type="time" required className="input" style={{ padding: '0.5rem' }} value={editClassForm.time} onChange={e => setEditClassForm({ ...editClassForm, time: e.target.value })} /></div>
+                            <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Duração</label><select className="input" required style={{ padding: '0.5rem' }} value={editClassForm.duration} onChange={e => setEditClassForm({ ...editClassForm, duration: e.target.value })}>
                               <option value="30">30 min</option>
                               <option value="45">45 min</option>
                               <option value="60">60 min</option>
@@ -473,7 +472,7 @@ const TeacherFinancial = () => {
                             <Clock size={16} color="var(--primary)" />
                             <div>
                               <div style={{ fontWeight: 'bold', fontSize: '0.95rem' }}>{new Date(cls.scheduled_at).toLocaleDateString('pt-BR')}</div>
-                              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{new Date(cls.scheduled_at).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})} • {cls.duration} min</div>
+                              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{new Date(cls.scheduled_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} • {cls.duration} min</div>
                             </div>
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -497,14 +496,14 @@ const TeacherFinancial = () => {
               <div>
                 <h3 style={{ margin: '0 0 1rem 0', fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Alterar Status do Pagamento</h3>
                 <div style={{ display: 'flex', gap: '0.75rem' }}>
-                  <button 
+                  <button
                     style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', fontWeight: 'bold', fontSize: '0.95rem', cursor: 'pointer', transition: 'all 0.2s', border: activeStudent.status === 'A Receber' ? '2px solid var(--warning)' : '1px solid var(--border)', background: activeStudent.status === 'A Receber' ? 'rgba(245, 158, 11, 0.1)' : 'var(--surface)', color: activeStudent.status === 'A Receber' ? 'var(--warning)' : 'var(--text-main)' }}
                     onClick={() => handleUpdatePaymentStatus(activeStudent.email, activeMonthData.refMonthStr, 'A Receber')}
                     disabled={isSubmitting}
                   >
                     A Receber
                   </button>
-                  <button 
+                  <button
                     style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', fontWeight: 'bold', fontSize: '0.95rem', cursor: 'pointer', transition: 'all 0.2s', border: activeStudent.status === 'Pago' ? '2px solid var(--success)' : '1px solid var(--border)', background: activeStudent.status === 'Pago' ? 'rgba(16, 185, 129, 0.1)' : 'var(--surface)', color: activeStudent.status === 'Pago' ? 'var(--success)' : 'var(--text-main)' }}
                     onClick={() => handleUpdatePaymentStatus(activeStudent.email, activeMonthData.refMonthStr, 'Pago')}
                     disabled={isSubmitting}
@@ -516,8 +515,8 @@ const TeacherFinancial = () => {
 
               <div style={{ marginTop: '1.5rem' }}>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Observações da Fatura</h3>
-                <textarea 
-                  className="input" 
+                <textarea
+                  className="input"
                   style={{ width: '100%', minHeight: '80px', padding: '0.75rem', fontSize: '0.9rem', resize: 'vertical' }}
                   placeholder="Ex: Aluno pediu para pagar no dia 15..."
                   value={notes}
@@ -533,27 +532,26 @@ const TeacherFinancial = () => {
             <div className="tf-modal-footer">
               <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setIsBillingModalOpen(false)}>Fechar</button>
               <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => { setIsBillingModalOpen(false); setIsReceiptModalOpen(true); }}>
-                <FileText size={16} className="mr-2" style={{display: 'inline'}} />
+                <FileText size={16} className="mr-2" style={{ display: 'inline' }} />
                 Gerar Comprovante
               </button>
             </div>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
 
       {/* Receipt Modal */}
-      {isReceiptModalOpen && activeStudent && createPortal(
+      {isReceiptModalOpen && activeStudent && (
         <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay">
           <div className="card w-full flex flex-col receipt-card relative tf-receipt-card">
             <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200 tf-receipt-header">
               <h2 className="text-black font-bold m-0 text-xl">Comprovante</h2>
-              <button onClick={() => setIsReceiptModalOpen(false)} className="text-gray-500 hover:text-black transition-colors" style={{background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem'}}>
+              <button onClick={() => setIsReceiptModalOpen(false)} className="text-gray-500 hover:text-black transition-colors" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem' }}>
                 ✕
               </button>
             </div>
 
-            <div id="receipt-content" className="p-6 receipt-content" style={{fontFamily: 'monospace'}}>
+            <div id="receipt-content" className="p-6 receipt-content" style={{ fontFamily: 'monospace' }}>
               <div className="text-center mb-6">
                 <h1 className="text-2xl font-bold uppercase tracking-widest mb-1 text-black">Teacher Jorge</h1>
                 <p className="text-sm text-gray-500">Recibo de Pagamento - Aulas de Inglês</p>
@@ -582,7 +580,7 @@ const TeacherFinancial = () => {
                 <h3 className="font-bold border-b border-gray-200 pb-2 mb-3 text-black text-sm uppercase">Aulas Realizadas ({activeStudent.classesCount})</h3>
                 {activeStudent.classes.map((cls, idx) => (
                   <div key={idx} className="flex justify-between mb-2 text-sm text-black">
-                    <span>{new Date(cls.scheduled_at).toLocaleDateString('pt-BR')} - {new Date(cls.scheduled_at).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</span>
+                    <span>{new Date(cls.scheduled_at).toLocaleDateString('pt-BR')} - {new Date(cls.scheduled_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
                     <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(classPrice)}</span>
                   </div>
                 ))}
@@ -598,35 +596,34 @@ const TeacherFinancial = () => {
                   <span className={`text-sm font-bold uppercase ${activeStudent.status === 'Pago' ? 'text-green-600' : 'text-orange-500'}`}>{activeStudent.status}</span>
                 </div>
               </div>
-              
+
               <div className="text-center text-sm text-gray-400 mt-8">
                 <p>Obrigado pela preferência!</p>
                 <p>Este recibo serve como comprovante de prestação de serviços.</p>
               </div>
             </div>
 
-            <div className="no-print mt-2 pt-4 border-t border-gray-200 flex justify-between gap-3" style={{padding: '0 1.5rem 1.5rem'}}>
+            <div className="no-print mt-2 pt-4 border-t border-gray-200 flex justify-between gap-3" style={{ padding: '0 1.5rem 1.5rem' }}>
               <button className="btn btn-outline text-gray-700 border-gray-300 hover:bg-gray-100" onClick={() => setIsReceiptModalOpen(false)}>Voltar</button>
-              <button className="btn btn-primary" onClick={() => window.print()} style={{backgroundColor: '#3b82f6', color: 'white', border: 'none'}}>
+              <button className="btn btn-primary" onClick={() => window.print()} style={{ backgroundColor: '#3b82f6', color: 'white', border: 'none' }}>
                 Imprimir / PDF
               </button>
             </div>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
       {/* General Receipt Modal */}
-      {isGeneralReceiptModalOpen && activeMonthData && createPortal(
+      {isGeneralReceiptModalOpen && activeMonthData && (
         <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay">
           <div className="card w-full flex flex-col receipt-card relative tf-receipt-card general">
             <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200 tf-receipt-header">
               <h2 className="text-black font-bold m-0 text-xl">Relatório Mensal</h2>
-              <button onClick={() => setIsGeneralReceiptModalOpen(false)} className="text-gray-500 hover:text-black transition-colors" style={{background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem'}}>
+              <button onClick={() => setIsGeneralReceiptModalOpen(false)} className="text-gray-500 hover:text-black transition-colors" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem' }}>
                 ✕
               </button>
             </div>
 
-            <div id="receipt-content" className="p-6 receipt-content" style={{fontFamily: 'monospace', overflowY: 'auto', flex: 1}}>
+            <div id="receipt-content" className="p-6 receipt-content" style={{ fontFamily: 'monospace', overflowY: 'auto', flex: 1 }}>
               <div className="text-center mb-6">
                 <h1 className="text-2xl font-bold uppercase tracking-widest mb-1 text-black">Teacher Jorge</h1>
                 <p className="text-sm text-gray-500">Relatório Geral de Fechamento - {activeMonthData.monthLabel}</p>
@@ -642,24 +639,24 @@ const TeacherFinancial = () => {
               <div className="mb-6">
                 <h3 className="font-bold border-b border-gray-200 pb-2 mb-3 text-black text-sm uppercase">Detalhamento por Aluno</h3>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
-                   <thead>
-                     <tr style={{ borderBottom: '1px dashed #ccc' }}>
-                       <th style={{ textAlign: 'left', padding: '0.5rem 0' }}>Aluno</th>
-                       <th style={{ textAlign: 'center', padding: '0.5rem 0' }}>Aulas</th>
-                       <th style={{ textAlign: 'right', padding: '0.5rem 0' }}>Valor</th>
-                       <th style={{ textAlign: 'right', padding: '0.5rem 0' }}>Status</th>
-                     </tr>
-                   </thead>
-                   <tbody>
-                     {activeMonthData.studentsData.map((s, idx) => (
-                       <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
-                         <td style={{ padding: '0.5rem 0' }}>{s.name}</td>
-                         <td style={{ textAlign: 'center', padding: '0.5rem 0' }}>{s.classesCount}</td>
-                         <td style={{ textAlign: 'right', padding: '0.5rem 0' }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(s.totalAmount)}</td>
-                         <td style={{ textAlign: 'right', padding: '0.5rem 0', color: s.status === 'Pago' ? '#16a34a' : '#d97706', fontWeight: 'bold' }}>{s.status}</td>
-                       </tr>
-                     ))}
-                   </tbody>
+                  <thead>
+                    <tr style={{ borderBottom: '1px dashed #ccc' }}>
+                      <th style={{ textAlign: 'left', padding: '0.5rem 0' }}>Aluno</th>
+                      <th style={{ textAlign: 'center', padding: '0.5rem 0' }}>Aulas</th>
+                      <th style={{ textAlign: 'right', padding: '0.5rem 0' }}>Valor</th>
+                      <th style={{ textAlign: 'right', padding: '0.5rem 0' }}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {activeMonthData.studentsData.map((s, idx) => (
+                      <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
+                        <td style={{ padding: '0.5rem 0' }}>{s.name}</td>
+                        <td style={{ textAlign: 'center', padding: '0.5rem 0' }}>{s.classesCount}</td>
+                        <td style={{ textAlign: 'right', padding: '0.5rem 0' }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(s.totalAmount)}</td>
+                        <td style={{ textAlign: 'right', padding: '0.5rem 0', color: s.status === 'Pago' ? '#16a34a' : '#d97706', fontWeight: 'bold' }}>{s.status}</td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
               </div>
 
@@ -677,21 +674,20 @@ const TeacherFinancial = () => {
                   <span className="text-2xl font-bold text-black">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(activeMonthData.totalRevenue)}</span>
                 </div>
               </div>
-              
+
               <div className="text-center text-sm text-gray-400 mt-8">
                 <p>Relatório gerado automaticamente pelo sistema TeacherJorge.</p>
               </div>
             </div>
 
-            <div className="no-print mt-2 pt-4 border-t border-gray-200 flex justify-between gap-3" style={{padding: '0 1.5rem 1.5rem', flexShrink: 0}}>
+            <div className="no-print mt-2 pt-4 border-t border-gray-200 flex justify-between gap-3" style={{ padding: '0 1.5rem 1.5rem', flexShrink: 0 }}>
               <button className="btn btn-outline text-gray-700 border-gray-300 hover:bg-gray-100" onClick={() => setIsGeneralReceiptModalOpen(false)}>Voltar</button>
-              <button className="btn btn-primary" onClick={() => window.print()} style={{backgroundColor: '#3b82f6', color: 'white', border: 'none'}}>
+              <button className="btn btn-primary" onClick={() => window.print()} style={{ backgroundColor: '#3b82f6', color: 'white', border: 'none' }}>
                 Imprimir / PDF
               </button>
             </div>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
     </div>
   );

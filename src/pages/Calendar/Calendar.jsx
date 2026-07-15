@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { ChevronLeft, ChevronRight, Plus, X, Trash2, Repeat, Calendar as CalendarIcon, Clock, LayoutGrid, Columns, List } from 'lucide-react';
@@ -10,7 +9,7 @@ const END_HOUR = 22;
 const HOURS = Array.from({ length: END_HOUR - START_HOUR + 1 }, (_, i) => i + START_HOUR);
 const COLORS = ['bg-primary', 'bg-warning', 'bg-success', 'bg-purple'];
 const DAYS_OF_WEEK = [
-  { id: 0, label: 'D' }, { id: 1, label: 'S' }, { id: 2, label: 'T' }, 
+  { id: 0, label: 'D' }, { id: 1, label: 'S' }, { id: 2, label: 'T' },
   { id: 3, label: 'Q' }, { id: 4, label: 'Q' }, { id: 5, label: 'S' }, { id: 6, label: 'S' }
 ];
 
@@ -21,7 +20,7 @@ const Calendar = () => {
   const [currentView, setCurrentView] = useState(window.innerWidth <= 768 ? 'month' : 'week'); // 'month', 'week', 'agenda'
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isMobileScreen, setIsMobileScreen] = useState(window.innerWidth <= 768);
-  
+
   useEffect(() => {
     const handleResize = () => {
       const isMobile = window.innerWidth <= 768;
@@ -31,10 +30,9 @@ const Calendar = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-  
+
   const [classes, setClasses] = useState([]);
   const [students, setStudents] = useState([]);
-  const [allTeachers, setAllTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Modal States
@@ -42,7 +40,7 @@ const Calendar = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [selectedClassId, setSelectedClassId] = useState(null);
-  const [classForm, setClassForm] = useState({ 
+  const [classForm, setClassForm] = useState({
     student_email: '', date: '', startHour: '08', startMinute: '00', duration: 60, status: 'Scheduled',
     isRecurring: false, repeatDays: [], repeatUntil: ''
   });
@@ -98,12 +96,6 @@ const Calendar = () => {
     const { start, end } = getVisibleRange();
 
     let studentsData = students;
-    
-    if (user?.is_admin && allTeachers.length === 0) {
-      const { data: tData } = await supabase.from('Teachers').select('email, name');
-      if (tData) setAllTeachers(tData);
-    }
-
     if (isTeacher && students.length === 0) {
       let studentQuery = supabase.from('Students').select('email, name');
       if (!user?.is_admin) {
@@ -154,16 +146,10 @@ const Calendar = () => {
     return currentDate.toLocaleString('pt-BR', opts).replace(/^\w/, c => c.toUpperCase());
   };
 
-  const getStudentName = (cls) => {
-    if (!cls) return '';
-    let title = cls.student_email ? (students.find(s => s.email === cls.student_email)?.name || cls.student_email) : 'Evento Pessoal';
-    if (!isTeacher && !user?.is_admin) return 'Sua Aula';
-    
-    if (user?.is_admin) {
-      const teacherName = allTeachers.find(t => t.email === cls.teacher_email)?.name || cls.teacher_email || 'Prof.';
-      title += ` (${teacherName})`;
-    }
-    return title;
+  const getStudentName = (email) => {
+    if (!email) return 'Evento Pessoal';
+    if (!isTeacher) return 'Sua Aula';
+    return students.find(s => s.email === email)?.name || email;
   };
 
   // --- Drag and Drop Logic ---
@@ -192,7 +178,7 @@ const Calendar = () => {
     if (!isTeacher) return;
     e.preventDefault();
     e.currentTarget.classList.remove('drag-over');
-    
+
     const classId = e.dataTransfer.getData('classId');
     if (!classId) return;
 
@@ -240,7 +226,7 @@ const Calendar = () => {
       let newDuration = resizingClass.initialDuration + deltaMinutes;
       // Snap to 15 min intervals (min 15)
       newDuration = Math.max(15, Math.round(newDuration / 15) * 15);
-      
+
       setClasses(prev => prev.map(c => c.id === resizingClass.id ? { ...c, duration: newDuration } : c));
     };
 
@@ -272,13 +258,13 @@ const Calendar = () => {
   const openNewClassModal = (dateStr = '', startHour = '08', startMinute = '00') => {
     setEditMode(false);
     setSelectedClassId(null);
-    setClassForm({ 
-      student_email: isTeacher ? '' : user.email, 
-      date: dateStr, 
-      startHour, 
-      startMinute, 
-      duration: 60, 
-      status: isTeacher ? 'Scheduled' : 'Requested', 
+    setClassForm({
+      student_email: isTeacher ? '' : user.email,
+      date: dateStr,
+      startHour,
+      startMinute,
+      duration: 60,
+      status: isTeacher ? 'Scheduled' : 'Requested',
       type: isTeacher ? 'Aula' : 'Solicitação de Aula',
       isRecurring: false, repeatDays: [], repeatUntil: '', feedback: ''
     });
@@ -286,7 +272,7 @@ const Calendar = () => {
   };
 
   const openEditClassModal = (cls) => {
-    if (!isTeacher && cls.student_email !== user.email) return; 
+    if (!isTeacher && cls.student_email !== user.email) return;
     const d = new Date(cls.scheduled_at);
     const dateStr = d.toISOString().split('T')[0];
     const hourStr = d.getHours().toString().padStart(2, '0');
@@ -294,8 +280,8 @@ const Calendar = () => {
 
     setEditMode(true);
     setSelectedClassId(cls.id);
-    setClassForm({ 
-      student_email: cls.student_email, date: dateStr, startHour: hourStr, startMinute: minStr, 
+    setClassForm({
+      student_email: cls.student_email, date: dateStr, startHour: hourStr, startMinute: minStr,
       duration: cls.duration, status: cls.status, type: cls.type || 'Aula',
       isRecurring: false, repeatDays: [], repeatUntil: '', feedback: ''
     });
@@ -312,7 +298,7 @@ const Calendar = () => {
   const handleSaveClass = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     let baseDate = new Date(`${classForm.date}T${classForm.startHour}:${classForm.startMinute}:00`);
 
     let tEmail = isTeacher ? user.email : null;
@@ -321,7 +307,7 @@ const Calendar = () => {
       if (studentData) tEmail = studentData.teacher_email;
     }
 
-    const classData = { 
+    const classData = {
       student_email: classForm.student_email || null,
       teacher_email: tEmail,
       scheduled_at: baseDate.toISOString(),
@@ -334,7 +320,7 @@ const Calendar = () => {
     if (editMode) {
       const { error: updateError } = await supabase.from('Classes').update(classData).eq('id', selectedClassId);
       error = updateError;
-      
+
       // Save feedback if class is completed and feedback is provided
       if (!updateError && classForm.status === 'Completed' && classForm.feedback?.trim() !== '') {
         const { error: fbError } = await supabase.from('Materials').insert([{
@@ -361,7 +347,7 @@ const Calendar = () => {
           currentDateIter.setDate(currentDateIter.getDate() + 1);
           loops++;
         }
-        
+
         if (classesToInsert.length > 0) {
           const { error: insertError } = await supabase.from('Classes').insert(classesToInsert);
           error = insertError;
@@ -384,10 +370,10 @@ const Calendar = () => {
 
   const handleDeleteClass = async () => {
     if (!window.confirm("Tem certeza que deseja excluir esta aula? Esta ação não pode ser desfeita e removerá a cobrança do aluno.")) return;
-    
+
     setIsSubmitting(true);
     const { error } = await supabase.from('Classes').delete().eq('id', selectedClassId);
-    
+
     if (error) alert("Erro ao excluir.");
     else { await fetchClassesAndStudents(); setIsModalOpen(false); }
     setIsSubmitting(false);
@@ -407,7 +393,7 @@ const Calendar = () => {
     const classTime = new Date(cls.scheduled_at);
     const hour = classTime.getHours();
     const minutes = classTime.getMinutes();
-    
+
     if (hour < START_HOUR) return null;
 
     const topPosition = ((hour - START_HOUR) * 60 + minutes) * PIXELS_PER_MINUTE;
@@ -417,8 +403,8 @@ const Calendar = () => {
     const isDragging = resizingClass?.id === cls.id;
 
     return (
-      <div 
-        key={cls.id} 
+      <div
+        key={cls.id}
         draggable={isTeacher}
         onDragStart={(e) => handleDragStart(e, cls)}
         onDragEnd={handleDragEnd}
@@ -426,9 +412,9 @@ const Calendar = () => {
         style={{ top: `${topPosition}px`, height: `${height}px` }}
         onClick={(e) => { e.stopPropagation(); openEditClassModal(cls); }}
       >
-        <div className="event-time">{hour.toString().padStart(2,'0')}:{minutes.toString().padStart(2,'0')}</div>
-        <div className="event-title">{getStudentName(cls)}</div>
-        
+        <div className="event-time">{hour.toString().padStart(2, '0')}:{minutes.toString().padStart(2, '0')}</div>
+        <div className="event-title">{getStudentName(cls.student_email)}</div>
+
         {isTeacher && (
           <div className="resize-handle" onMouseDown={(e) => startResizing(e, cls)} />
         )}
@@ -457,14 +443,14 @@ const Calendar = () => {
 
             return (
               <div key={i} className={`month-cell ${!isCurrentMonth ? 'different-month' : ''} ${isToday ? 'today' : ''}`}
-                   onClick={() => { openNewClassModal(day.toISOString().split('T')[0]); }}>
+                onClick={() => { openNewClassModal(day.toISOString().split('T')[0]); }}>
                 <div className="month-date">{day.getDate()}</div>
                 {dayClasses.map(cls => {
                   const colorClass = cls.student_email ? COLORS[cls.student_email.length % COLORS.length] : 'bg-purple';
-                  const timeStr = new Date(cls.scheduled_at).toTimeString().substring(0,5);
+                  const timeStr = new Date(cls.scheduled_at).toTimeString().substring(0, 5);
                   return (
                     <div key={cls.id} className={`month-event ${colorClass}`} onClick={(e) => { e.stopPropagation(); openEditClassModal(cls); }}>
-                      {timeStr} {getStudentName(cls)}
+                      {timeStr} {getStudentName(cls.student_email)}
                     </div>
                   )
                 })}
@@ -477,16 +463,16 @@ const Calendar = () => {
   };
 
   const renderWeekOrDayView = () => {
-    const days = currentView === 'week' ? 
-      Array.from({ length: 7 }, (_, i) => { const d = new Date(getStartOfWeek(currentDate)); d.setDate(d.getDate() + i); return d; }) 
+    const days = currentView === 'week' ?
+      Array.from({ length: 7 }, (_, i) => { const d = new Date(getStartOfWeek(currentDate)); d.setDate(d.getDate() + i); return d; })
       : [currentDate];
-    
+
     const viewClass = currentView === 'week' ? 'week-view' : 'day-view';
 
     return (
       <div className="flex-1 flex flex-col overflow-hidden relative">
         <div className={`calendar-header-row ${viewClass}`}>
-          <div className="calendar-day-header border-none" style={{padding: 0}}></div>
+          <div className="calendar-day-header border-none" style={{ padding: 0 }}></div>
           {days.map((day, i) => (
             <div key={i} className={`calendar-day-header ${new Date().toDateString() === day.toDateString() ? 'today' : ''}`}>
               {day.toLocaleString('pt-BR', { weekday: 'short' })} <span className="date-number">{day.getDate()}</span>
@@ -504,17 +490,17 @@ const Calendar = () => {
             const dayClasses = classes.filter(c => new Date(c.scheduled_at).toDateString() === day.toDateString());
 
             return (
-              <div 
-                key={dayIndex} 
-                className="calendar-day-col" 
+              <div
+                key={dayIndex}
+                className="calendar-day-col"
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, day)}
                 onClick={(e) => {
-                  if(!isTeacher) return;
+                  if (!isTeacher) return;
                   const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
                   const hourClicked = Math.floor(y / 60) + START_HOUR;
-                  openNewClassModal(day.toISOString().split('T')[0], hourClicked.toString().padStart(2,'0'), '00');
+                  openNewClassModal(day.toISOString().split('T')[0], hourClicked.toString().padStart(2, '0'), '00');
                 }}
               >
                 {HOURS.map(hour => <div key={hour} className="grid-line"></div>)}
@@ -544,7 +530,7 @@ const Calendar = () => {
             {currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })}
           </h2>
         </div>
-        
+
         {dayClasses.length === 0 ? (
           <div className="flex flex-col items-center justify-center opacity-80" style={{ padding: '4rem 0' }}>
             <div className="flex items-center justify-center mb-6" style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'var(--surface)', border: '1px solid var(--border)' }}>
@@ -558,17 +544,17 @@ const Calendar = () => {
             {dayClasses.map((cls, index) => {
               const classTime = new Date(cls.scheduled_at);
               const colorClass = cls.student_email ? COLORS[cls.student_email.length % COLORS.length] : 'bg-purple';
-              const dotColor = colorClass === 'bg-primary' ? 'var(--primary)' : 
-                               colorClass === 'bg-warning' ? 'var(--warning)' : 
-                               colorClass === 'bg-success' ? 'var(--success)' : 
-                               '#8b5cf6'; // purple
+              const dotColor = colorClass === 'bg-primary' ? 'var(--primary)' :
+                colorClass === 'bg-warning' ? 'var(--warning)' :
+                  colorClass === 'bg-success' ? 'var(--success)' :
+                    '#8b5cf6'; // purple
 
               return (
                 <div key={cls.id} className="glass-event-card flex gap-4 w-full cursor-pointer p-4 md:p-5" style={{ '--event-color': dotColor }} onClick={() => openEditClassModal(cls)}>
                   {/* Left Column: Time */}
                   <div className="flex flex-col items-center justify-center w-16 flex-shrink-0" style={{ backgroundColor: 'rgba(0,0,0,0.02)', borderRadius: '12px', padding: '8px 4px' }}>
                     <span className="font-extrabold text-sm" style={{ color: 'var(--text-main)' }}>
-                      {classTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}
+                      {classTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                     </span>
                     <span className="text-xs font-bold mt-1" style={{ color: 'var(--text-muted)' }}>
                       {cls.duration}m
@@ -579,7 +565,7 @@ const Calendar = () => {
                   <div className="flex-1 flex flex-col justify-center pl-2">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-bold text-base md:text-lg" style={{ color: 'var(--text-main)' }}>
-                        {getStudentName(cls)}
+                        {getStudentName(cls.student_email)}
                       </span>
                       {cls.type === 'Reunião' && <span>🤝</span>}
                       {(!cls.type || cls.type === 'Aula') && <span>📚</span>}
@@ -617,10 +603,10 @@ const Calendar = () => {
             const dateNumber = day.getDate();
             const dayClasses = classes.filter(c => new Date(c.scheduled_at).toDateString() === day.toDateString());
             const hasEvent = dayClasses.length > 0;
-            
+
             return (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className="flex flex-col items-center justify-center cursor-pointer transition-all duration-300 flex-shrink-0"
                 style={{
                   width: '44px',
@@ -647,7 +633,7 @@ const Calendar = () => {
   };
   return (
     <div className="dashboard-wrapper flex flex-col h-full p-2 md:p-4 animate-fade-in-up">
-      
+
       {/* HEADER */}
       <div className="card glass mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 md:p-6" style={{ borderLeft: '6px solid var(--primary)', borderRadius: '20px' }}>
         <div>
@@ -658,9 +644,9 @@ const Calendar = () => {
             {isTeacher ? 'Arraste horários ou clique nas aulas.' : 'Solicite aulas ou acompanhe seu cronograma.'}
           </p>
         </div>
-        <button 
-          className="btn btn-primary w-full sm:w-auto flex items-center justify-center gap-2 transition-all duration-300 text-sm py-2 px-4" 
-          style={{ borderRadius: '12px', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)', fontWeight: 'bold' }} 
+        <button
+          className="btn btn-primary w-full sm:w-auto flex items-center justify-center gap-2 transition-all duration-300 text-sm py-2 px-4"
+          style={{ borderRadius: '12px', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)', fontWeight: 'bold' }}
           onClick={() => openNewClassModal()}
         >
           <Plus size={16} strokeWidth={3} /> {isTeacher ? 'Nova Aula' : 'Novo Evento'}
@@ -668,40 +654,40 @@ const Calendar = () => {
       </div>
 
       <div className="card glass flex-1 flex flex-col p-0 overflow-hidden relative shadow-lg" style={{ borderRadius: '20px', borderColor: 'var(--border)' }}>
-        
+
         {/* CONTROLS */}
         <div className="flex flex-col gap-5 p-4 md:p-6" style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)', zIndex: 10 }}>
-            <div className="view-selector-container">
-              <button 
-                className={`view-selector-btn ${currentView === 'month' ? 'active' : ''}`}
-                onClick={() => setCurrentView('month')}
-              >
-                <LayoutGrid size={18} /> Mês
-              </button>
-              <button 
-                className={`view-selector-btn ${currentView === 'week' ? 'active' : ''}`}
-                onClick={() => setCurrentView('week')}
-              >
-                <Columns size={18} /> Semana
-              </button>
-              <button 
-                className={`view-selector-btn ${currentView === 'agenda' ? 'active' : ''}`}
-                onClick={() => setCurrentView('agenda')}
-              >
-                <List size={18} /> Agenda
-              </button>
-            </div>
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full mt-2">
-              <span className="font-black text-xl md:text-2xl capitalize tracking-tight" style={{ color: 'var(--text-main)' }}>
-                {getHeaderTitle()}
-              </span>
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <button className="calendar-nav-btn" onClick={() => navigate(-1)}><ChevronLeft size={20}/></button>
-                <button className="calendar-today-btn" onClick={goToToday}>HOJE</button>
-                <button className="calendar-nav-btn" onClick={() => navigate(1)}><ChevronRight size={20}/></button>
-              </div>
+          <div className="view-selector-container">
+            <button
+              className={`view-selector-btn ${currentView === 'month' ? 'active' : ''}`}
+              onClick={() => setCurrentView('month')}
+            >
+              <LayoutGrid size={18} /> Mês
+            </button>
+            <button
+              className={`view-selector-btn ${currentView === 'week' ? 'active' : ''}`}
+              onClick={() => setCurrentView('week')}
+            >
+              <Columns size={18} /> Semana
+            </button>
+            <button
+              className={`view-selector-btn ${currentView === 'agenda' ? 'active' : ''}`}
+              onClick={() => setCurrentView('agenda')}
+            >
+              <List size={18} /> Agenda
+            </button>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full mt-2">
+            <span className="font-black text-xl md:text-2xl capitalize tracking-tight" style={{ color: 'var(--text-main)' }}>
+              {getHeaderTitle()}
+            </span>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button className="calendar-nav-btn" onClick={() => navigate(-1)}><ChevronLeft size={20} /></button>
+              <button className="calendar-today-btn" onClick={goToToday}>HOJE</button>
+              <button className="calendar-nav-btn" onClick={() => navigate(1)}><ChevronRight size={20} /></button>
             </div>
           </div>
+        </div>
 
         {loading ? (
           <div className="flex-1 flex justify-center items-center text-muted">Carregando agenda...</div>
@@ -713,37 +699,37 @@ const Calendar = () => {
       </div>
 
       {/* Modal Adicionar/Editar Aula */}
-      {isModalOpen && createPortal(
-        <div className="modal-overlay flex items-center justify-center bottom-sheet-modal" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 9999, backdropFilter: 'blur(4px)' }}>
-          <div className="card glass w-full" style={{maxWidth: '450px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
+      {isModalOpen && (
+        <div className="modal-overlay flex items-center justify-center bottom-sheet-modal" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)' }}>
+          <div className="card glass w-full" style={{ maxWidth: '450px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
             <div className="flex justify-between items-center mb-6">
-              <h2 style={{margin: 0}}>{editMode ? (isTeacher ? 'Editar Aula' : 'Detalhes do Evento') : (isTeacher ? 'Agendar Aula' : 'Novo Evento')}</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+              <h2 style={{ margin: 0 }}>{editMode ? (isTeacher ? 'Editar Aula' : 'Detalhes do Evento') : (isTeacher ? 'Agendar Aula' : 'Novo Evento')}</h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                 <X size={24} />
               </button>
             </div>
-            
+
             <form onSubmit={handleSaveClass}>
               {editMode && classForm.status === 'Requested' && classForm.type === 'Solicitação de Aula' && isTeacher && (
                 <div className="mb-4 p-4 rounded-lg flex items-center justify-between" style={{ backgroundColor: 'rgba(234, 179, 8, 0.1)', border: '1px solid var(--warning)' }}>
-                   <div>
-                     <p className="font-bold text-warning m-0">Solicitação de Aula</p>
-                     <p className="text-sm text-muted m-0">O aluno solicitou este horário. Confirme para agendar e faturar.</p>
-                   </div>
-                   <button 
-                     type="button" 
-                     className="btn btn-sm" 
-                     style={{ backgroundColor: 'var(--warning)', color: 'white', fontWeight: 'bold' }}
-                     onClick={() => setClassForm({...classForm, status: 'Scheduled', type: 'Aula'})}
-                   >
-                     Confirmar Aula
-                   </button>
+                  <div>
+                    <p className="font-bold text-warning m-0">Solicitação de Aula</p>
+                    <p className="text-sm text-muted m-0">O aluno solicitou este horário. Confirme para agendar e faturar.</p>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-sm"
+                    style={{ backgroundColor: 'var(--warning)', color: 'white', fontWeight: 'bold' }}
+                    onClick={() => setClassForm({ ...classForm, status: 'Scheduled', type: 'Aula' })}
+                  >
+                    Confirmar Aula
+                  </button>
                 </div>
               )}
               {isTeacher && (
                 <div className="input-group">
                   <label>Aluno (Opcional)</label>
-                  <select className="input w-full" value={classForm.student_email || ''} onChange={(e) => setClassForm({...classForm, student_email: e.target.value})}>
+                  <select className="input w-full" value={classForm.student_email || ''} onChange={(e) => setClassForm({ ...classForm, student_email: e.target.value })}>
                     <option value="">Sem aluno (Evento Pessoal)</option>
                     {students.map(s => <option key={s.email} value={s.email}>{s.name} ({s.email})</option>)}
                   </select>
@@ -753,7 +739,7 @@ const Calendar = () => {
               <div className="input-group">
                 <label>Tipo de Evento</label>
                 {isTeacher ? (
-                  <select className="input w-full" required value={classForm.type} onChange={(e) => setClassForm({...classForm, type: e.target.value})}>
+                  <select className="input w-full" required value={classForm.type} onChange={(e) => setClassForm({ ...classForm, type: e.target.value })}>
                     {classForm.type === 'Solicitação de Aula' && <option value="Solicitação de Aula">Solicitação de Aula (Pendente)</option>}
                     <option value="Aula">Aula (Será cobrada)</option>
                     <option value="Reunião">Reunião / Outro (Não será cobrado)</option>
@@ -761,7 +747,7 @@ const Calendar = () => {
                 ) : (
                   <select className="input w-full" required value={classForm.type} onChange={(e) => {
                     const t = e.target.value;
-                    setClassForm({...classForm, type: t, status: t === 'Evento Particular' ? 'Scheduled' : 'Requested'});
+                    setClassForm({ ...classForm, type: t, status: t === 'Evento Particular' ? 'Scheduled' : 'Requested' });
                   }}>
                     <option value="Solicitação de Aula">Solicitar Aula com o Professor</option>
                     <option value="Evento Particular">Evento Particular (Apenas Lembrete)</option>
@@ -771,28 +757,28 @@ const Calendar = () => {
 
               <div className="input-group">
                 <label>Data de Início</label>
-                <input type="date" className="input w-full" required value={classForm.date} onChange={(e) => setClassForm({...classForm, date: e.target.value})} />
+                <input type="date" className="input w-full" required value={classForm.date} onChange={(e) => setClassForm({ ...classForm, date: e.target.value })} />
               </div>
-              
-              <div className="grid-cols-2" style={{marginBottom: '1rem'}}>
-                <div className="input-group" style={{marginBottom: 0}}>
+
+              <div className="grid-cols-2" style={{ marginBottom: '1rem' }}>
+                <div className="input-group" style={{ marginBottom: 0 }}>
                   <label>Hora</label>
-                  <select className="input w-full" required value={classForm.startHour} onChange={(e) => setClassForm({...classForm, startHour: e.target.value})}>
+                  <select className="input w-full" required value={classForm.startHour} onChange={(e) => setClassForm({ ...classForm, startHour: e.target.value })}>
                     {HOURS.map(h => <option key={h} value={h.toString().padStart(2, '0')}>{h.toString().padStart(2, '0')}</option>)}
                   </select>
                 </div>
-                <div className="input-group" style={{marginBottom: 0}}>
+                <div className="input-group" style={{ marginBottom: 0 }}>
                   <label>Minutos</label>
-                  <select className="input w-full" required value={classForm.startMinute} onChange={(e) => setClassForm({...classForm, startMinute: e.target.value})}>
+                  <select className="input w-full" required value={classForm.startMinute} onChange={(e) => setClassForm({ ...classForm, startMinute: e.target.value })}>
                     {['00', '15', '30', '45'].map(m => <option key={m} value={m}>{m}</option>)}
                   </select>
                 </div>
               </div>
-              
-              <div className="grid-cols-2" style={{marginBottom: editMode ? '0' : '1.25rem'}}>
-                <div className="input-group" style={{marginBottom: 0}}>
+
+              <div className="grid-cols-2" style={{ marginBottom: editMode ? '0' : '1.25rem' }}>
+                <div className="input-group" style={{ marginBottom: 0 }}>
                   <label>Duração</label>
-                  <select className="input w-full" required value={classForm.duration} onChange={(e) => setClassForm({...classForm, duration: parseInt(e.target.value)})}>
+                  <select className="input w-full" required value={classForm.duration} onChange={(e) => setClassForm({ ...classForm, duration: parseInt(e.target.value) })}>
                     <option value={30}>30 min</option>
                     <option value={45}>45 min</option>
                     <option value={60}>1 hora</option>
@@ -801,9 +787,9 @@ const Calendar = () => {
                   </select>
                 </div>
                 {editMode && (
-                  <div className="input-group" style={{marginBottom: 0}}>
+                  <div className="input-group" style={{ marginBottom: 0 }}>
                     <label>Status</label>
-                    <select className="input w-full" value={classForm.status} onChange={(e) => setClassForm({...classForm, status: e.target.value})}>
+                    <select className="input w-full" value={classForm.status} onChange={(e) => setClassForm({ ...classForm, status: e.target.value })}>
                       {classForm.status === 'Requested' && <option value="Requested">Pendente (Solicitada)</option>}
                       <option value="Scheduled">Agendada</option>
                       <option value="Completed">Concluída</option>
@@ -816,12 +802,12 @@ const Calendar = () => {
               {editMode && classForm.status === 'Completed' && classForm.type === 'Aula' && isTeacher && (
                 <div className="input-group mt-4 animate-fade-in-up">
                   <label className="text-primary font-bold flex items-center gap-2 mb-2">Diário de Aula & Feedback</label>
-                  <textarea 
-                    className="input w-full" 
-                    rows="3" 
+                  <textarea
+                    className="input w-full"
+                    rows="3"
                     placeholder="O que foi ensinado, vocabulário novo, pontos de melhoria..."
                     value={classForm.feedback}
-                    onChange={(e) => setClassForm({...classForm, feedback: e.target.value})}
+                    onChange={(e) => setClassForm({ ...classForm, feedback: e.target.value })}
                     style={{ borderRadius: '12px', resize: 'vertical' }}
                   ></textarea>
                   <p className="text-xs text-muted mt-1">Este feedback ficará salvo no Histórico do aluno.</p>
@@ -831,10 +817,10 @@ const Calendar = () => {
               {!editMode && isTeacher && (
                 <div className="mt-4 p-4 border rounded-lg bg-bg">
                   <label className="flex items-center gap-2 cursor-pointer mb-2 font-medium">
-                    <input type="checkbox" checked={classForm.isRecurring} onChange={(e) => setClassForm({...classForm, isRecurring: e.target.checked})} />
+                    <input type="checkbox" checked={classForm.isRecurring} onChange={(e) => setClassForm({ ...classForm, isRecurring: e.target.checked })} />
                     <Repeat size={16} /> Repetir Semanalmente
                   </label>
-                  
+
                   {classForm.isRecurring && (
                     <div className="mt-3">
                       <label className="text-sm text-muted mb-2 block">Dias da semana:</label>
@@ -845,9 +831,9 @@ const Calendar = () => {
                           </div>
                         ))}
                       </div>
-                      <div className="input-group mt-3" style={{marginBottom: 0}}>
+                      <div className="input-group mt-3" style={{ marginBottom: 0 }}>
                         <label className="text-sm">Repetir até:</label>
-                        <input type="date" className="input w-full" required={classForm.isRecurring} value={classForm.repeatUntil} onChange={(e) => setClassForm({...classForm, repeatUntil: e.target.value})} />
+                        <input type="date" className="input w-full" required={classForm.isRecurring} value={classForm.repeatUntil} onChange={(e) => setClassForm({ ...classForm, repeatUntil: e.target.value })} />
                       </div>
                     </div>
                   )}
@@ -856,7 +842,7 @@ const Calendar = () => {
 
               <div className="flex justify-between items-center mt-6">
                 {editMode ? (
-                  <button type="button" className="btn btn-outline text-red-500 hover:bg-red-50" onClick={handleDeleteClass} disabled={isSubmitting} style={{borderColor: 'transparent', padding: '0.5rem'}}>
+                  <button type="button" className="btn btn-outline text-red-500 hover:bg-red-50" onClick={handleDeleteClass} disabled={isSubmitting} style={{ borderColor: 'transparent', padding: '0.5rem' }}>
                     <Trash2 size={18} /> Excluir
                   </button>
                 ) : <div></div>}
@@ -869,8 +855,7 @@ const Calendar = () => {
               </div>
             </form>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
     </div>
   );

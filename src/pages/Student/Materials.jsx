@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { FileText, Download, ArrowLeft, BookOpen, ExternalLink, Plus, X, Trash } from 'lucide-react';
@@ -10,7 +9,7 @@ const StudentMaterials = () => {
   const navigate = useNavigate();
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   const [activeTab, setActiveTab] = useState('materials');
   const [activeApp, setActiveApp] = useState(null);
 
@@ -37,7 +36,7 @@ const StudentMaterials = () => {
   useEffect(() => {
     const fetchMaterials = async () => {
       if (!user?.email) return;
-      
+
       setLoading(true);
       const { data, error } = await supabase
         .from('Materials')
@@ -59,10 +58,10 @@ const StudentMaterials = () => {
   const handleAddMaterial = async (e) => {
     e.preventDefault();
     if (!user?.email) return;
-    
+
     setIsSubmitting(true);
     const { error } = await supabase.from('Materials').insert([
-      { 
+      {
         student_email: user.email,
         title: newMaterial.title,
         file_type: newMaterial.file_type,
@@ -81,7 +80,7 @@ const StudentMaterials = () => {
         .ilike('student_email', user.email)
         .order('created_at', { ascending: false });
       if (data) setMaterials(data);
-      
+
       setNewMaterial({ title: '', file_type: 'PDF', file_url: '' });
       setIsAdding(false);
     }
@@ -105,7 +104,7 @@ const StudentMaterials = () => {
   const handleEditMaterialSubmit = async (e) => {
     e.preventDefault();
     if (!editingMaterial) return;
-    
+
     setIsSubmitting(true);
     const { error } = await supabase.from('Materials').update({
       title: editingMaterial.title,
@@ -133,8 +132,8 @@ const StudentMaterials = () => {
       <div className="dashboard-header mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <button 
-              onClick={() => navigate('/dashboard/student')} 
+            <button
+              onClick={() => navigate('/dashboard/student')}
               className="text-muted hover:text-primary transition-colors flex items-center gap-1 text-sm font-medium"
               style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
             >
@@ -144,8 +143,8 @@ const StudentMaterials = () => {
           <h1>Todos os Materiais</h1>
           <p>Tudo que foi compartilhado entre você e o professor.</p>
         </div>
-        <button 
-          className="btn btn-primary flex items-center gap-2 py-2 px-4 whitespace-nowrap" 
+        <button
+          className="btn btn-primary flex items-center gap-2 py-2 px-4 whitespace-nowrap"
           onClick={() => setIsAdding(true)}
           style={{ borderRadius: '12px', fontWeight: 'bold' }}
         >
@@ -160,10 +159,10 @@ const StudentMaterials = () => {
           </h2>
           <p className="text-muted">Acesse suas lições completas, jogos, gramática e converse com o George!</p>
         </div>
-        <a 
-          href="https://book-8uu.pages.dev" 
-          target="_blank" 
-          rel="noopener noreferrer" 
+        <a
+          href="https://book-8uu.pages.dev"
+          target="_blank"
+          rel="noopener noreferrer"
           className="btn btn-primary"
           style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem' }}
         >
@@ -173,14 +172,14 @@ const StudentMaterials = () => {
 
       {/* Tabs */}
       <div className="flex gap-4 mb-6 border-b border-[rgba(255,255,255,0.1)] pb-2 animate-fade-in-up delay-150">
-        <button 
+        <button
           onClick={() => setActiveTab('materials')}
           className={`pb-2 px-2 font-bold transition-colors ${activeTab === 'materials' ? 'text-primary border-b-2 border-primary' : 'text-muted hover:text-main'}`}
           style={{ background: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', cursor: 'pointer' }}
         >
           Materiais Compartilhados
         </button>
-        <button 
+        <button
           onClick={() => setActiveTab('apps')}
           className={`pb-2 px-2 font-bold transition-colors flex items-center gap-2 ${activeTab === 'apps' ? 'text-primary border-b-2 border-primary' : 'text-muted hover:text-main'}`}
           style={{ background: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', cursor: 'pointer' }}
@@ -197,8 +196,8 @@ const StudentMaterials = () => {
             <div className="p-4 overflow-y-auto flex-1">
               <div className="flex flex-col gap-3">
                 {materials.map((mat) => (
-                  <div 
-                    key={mat.id} 
+                  <div
+                    key={mat.id}
                     onClick={() => setEditingMaterial(mat)}
                     className="flex justify-between items-center p-4 rounded-xl cursor-pointer transition-all"
                     style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}
@@ -231,7 +230,7 @@ const StudentMaterials = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in-up delay-200 overflow-y-auto pb-6">
           {appsList.map((app) => (
-            <div 
+            <div
               key={app.id}
               onClick={() => setActiveApp(app)}
               className="card glass p-5 cursor-pointer transition-all transform hover:-translate-y-1 hover:shadow-lg flex flex-col items-center text-center"
@@ -248,31 +247,31 @@ const StudentMaterials = () => {
       )}
 
       {/* Add Material Modal */}
-      {isAdding && createPortal(
+      {isAdding && (
         <div className="modal-overlay flex items-center justify-center" style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full animate-fade-in-up" style={{maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem', borderRadius: '24px'}}>
+          <div className="card glass w-full animate-fade-in-up" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem', borderRadius: '24px' }}>
             <div className="flex justify-between items-center mb-6">
-              <h2 style={{margin: 0}} className="text-xl font-bold text-main">Enviar Material</h2>
-              <button onClick={() => setIsAdding(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+              <h2 style={{ margin: 0 }} className="text-xl font-bold text-main">Enviar Material</h2>
+              <button onClick={() => setIsAdding(false)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                 <X size={24} />
               </button>
             </div>
-            
+
             <form onSubmit={handleAddMaterial}>
               <div className="input-group mb-4">
                 <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>Título do Material</label>
                 <input type="text" className="input w-full" required placeholder="Ex: Minha Redação de Inglês"
-                  value={newMaterial.title} onChange={(e) => setNewMaterial({...newMaterial, title: e.target.value})}
+                  value={newMaterial.title} onChange={(e) => setNewMaterial({ ...newMaterial, title: e.target.value })}
                   style={{ borderRadius: '12px' }}
                 />
               </div>
-              
+
               <div className="input-group mb-4">
                 <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>Tipo de Arquivo</label>
-                <select className="input w-full" value={newMaterial.file_type} onChange={(e) => setNewMaterial({...newMaterial, file_type: e.target.value})} style={{ borderRadius: '12px' }}>
+                <select className="input w-full" value={newMaterial.file_type} onChange={(e) => setNewMaterial({ ...newMaterial, file_type: e.target.value })} style={{ borderRadius: '12px' }}>
                   <option>PDF</option>
                   <option>DOCX</option>
                   <option>Link</option>
@@ -284,7 +283,7 @@ const StudentMaterials = () => {
               <div className="input-group mb-6">
                 <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>URL do Google Drive (ou link externo)</label>
                 <input type="url" className="input w-full" required placeholder="https://drive.google.com/..."
-                  value={newMaterial.file_url} onChange={(e) => setNewMaterial({...newMaterial, file_url: e.target.value})}
+                  value={newMaterial.file_url} onChange={(e) => setNewMaterial({ ...newMaterial, file_url: e.target.value })}
                   style={{ borderRadius: '12px' }}
                 />
               </div>
@@ -297,36 +296,35 @@ const StudentMaterials = () => {
               </div>
             </form>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
 
       {/* Edit Material Modal */}
-      {editingMaterial && createPortal(
+      {editingMaterial && (
         <div className="modal-overlay flex items-center justify-center" style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full animate-fade-in-up" style={{maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem', borderRadius: '24px'}}>
+          <div className="card glass w-full animate-fade-in-up" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem', borderRadius: '24px' }}>
             <div className="flex justify-between items-center mb-6">
-              <h2 style={{margin: 0}} className="text-xl font-bold text-main">Detalhes do Material</h2>
-              <button onClick={() => setEditingMaterial(null)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+              <h2 style={{ margin: 0 }} className="text-xl font-bold text-main">Detalhes do Material</h2>
+              <button onClick={() => setEditingMaterial(null)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                 <X size={24} />
               </button>
             </div>
-            
+
             <form onSubmit={handleEditMaterialSubmit}>
               <div className="input-group mb-4">
                 <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>Título do Material</label>
                 <input type="text" className="input w-full" required
-                  value={editingMaterial.title} onChange={(e) => setEditingMaterial({...editingMaterial, title: e.target.value})}
+                  value={editingMaterial.title} onChange={(e) => setEditingMaterial({ ...editingMaterial, title: e.target.value })}
                   style={{ borderRadius: '12px' }}
                 />
               </div>
-              
+
               <div className="input-group mb-4">
                 <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>Tipo de Arquivo</label>
-                <select className="input w-full" value={editingMaterial.file_type} onChange={(e) => setEditingMaterial({...editingMaterial, file_type: e.target.value})} style={{ borderRadius: '12px' }}>
+                <select className="input w-full" value={editingMaterial.file_type} onChange={(e) => setEditingMaterial({ ...editingMaterial, file_type: e.target.value })} style={{ borderRadius: '12px' }}>
                   <option>PDF</option>
                   <option>DOCX</option>
                   <option>Link</option>
@@ -339,14 +337,14 @@ const StudentMaterials = () => {
               <div className="input-group mb-6">
                 <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>URL</label>
                 <input type="url" className="input w-full" required
-                  value={editingMaterial.file_url} onChange={(e) => setEditingMaterial({...editingMaterial, file_url: e.target.value})}
+                  value={editingMaterial.file_url} onChange={(e) => setEditingMaterial({ ...editingMaterial, file_url: e.target.value })}
                   style={{ borderRadius: '12px' }}
                 />
               </div>
 
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
                 <div className="flex gap-2 w-full sm:w-auto">
-                  <a 
+                  <a
                     href={editingMaterial.file_url.startsWith('http') ? editingMaterial.file_url : `https://${editingMaterial.file_url}`}
                     target="_blank" rel="noopener noreferrer"
                     className="btn btn-primary flex-1 sm:flex-none flex justify-center items-center gap-2"
@@ -354,7 +352,7 @@ const StudentMaterials = () => {
                   >
                     <ExternalLink size={18} /> Abrir
                   </a>
-                  <button type="button" className="btn text-danger flex-1 sm:flex-none flex justify-center items-center" 
+                  <button type="button" className="btn text-danger flex-1 sm:flex-none flex justify-center items-center"
                     onClick={() => handleDeleteMaterial(editingMaterial.id)}
                     disabled={isSubmitting}
                     style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', backgroundColor: 'rgba(239, 68, 68, 0.1)', border: 'none' }}
@@ -362,7 +360,7 @@ const StudentMaterials = () => {
                     <Trash size={18} />
                   </button>
                 </div>
-                
+
                 <div className="flex gap-2 w-full sm:w-auto">
                   <button type="submit" className="btn w-full sm:w-auto" disabled={isSubmitting} style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 'bold', backgroundColor: 'var(--text-main)', color: 'var(--surface)' }}>
                     {isSubmitting ? 'Salvando...' : 'Salvar'}
@@ -371,18 +369,17 @@ const StudentMaterials = () => {
               </div>
             </form>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
 
       {/* App Modal Iframe (Centralizado) */}
-      {activeApp && createPortal(
+      {activeApp && (
         <div className="modal-overlay flex items-center justify-center" style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.7)', zIndex: 60, backdropFilter: 'blur(8px)'
         }}>
           <div className="card glass animate-fade-in-up flex flex-col overflow-hidden relative" style={{
-            width: '90vw', height: '85vh', maxWidth: '1200px', backgroundColor: 'var(--bg-color)', 
+            width: '90vw', height: '85vh', maxWidth: '1200px', backgroundColor: 'var(--bg-color)',
             borderRadius: '24px', border: '1px solid var(--primary-glow)',
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
           }}>
@@ -390,26 +387,25 @@ const StudentMaterials = () => {
               <h2 className="text-lg font-bold text-main flex items-center gap-2 m-0">
                 <span>{activeApp.icon}</span> {activeApp.title}
               </h2>
-              <button 
-                onClick={() => setActiveApp(null)} 
-                className="text-muted hover:text-white transition-colors flex items-center justify-center rounded-full" 
+              <button
+                onClick={() => setActiveApp(null)}
+                className="text-muted hover:text-white transition-colors flex items-center justify-center rounded-full"
                 style={{ background: 'rgba(255,255,255,0.1)', border: 'none', cursor: 'pointer', width: '36px', height: '36px' }}
               >
                 <X size={20} />
               </button>
             </div>
-            
+
             <div className="flex-1 w-full bg-white relative">
-              <iframe 
-                src={activeApp.url} 
+              <iframe
+                src={activeApp.url}
                 className="w-full h-full border-none absolute inset-0"
                 title={activeApp.title}
                 sandbox="allow-scripts allow-same-origin"
               />
             </div>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
     </div>
   );

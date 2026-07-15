@@ -18,7 +18,7 @@ const StudentFinancial = () => {
     const fetchStudentData = async () => {
       if (!user?.email) return;
       setLoading(true);
-      
+
       const today = new Date();
       const endOfCurrentMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
       const startOf6MonthsAgo = new Date(today.getFullYear(), today.getMonth() - 5, 1, 0, 0, 0, 0);
@@ -42,11 +42,11 @@ const StudentFinancial = () => {
         const monthLabel = refDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
         const monthClasses = classes?.filter(c => {
-           const d = new Date(c.scheduled_at);
-           const isBillable = !c.type || c.type === 'Aula';
-           return d.getFullYear() === refDate.getFullYear() && d.getMonth() === refDate.getMonth() && isBillable;
+          const d = new Date(c.scheduled_at);
+          const isBillable = !c.type || c.type === 'Aula';
+          return d.getFullYear() === refDate.getFullYear() && d.getMonth() === refDate.getMonth() && isBillable;
         }) || [];
-        
+
         const paymentRecord = payments?.find(p => p.reference_month === refMonthStr);
         const classesCount = monthClasses.length;
         const totalAmount = classesCount * classPrice;
@@ -78,7 +78,7 @@ const StudentFinancial = () => {
         <div key={month.refMonthStr} className="mb-12">
           {index === 0 && <h2 className="text-2xl font-bold mb-6 text-white border-b border-white/10 pb-4">Mês Atual: {month.monthLabel}</h2>}
           {index > 0 && <h2 className="text-xl font-bold mb-6 text-muted border-b border-white/10 pb-4 capitalize">{month.monthLabel}</h2>}
-          
+
           <div className="grid-cols-2">
             <div className="card glass text-center flex flex-col items-center justify-center p-8">
               {month.isPaid ? (
@@ -95,11 +95,11 @@ const StudentFinancial = () => {
                   <p className="text-sm text-muted mb-4">
                     Baseado em {month.classesCount} aula(s) agendada(s) neste mês (R$ {classPrice}/aula).
                   </p>
-                  
+
                   {month.totalAmount > 0 ? (
-                    <div className="pix-section p-6 rounded-lg border w-full flex flex-col items-center" style={{backgroundColor: 'var(--bg-color)'}}>
-                      <h3 className="mb-4 flex items-center gap-2"><QrCode className="text-primary"/> Pagar com PIX</h3>
-                      
+                    <div className="pix-section p-6 rounded-lg border w-full flex flex-col items-center" style={{ backgroundColor: 'var(--bg-color)' }}>
+                      <h3 className="mb-4 flex items-center gap-2"><QrCode className="text-primary" /> Pagar com PIX</h3>
+
                       <div className="pix-qr-placeholder mb-4 flex items-center justify-center p-4 bg-white rounded-lg">
                         {month.pixPayload && <QRCodeSVG value={month.pixPayload} size={160} />}
                       </div>
@@ -118,7 +118,7 @@ const StudentFinancial = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="p-6 text-muted border rounded-lg w-full" style={{backgroundColor: 'var(--bg-color)', borderColor: 'var(--border)'}}>
+                    <div className="p-6 text-muted border rounded-lg w-full" style={{ backgroundColor: 'var(--bg-color)', borderColor: 'var(--border)' }}>
                       Nenhuma aula agendada para este mês ainda.
                     </div>
                   )}
@@ -128,25 +128,25 @@ const StudentFinancial = () => {
 
             <div className="card glass h-full">
               <h2 className="mb-6 font-bold text-xl">Status do Pagamento</h2>
-              
+
               {month.isPaid ? (
-                 <div className="flex items-center gap-4 p-5 border rounded-xl" style={{borderColor: 'var(--success)', backgroundColor: 'rgba(16, 185, 129, 0.05)'}}>
-                    <CheckCircle className="text-success" size={28} />
-                    <div className="text-left">
-                      <div className="font-bold text-success text-lg">Pago</div>
-                      <div className="text-sm text-muted">Aprovado pelo professor</div>
-                    </div>
-                 </div>
+                <div className="flex items-center gap-4 p-5 border rounded-xl" style={{ borderColor: 'var(--success)', backgroundColor: 'rgba(16, 185, 129, 0.05)' }}>
+                  <CheckCircle className="text-success" size={28} />
+                  <div className="text-left">
+                    <div className="font-bold text-success text-lg">Pago</div>
+                    <div className="text-sm text-muted">Aprovado pelo professor</div>
+                  </div>
+                </div>
               ) : (
-                 <div className="flex items-center gap-4 p-5 border rounded-xl" style={{borderColor: 'var(--warning)', backgroundColor: 'rgba(245, 158, 11, 0.05)'}}>
-                    <Clock className="text-warning" size={28} />
-                    <div className="text-left">
-                      <div className="font-bold text-warning text-lg">A Receber</div>
-                      <div className="text-sm text-muted">Aguardando pagamento</div>
-                    </div>
-                 </div>
+                <div className="flex items-center gap-4 p-5 border rounded-xl" style={{ borderColor: 'var(--warning)', backgroundColor: 'rgba(245, 158, 11, 0.05)' }}>
+                  <Clock className="text-warning" size={28} />
+                  <div className="text-left">
+                    <div className="font-bold text-warning text-lg">A Receber</div>
+                    <div className="text-sm text-muted">Aguardando pagamento</div>
+                  </div>
+                </div>
               )}
-              
+
               <div className="mt-8">
                 <h3 className="text-xs font-bold uppercase text-muted mb-4 tracking-wide">Resumo da Cobrança</h3>
                 <div className="flex justify-between border-b border-white/5 py-3">

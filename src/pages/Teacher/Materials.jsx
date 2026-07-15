@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { supabase } from '../../lib/supabase';
 import { Folder, FileText, Link as LinkIcon, Trash, Plus, Search, ExternalLink, Gamepad2, Mic, CheckCircle, PenTool, Brain, ArrowRight, Video, File, Type, Layers, MoreHorizontal, Edit, X, Download, Edit2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -11,7 +10,7 @@ const Materials = () => {
   const [selectedStudentEmail, setSelectedStudentEmail] = useState('');
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   const [activeTab, setActiveTab] = useState('materials');
   const [activeApp, setActiveApp] = useState(null);
 
@@ -26,7 +25,7 @@ const Materials = () => {
     { id: 'speech', title: 'Treino de Pronúncia', url: '/apps/speech.html', icon: '🗣️', desc: 'Pratique falar em inglês' },
     { id: 'cefr', title: 'Avaliação CEFR', url: '/apps/cefr_assessment.html', icon: '📊', desc: 'Descubra seu nível de inglês' }
   ];
-  
+
   // Add Material State
   const [isAdding, setIsAdding] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -63,7 +62,7 @@ const Materials = () => {
     const fetchMaterials = async () => {
       if (!selectedStudentEmail) return;
       setLoading(true);
-      
+
       let query = supabase.from('Materials').select('*').order('created_at', { ascending: false });
       if (selectedStudentEmail !== 'ALL') {
         query = query.ilike('student_email', selectedStudentEmail);
@@ -75,24 +74,24 @@ const Materials = () => {
           query = query.eq('student_email', 'nobody@nowhere.com');
         }
       }
-      
+
       const { data, error } = await query;
-        
+
       if (data) setMaterials(data);
       else console.error('Error fetching materials:', error);
       setLoading(false);
     };
-    
+
     fetchMaterials();
   }, [selectedStudentEmail, user, students]);
 
   const handleAddMaterial = async (e) => {
     e.preventDefault();
     if (!selectedStudentEmail) return;
-    
+
     setIsSubmitting(true);
     const { error } = await supabase.from('Materials').insert([
-      { 
+      {
         student_email: selectedStudentEmail,
         title: newMaterial.title,
         file_type: newMaterial.file_type,
@@ -118,7 +117,7 @@ const Materials = () => {
       }
       const { data } = await query;
       if (data) setMaterials(data);
-      
+
       setNewMaterial({ title: '', file_type: 'PDF', file_url: '' });
       setIsAdding(false);
     }
@@ -157,7 +156,7 @@ const Materials = () => {
 
   const handleDeleteMaterial = async (id) => {
     if (!window.confirm('Tem certeza de que deseja remover este material?')) return;
-    
+
     const { error } = await supabase.from('Materials').delete().eq('id', id);
     if (error) {
       console.error('Error deleting material:', error);
@@ -174,12 +173,12 @@ const Materials = () => {
           <h1>Materiais dos Alunos</h1>
           <p>Compartilhe arquivos, links e tarefas com seus alunos.</p>
         </div>
-        
+
         {/* Student Selector */}
         <div className="flex gap-4 items-center">
           <div className="input-group" style={{ marginBottom: 0, minWidth: '300px' }}>
-            <select 
-              className="input w-full" 
+            <select
+              className="input w-full"
               value={selectedStudentEmail}
               onChange={(e) => setSelectedStudentEmail(e.target.value)}
               disabled={loading || students.length === 0}
@@ -191,8 +190,8 @@ const Materials = () => {
               ))}
             </select>
           </div>
-          <button 
-            className="btn btn-primary" 
+          <button
+            className="btn btn-primary"
             onClick={() => setIsAdding(true)}
             disabled={!selectedStudentEmail || selectedStudentEmail === 'ALL'}
             title={selectedStudentEmail === 'ALL' ? 'Selecione um aluno específico para atribuir' : ''}
@@ -204,14 +203,14 @@ const Materials = () => {
 
       {/* Tabs */}
       <div className="flex gap-4 mb-6 border-b border-[rgba(255,255,255,0.1)] pb-2 animate-fade-in-up delay-100">
-        <button 
+        <button
           onClick={() => setActiveTab('materials')}
           className={`pb-2 px-2 font-bold transition-colors ${activeTab === 'materials' ? 'text-primary border-b-2 border-primary' : 'text-muted hover:text-main'}`}
           style={{ background: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', cursor: 'pointer' }}
         >
           Materiais Compartilhados
         </button>
-        <button 
+        <button
           onClick={() => setActiveTab('apps')}
           className={`pb-2 px-2 font-bold transition-colors flex items-center gap-2 ${activeTab === 'apps' ? 'text-primary border-b-2 border-primary' : 'text-muted hover:text-main'}`}
           style={{ background: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', cursor: 'pointer' }}
@@ -222,84 +221,84 @@ const Materials = () => {
 
       {activeTab === 'materials' ? (
         <div className="grid-cols-3 flex-1 gap-6">
-        {/* Materials List Column */}
-        <div className="main-col h-full flex flex-col" style={{ gridColumn: 'span 3' }}>
-          <div className="card glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-100 flex flex-col">
-            {loading ? (
-              <div className="p-8 text-center text-muted">Carregando materiais...</div>
-            ) : materials.length > 0 ? (
-              <div className="px-4 pb-4 overflow-x-auto flex-1">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Título</th>
-                      {selectedStudentEmail === 'ALL' && <th>Aluno</th>}
-                      <th>Tipo</th>
-                      <th>Data de Adição</th>
-                      <th className="text-right">Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {materials.map((mat) => (
-                      <tr key={mat.id}>
-                        <td>
-                          <button 
-                            className="font-medium text-main flex items-center gap-2 hover:text-primary transition-colors text-left"
-                            onClick={() => openEditModal(mat)}
-                            style={{background: 'none', border: 'none', cursor: 'pointer', padding: 0}}
-                            title="Editar Material"
-                          >
-                            <FileText size={16} className="text-primary"/> {mat.title}
-                          </button>
-                        </td>
-                        {selectedStudentEmail === 'ALL' && (
-                          <td className="text-muted text-sm">{mat.student_email}</td>
-                        )}
-                        <td>
-                          <span className="badge" style={{backgroundColor: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)'}}>
-                            {mat.file_type}
-                          </span>
-                        </td>
-                        <td className="text-muted">
-                          {new Date(mat.created_at).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </td>
-                        <td className="text-right">
-                          <a 
-                            href={mat.file_url.startsWith('http') ? mat.file_url : `https://${mat.file_url}`} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="btn-icon text-muted hover:text-primary flex items-center justify-center" 
-                            title="Abrir Material"
-                            style={{padding: '4px', background: 'none', border: 'none', marginRight: '8px', display: 'inline-flex'}}
-                          >
-                            <Download size={16} />
-                          </a>
-                          <button onClick={() => openEditModal(mat)} title="Editar Material" className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}>
-                            <Edit2 size={16} />
-                          </button>
-                          <button onClick={() => handleDeleteMaterial(mat.id)} title="Excluir Material" className="btn-icon text-muted hover:text-danger" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none'}}>
-                            <Trash size={16} />
-                          </button>
-                        </td>
+          {/* Materials List Column */}
+          <div className="main-col h-full flex flex-col" style={{ gridColumn: 'span 3' }}>
+            <div className="card glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-100 flex flex-col">
+              {loading ? (
+                <div className="p-8 text-center text-muted">Carregando materiais...</div>
+              ) : materials.length > 0 ? (
+                <div className="px-4 pb-4 overflow-x-auto flex-1">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Título</th>
+                        {selectedStudentEmail === 'ALL' && <th>Aluno</th>}
+                        <th>Tipo</th>
+                        <th>Data de Adição</th>
+                        <th className="text-right">Ações</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <div className="flex-1 flex flex-col items-center justify-center p-12 text-center text-muted">
-                <FileText size={48} className="mb-4 opacity-20" />
-                <p>Nenhum material foi compartilhado com este aluno ainda.</p>
-                <button className="btn btn-outline mt-4" onClick={() => setIsAdding(true)}>Atribuir o primeiro material</button>
-              </div>
-            )}
+                    </thead>
+                    <tbody>
+                      {materials.map((mat) => (
+                        <tr key={mat.id}>
+                          <td>
+                            <button
+                              className="font-medium text-main flex items-center gap-2 hover:text-primary transition-colors text-left"
+                              onClick={() => openEditModal(mat)}
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                              title="Editar Material"
+                            >
+                              <FileText size={16} className="text-primary" /> {mat.title}
+                            </button>
+                          </td>
+                          {selectedStudentEmail === 'ALL' && (
+                            <td className="text-muted text-sm">{mat.student_email}</td>
+                          )}
+                          <td>
+                            <span className="badge" style={{ backgroundColor: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)' }}>
+                              {mat.file_type}
+                            </span>
+                          </td>
+                          <td className="text-muted">
+                            {new Date(mat.created_at).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </td>
+                          <td className="text-right">
+                            <a
+                              href={mat.file_url.startsWith('http') ? mat.file_url : `https://${mat.file_url}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn-icon text-muted hover:text-primary flex items-center justify-center"
+                              title="Abrir Material"
+                              style={{ padding: '4px', background: 'none', border: 'none', marginRight: '8px', display: 'inline-flex' }}
+                            >
+                              <Download size={16} />
+                            </a>
+                            <button onClick={() => openEditModal(mat)} title="Editar Material" className="btn-icon text-muted hover:text-primary" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px' }}>
+                              <Edit2 size={16} />
+                            </button>
+                            <button onClick={() => handleDeleteMaterial(mat.id)} title="Excluir Material" className="btn-icon text-muted hover:text-danger" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none' }}>
+                              <Trash size={16} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center p-12 text-center text-muted">
+                  <FileText size={48} className="mb-4 opacity-20" />
+                  <p>Nenhum material foi compartilhado com este aluno ainda.</p>
+                  <button className="btn btn-outline mt-4" onClick={() => setIsAdding(true)}>Atribuir o primeiro material</button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in-up delay-200 overflow-y-auto pb-6">
           {appsList.map((app) => (
-            <div 
+            <div
               key={app.id}
               onClick={() => setActiveApp(app)}
               className="card glass p-5 cursor-pointer transition-all transform hover:-translate-y-1 hover:shadow-lg flex flex-col items-center text-center"
@@ -316,32 +315,32 @@ const Materials = () => {
       )}
 
       {/* Add Material Modal */}
-      {isAdding && createPortal(
+      {isAdding && (
         <div className="modal-overlay flex items-center justify-center" style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full" style={{maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
+          <div className="card glass w-full" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
             <div className="flex justify-between items-center mb-6">
-              <h2 style={{margin: 0}}>Atribuir Novo Material</h2>
-              <button onClick={() => setIsAdding(false)} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+              <h2 style={{ margin: 0 }}>Atribuir Novo Material</h2>
+              <button onClick={() => setIsAdding(false)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                 <X size={24} />
               </button>
             </div>
-            
+
             <p className="text-sm text-muted mb-4">Compartilhando com o aluno: <strong>{students.find(s => s.email === selectedStudentEmail)?.name}</strong></p>
 
             <form onSubmit={handleAddMaterial}>
               <div className="input-group">
                 <label>Título do Material</label>
                 <input type="text" className="input w-full" required placeholder="Ex: Exercícios de Past Perfect"
-                  value={newMaterial.title} onChange={(e) => setNewMaterial({...newMaterial, title: e.target.value})}
+                  value={newMaterial.title} onChange={(e) => setNewMaterial({ ...newMaterial, title: e.target.value })}
                 />
               </div>
-              
+
               <div className="input-group">
                 <label>Tipo de Arquivo</label>
-                <select className="input w-full" value={newMaterial.file_type} onChange={(e) => setNewMaterial({...newMaterial, file_type: e.target.value})}>
+                <select className="input w-full" value={newMaterial.file_type} onChange={(e) => setNewMaterial({ ...newMaterial, file_type: e.target.value })}>
                   <option>PDF</option>
                   <option>DOCX</option>
                   <option>Link</option>
@@ -353,7 +352,7 @@ const Materials = () => {
               <div className="input-group">
                 <label>URL do Google Drive (ou link externo)</label>
                 <input type="url" className="input w-full" required placeholder="https://drive.google.com/..."
-                  value={newMaterial.file_url} onChange={(e) => setNewMaterial({...newMaterial, file_url: e.target.value})}
+                  value={newMaterial.file_url} onChange={(e) => setNewMaterial({ ...newMaterial, file_url: e.target.value })}
                 />
               </div>
 
@@ -365,20 +364,19 @@ const Materials = () => {
               </div>
             </form>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
 
       {/* Edit Material Modal */}
-      {isEditModalOpen && editingMaterial && createPortal(
+      {isEditModalOpen && editingMaterial && (
         <div className="modal-overlay flex items-center justify-center" style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full" style={{maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem'}}>
+          <div className="card glass w-full" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
             <div className="flex justify-between items-center mb-6">
-              <h2 style={{margin: 0}}>Editar Material</h2>
-              <button onClick={() => { setIsEditModalOpen(false); setEditingMaterial(null); }} className="text-muted" style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+              <h2 style={{ margin: 0 }}>Editar Material</h2>
+              <button onClick={() => { setIsEditModalOpen(false); setEditingMaterial(null); }} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                 <X size={24} />
               </button>
             </div>
@@ -387,13 +385,13 @@ const Materials = () => {
               <div className="input-group">
                 <label>Título do Material</label>
                 <input type="text" className="input w-full" required
-                  value={editingMaterial.title} onChange={(e) => setEditingMaterial({...editingMaterial, title: e.target.value})}
+                  value={editingMaterial.title} onChange={(e) => setEditingMaterial({ ...editingMaterial, title: e.target.value })}
                 />
               </div>
-              
+
               <div className="input-group">
                 <label>Tipo de Arquivo</label>
-                <select className="input w-full" value={editingMaterial.file_type} onChange={(e) => setEditingMaterial({...editingMaterial, file_type: e.target.value})}>
+                <select className="input w-full" value={editingMaterial.file_type} onChange={(e) => setEditingMaterial({ ...editingMaterial, file_type: e.target.value })}>
                   <option>PDF</option>
                   <option>DOCX</option>
                   <option>Link</option>
@@ -405,17 +403,17 @@ const Materials = () => {
               <div className="input-group">
                 <label>URL do Google Drive (ou link externo)</label>
                 <input type="url" className="input w-full" required
-                  value={editingMaterial.file_url} onChange={(e) => setEditingMaterial({...editingMaterial, file_url: e.target.value})}
+                  value={editingMaterial.file_url} onChange={(e) => setEditingMaterial({ ...editingMaterial, file_url: e.target.value })}
                 />
               </div>
 
               <div className="flex justify-between items-center mt-6">
-                <button 
-                  type="button" 
-                  className="btn btn-outline hover:text-danger hover:border-danger transition-colors" 
+                <button
+                  type="button"
+                  className="btn btn-outline hover:text-danger hover:border-danger transition-colors"
                   onClick={() => { handleDeleteMaterial(editingMaterial.id); setIsEditModalOpen(false); }}
                 >
-                  <Trash size={16} className="mr-2" style={{display: 'inline'}} /> Excluir
+                  <Trash size={16} className="mr-2" style={{ display: 'inline' }} /> Excluir
                 </button>
                 <div className="flex gap-2">
                   <button type="button" className="btn btn-outline" onClick={() => { setIsEditModalOpen(false); setEditingMaterial(null); }}>Cancelar</button>
@@ -426,18 +424,17 @@ const Materials = () => {
               </div>
             </form>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
 
       {/* App Modal Iframe (Centralizado) */}
-      {activeApp && createPortal(
+      {activeApp && (
         <div className="modal-overlay flex items-center justify-center" style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.7)', zIndex: 60, backdropFilter: 'blur(8px)'
         }}>
           <div className="card glass animate-fade-in-up flex flex-col overflow-hidden relative" style={{
-            width: '90vw', height: '85vh', maxWidth: '1200px', backgroundColor: 'var(--bg-color)', 
+            width: '90vw', height: '85vh', maxWidth: '1200px', backgroundColor: 'var(--bg-color)',
             borderRadius: '24px', border: '1px solid var(--primary-glow)',
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
           }}>
@@ -445,26 +442,25 @@ const Materials = () => {
               <h2 className="text-lg font-bold text-main flex items-center gap-2 m-0">
                 <span>{activeApp.icon}</span> {activeApp.title}
               </h2>
-              <button 
-                onClick={() => setActiveApp(null)} 
-                className="text-muted hover:text-white transition-colors flex items-center justify-center rounded-full" 
+              <button
+                onClick={() => setActiveApp(null)}
+                className="text-muted hover:text-white transition-colors flex items-center justify-center rounded-full"
                 style={{ background: 'rgba(255,255,255,0.1)', border: 'none', cursor: 'pointer', width: '36px', height: '36px' }}
               >
                 <X size={20} />
               </button>
             </div>
-            
+
             <div className="flex-1 w-full bg-white relative">
-              <iframe 
-                src={activeApp.url} 
+              <iframe
+                src={activeApp.url}
                 className="w-full h-full border-none absolute inset-0"
                 title={activeApp.title}
                 sandbox="allow-scripts allow-same-origin"
               />
             </div>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
     </div>
   );

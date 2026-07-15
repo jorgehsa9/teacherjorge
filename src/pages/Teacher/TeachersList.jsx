@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { supabase, secondarySupabase } from '../../lib/supabase';
 import { Search, Edit, Trash, X, Shield } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -9,7 +8,7 @@ const TeachersList = () => {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newTeacher, setNewTeacher] = useState({ name: '', email: '', status: 'Active' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,7 +32,7 @@ const TeachersList = () => {
   const handleAddTeacher = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     let teacherEmail = newTeacher.email.trim();
     if (!teacherEmail.includes('@')) {
       teacherEmail = `${teacherEmail}@teacherjorge.com`;
@@ -49,12 +48,12 @@ const TeachersList = () => {
       console.error('Auth Error:', authError);
       alert('Aviso: Falha ao criar login de acesso (Supabase Auth) para o professor: ' + authError.message);
     }
-    
+
     const { error } = await supabase.from('Teachers').insert([
-      { 
-        name: newTeacher.name, 
-        email: teacherEmail, 
-        status: newTeacher.status 
+      {
+        name: newTeacher.name,
+        email: teacherEmail,
+        status: newTeacher.status
       }
     ]);
 
@@ -78,7 +77,7 @@ const TeachersList = () => {
   const handleEditTeacher = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     const { error } = await supabase
       .from('Teachers')
       .update({
@@ -87,7 +86,7 @@ const TeachersList = () => {
         status: editingTeacher.status
       })
       .eq('id', editingTeacher.id);
-      
+
     if (error) {
       console.error("Error updating teacher", error);
       alert("Erro ao salvar alterações.");
@@ -109,8 +108,8 @@ const TeachersList = () => {
     }
   };
 
-  const filteredTeachers = teachers.filter(t => 
-    t.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+  const filteredTeachers = teachers.filter(t =>
+    t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     t.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -140,14 +139,14 @@ const TeachersList = () => {
 
       <div className="card glass mb-6">
         <div className="flex justify-between items-center mb-6">
-          <div className="input-group mb-0" style={{maxWidth: '300px'}}>
-            <div className="flex items-center" style={{position: 'relative'}}>
-              <Search size={18} className="text-muted" style={{position: 'absolute', left: '10px'}}/>
-              <input 
-                type="text" 
-                className="input w-full" 
-                placeholder="Buscar professor..." 
-                style={{paddingLeft: '35px'}}
+          <div className="input-group mb-0" style={{ maxWidth: '300px' }}>
+            <div className="flex items-center" style={{ position: 'relative' }}>
+              <Search size={18} className="text-muted" style={{ position: 'absolute', left: '10px' }} />
+              <input
+                type="text"
+                className="input w-full"
+                placeholder="Buscar professor..."
+                style={{ paddingLeft: '35px' }}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -159,9 +158,9 @@ const TeachersList = () => {
           <p className="text-center py-8 text-muted">Carregando equipe...</p>
         ) : (
           <div className="table-responsive">
-            <table className="w-full text-left" style={{borderCollapse: 'collapse'}}>
+            <table className="w-full text-left" style={{ borderCollapse: 'collapse' }}>
               <thead>
-                <tr style={{borderBottom: '1px solid var(--border)'}}>
+                <tr style={{ borderBottom: '1px solid var(--border)' }}>
                   <th className="pb-3 text-muted font-medium text-sm">Professor</th>
                   <th className="pb-3 text-muted font-medium text-sm">Status</th>
                   <th className="pb-3 text-muted font-medium text-sm text-right">Ações</th>
@@ -169,7 +168,7 @@ const TeachersList = () => {
               </thead>
               <tbody>
                 {filteredTeachers.length > 0 ? filteredTeachers.map(teacher => (
-                  <tr key={teacher.id} style={{borderBottom: '1px solid rgba(255,255,255,0.05)'}}>
+                  <tr key={teacher.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                     <td className="py-4">
                       <div className="flex items-center gap-3">
                         <div className="avatar bg-primary-light text-primary font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
@@ -187,8 +186,8 @@ const TeachersList = () => {
                       </span>
                     </td>
                     <td className="py-4 text-right">
-                      <button onClick={() => openEditModal(teacher)} title="Editar" className="btn-icon text-muted hover:text-primary" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px'}}><Edit size={16} /></button>
-                      <button onClick={() => handleDeleteTeacher(teacher)} title="Excluir" className="btn-icon text-muted hover:text-danger" style={{padding: '4px', cursor: 'pointer', background: 'none', border: 'none'}}><Trash size={16} /></button>
+                      <button onClick={() => openEditModal(teacher)} title="Editar" className="btn-icon text-muted hover:text-primary" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px' }}><Edit size={16} /></button>
+                      <button onClick={() => handleDeleteTeacher(teacher)} title="Excluir" className="btn-icon text-muted hover:text-danger" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none' }}><Trash size={16} /></button>
                     </td>
                   </tr>
                 )) : (
@@ -203,47 +202,47 @@ const TeachersList = () => {
       </div>
 
       {/* Modal - Adicionar Professor */}
-      {isModalOpen && createPortal(
+      {isModalOpen && (
         <div className="modal-overlay" onClick={(e) => { if (e.target.className === 'modal-overlay') setIsModalOpen(false); }}>
           <div className="modal-content glass animate-scale-in max-w-md">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold flex items-center gap-2"><Shield className="text-primary"/> Novo Professor</h2>
+              <h2 className="text-xl font-bold flex items-center gap-2"><Shield className="text-primary" /> Novo Professor</h2>
               <button className="text-muted hover:text-main" onClick={() => setIsModalOpen(false)}><X size={24} /></button>
             </div>
-            
+
             <form onSubmit={handleAddTeacher}>
               <div className="input-group mb-4">
                 <label>Nome Completo *</label>
-                <input 
-                  type="text" 
-                  className="input w-full" 
-                  required 
-                  value={newTeacher.name} 
-                  onChange={(e) => setNewTeacher({...newTeacher, name: e.target.value})}
+                <input
+                  type="text"
+                  className="input w-full"
+                  required
+                  value={newTeacher.name}
+                  onChange={(e) => setNewTeacher({ ...newTeacher, name: e.target.value })}
                 />
               </div>
               <div className="input-group mb-4">
                 <label>E-mail *</label>
-                <input 
-                  type="email" 
-                  className="input w-full" 
-                  required 
-                  value={newTeacher.email} 
-                  onChange={(e) => setNewTeacher({...newTeacher, email: e.target.value})}
+                <input
+                  type="email"
+                  className="input w-full"
+                  required
+                  value={newTeacher.email}
+                  onChange={(e) => setNewTeacher({ ...newTeacher, email: e.target.value })}
                 />
               </div>
               <div className="input-group mb-6">
                 <label>Status</label>
-                <select 
-                  className="input w-full" 
-                  value={newTeacher.status} 
-                  onChange={(e) => setNewTeacher({...newTeacher, status: e.target.value})}
+                <select
+                  className="input w-full"
+                  value={newTeacher.status}
+                  onChange={(e) => setNewTeacher({ ...newTeacher, status: e.target.value })}
                 >
                   <option value="Active">Ativo</option>
                   <option value="Inactive">Inativo</option>
                 </select>
               </div>
-              
+
               <div className="flex justify-end gap-2">
                 <button type="button" className="btn btn-outline" onClick={() => setIsModalOpen(false)}>Cancelar</button>
                 <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
@@ -252,53 +251,52 @@ const TeachersList = () => {
               </div>
             </form>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
 
       {/* Modal - Editar Professor */}
-      {isEditModalOpen && editingTeacher && createPortal(
+      {isEditModalOpen && editingTeacher && (
         <div className="modal-overlay" onClick={(e) => { if (e.target.className === 'modal-overlay') setIsEditModalOpen(false); }}>
           <div className="modal-content glass animate-scale-in max-w-md">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold flex items-center gap-2"><Edit className="text-primary"/> Editar Professor</h2>
+              <h2 className="text-xl font-bold flex items-center gap-2"><Edit className="text-primary" /> Editar Professor</h2>
               <button className="text-muted hover:text-main" onClick={() => setIsEditModalOpen(false)}><X size={24} /></button>
             </div>
-            
+
             <form onSubmit={handleEditTeacher}>
               <div className="input-group mb-4">
                 <label>Nome Completo *</label>
-                <input 
-                  type="text" 
-                  className="input w-full" 
-                  required 
-                  value={editingTeacher.name} 
-                  onChange={(e) => setEditingTeacher({...editingTeacher, name: e.target.value})}
+                <input
+                  type="text"
+                  className="input w-full"
+                  required
+                  value={editingTeacher.name}
+                  onChange={(e) => setEditingTeacher({ ...editingTeacher, name: e.target.value })}
                 />
               </div>
               <div className="input-group mb-4">
                 <label>E-mail *</label>
-                <input 
-                  type="email" 
-                  className="input w-full" 
-                  required 
-                  value={editingTeacher.email} 
-                  onChange={(e) => setEditingTeacher({...editingTeacher, email: e.target.value})}
+                <input
+                  type="email"
+                  className="input w-full"
+                  required
+                  value={editingTeacher.email}
+                  onChange={(e) => setEditingTeacher({ ...editingTeacher, email: e.target.value })}
                 />
               </div>
               <div className="input-group mb-6">
                 <label>Status</label>
-                <select 
-                  className="input w-full" 
-                  value={editingTeacher.status} 
-                  onChange={(e) => setEditingTeacher({...editingTeacher, status: e.target.value})}
+                <select
+                  className="input w-full"
+                  value={editingTeacher.status}
+                  onChange={(e) => setEditingTeacher({ ...editingTeacher, status: e.target.value })}
                 >
                   <option value="Active">Ativo</option>
                   <option value="Inactive">Inativo</option>
                 </select>
               </div>
-              
-              <div className="flex justify-end gap-2 mt-6 border-t pt-4" style={{borderColor: 'var(--border)'}}>
+
+              <div className="flex justify-end gap-2 mt-6 border-t pt-4" style={{ borderColor: 'var(--border)' }}>
                 <button type="button" className="btn btn-outline" onClick={() => setIsEditModalOpen(false)}>Cancelar</button>
                 <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
                   {isSubmitting ? 'Salvando...' : 'Salvar Alterações'}
@@ -306,8 +304,7 @@ const TeachersList = () => {
               </div>
             </form>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
 
     </div>
