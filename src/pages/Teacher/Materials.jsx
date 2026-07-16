@@ -31,10 +31,15 @@ const Materials = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newMaterial, setNewMaterial] = useState({ title: '', file_type: 'PDF', file_url: '' });
+  const [uploadMode, setUploadMode] = useState('url'); // 'url' or 'file'
+  const [selectedFile, setSelectedFile] = useState(null);
 
   // Edit Material State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingMaterial, setEditingMaterial] = useState(null);
+
+  const ALLOWED_MIME_TYPES = "application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.presentation, application/vnd.oasis.opendocument.text, application/vnd.oasis.opendocument.spreadsheet, application/vnd.oasis.opendocument.presentation, application/rtf, text/plain, image/jpeg, image/png, image/gif, image/webp, audio/mpeg, audio/aac, audio/wav, video/mp4, video/webm";
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
   // 1. Fetch Students on load
   useEffect(() => {
@@ -91,12 +96,44 @@ const Materials = () => {
     if (!selectedStudentEmail) return;
 
     setIsSubmitting(true);
+    let finalFileUrl = newMaterial.file_url;
+
+    if (uploadMode === 'file') {
+      if (!selectedFile) {
+        alert('Por favor, selecione um arquivo.');
+        setIsSubmitting(false);
+        return;
+      }
+      
+      if (selectedFile.size > MAX_FILE_SIZE) {
+        alert('O arquivo excede o limite de 50MB.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      const fileExt = selectedFile.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `${selectedStudentEmail}/${fileName}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('cloud')
+        .upload(filePath, selectedFile);
+
+      if (uploadError) {
+        console.error('Error uploading file:', uploadError);
+        alert('Falha ao fazer upload do arquivo.');
+        setIsSubmitting(false);
+        return;
+      }
+      finalFileUrl = filePath;
+    }
+
     const { error } = await supabase.from('Materials').insert([
       {
         student_email: selectedStudentEmail,
         title: newMaterial.title,
         file_type: newMaterial.file_type,
-        file_url: newMaterial.file_url
+        file_url: finalFileUrl
       }
     ]);
 
@@ -120,9 +157,28 @@ const Materials = () => {
       if (data) setMaterials(data);
 
       setNewMaterial({ title: '', file_type: 'PDF', file_url: '' });
+      setSelectedFile(null);
+      setUploadMode('url');
       setIsAdding(false);
     }
     setIsSubmitting(false);
+  };
+
+  const handleDownloadMaterial = async (fileUrl) => {
+    if (fileUrl.startsWith('http')) {
+      window.open(fileUrl, '_blank');
+      return;
+    }
+    
+    // It's a Supabase storage path, generate signed URL
+    const { data, error } = await supabase.storage.from('cloud').createSignedUrl(fileUrl, 60); // valid for 60 seconds
+    
+    if (error) {
+      console.error('Error generating signed URL:', error);
+      alert('Erro ao acessar o arquivo. Talvez ele tenha sido removido.');
+    } else if (data?.signedUrl) {
+      window.open(data.signedUrl, '_blank');
+    }
   };
 
   const openEditModal = (material) => {
@@ -155,15 +211,23 @@ const Materials = () => {
     setIsSubmitting(false);
   };
 
-  const handleDeleteMaterial = async (id) => {
+  const handleDeleteMaterial = async (mat) => {
     if (!window.confirm('Tem certeza de que deseja remover este material?')) return;
 
-    const { error } = await supabase.from('Materials').delete().eq('id', id);
+    // Delete from storage if it's an uploaded file
+    if (!mat.file_url.startsWith('http')) {
+      const { error: storageError } = await supabase.storage.from('cloud').remove([mat.file_url]);
+      if (storageError) {
+        console.error('Error deleting file from storage:', storageError);
+      }
+    }
+
+    const { error } = await supabase.from('Materials').delete().eq('id', mat.id);
     if (error) {
       console.error('Error deleting material:', error);
       alert('Falha ao excluir o material.');
     } else {
-      setMaterials(materials.filter(m => m.id !== id));
+      setMaterials(materials.filter(m => m.id !== mat.id));
     }
   };
 
@@ -264,20 +328,18 @@ const Materials = () => {
                             {new Date(mat.created_at).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric', year: 'numeric' })}
                           </td>
                           <td className="text-right">
-                            <a
-                              href={mat.file_url.startsWith('http') ? mat.file_url : `https://${mat.file_url}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                            <button
+                              onClick={() => handleDownloadMaterial(mat.file_url)}
                               className="btn-icon text-muted hover:text-primary flex items-center justify-center"
-                              title="Abrir Material"
-                              style={{ padding: '4px', background: 'none', border: 'none', marginRight: '8px', display: 'inline-flex' }}
+                              title="Abrir/Baixar Material"
+                              style={{ padding: '4px', background: 'none', border: 'none', marginRight: '8px', display: 'inline-flex', cursor: 'pointer' }}
                             >
                               <Download size={16} />
-                            </a>
+                            </button>
                             <button onClick={() => openEditModal(mat)} title="Editar Material" className="btn-icon text-muted hover:text-primary" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px' }}>
                               <Edit2 size={16} />
                             </button>
-                            <button onClick={() => handleDeleteMaterial(mat.id)} title="Excluir Material" className="btn-icon text-muted hover:text-danger" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none' }}>
+                            <button onClick={() => handleDeleteMaterial(mat)} title="Excluir Material" className="btn-icon text-muted hover:text-danger" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none' }}>
                               <Trash size={16} />
                             </button>
                           </td>
@@ -351,11 +413,43 @@ const Materials = () => {
               </div>
 
               <div className="input-group">
-                <label>URL do Google Drive (ou link externo)</label>
-                <input type="url" className="input w-full" required placeholder="https://drive.google.com/..."
-                  value={newMaterial.file_url} onChange={(e) => setNewMaterial({ ...newMaterial, file_url: e.target.value })}
-                />
+                <label>Método de Compartilhamento</label>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="uploadMode" checked={uploadMode === 'url'} onChange={() => setUploadMode('url')} />
+                    Link Externo (Drive, YouTube, etc.)
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="uploadMode" checked={uploadMode === 'file'} onChange={() => setUploadMode('file')} />
+                    Fazer Upload de Arquivo
+                  </label>
+                </div>
               </div>
+
+              {uploadMode === 'url' ? (
+                <div className="input-group">
+                  <label>URL do Material</label>
+                  <input type="url" className="input w-full" required={uploadMode === 'url'} placeholder="https://drive.google.com/..."
+                    value={newMaterial.file_url} onChange={(e) => setNewMaterial({ ...newMaterial, file_url: e.target.value })}
+                  />
+                </div>
+              ) : (
+                <div className="input-group">
+                  <label>Arquivo (Máx 50MB)</label>
+                  <input 
+                    type="file" 
+                    className="input w-full" 
+                    required={uploadMode === 'file'} 
+                    accept={ALLOWED_MIME_TYPES}
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setSelectedFile(e.target.files[0]);
+                      }
+                    }}
+                    style={{ paddingTop: '0.35rem' }}
+                  />
+                </div>
+              )}
 
               <div className="flex justify-end gap-2 mt-6">
                 <button type="button" className="btn btn-outline" onClick={() => setIsAdding(false)}>Cancelar</button>
@@ -413,7 +507,7 @@ const Materials = () => {
                 <button
                   type="button"
                   className="btn btn-outline hover:text-danger hover:border-danger transition-colors"
-                  onClick={() => { handleDeleteMaterial(editingMaterial.id); setIsEditModalOpen(false); }}
+                  onClick={() => { handleDeleteMaterial(editingMaterial); setIsEditModalOpen(false); }}
                 >
                   <Trash size={16} className="mr-2" style={{ display: 'inline' }} /> Excluir
                 </button>
