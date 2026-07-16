@@ -1,11 +1,20 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import { BookOpen, Star, Target, Users, Calendar, ArrowRight, MonitorPlay } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import './Landing.css';
 
 const Landing = () => {
   const { scrollYProgress, scrollY } = useScroll();
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && !loading) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [user, loading, navigate]);
 
   // Hero section parallax & fade (using pixels for precise hero tracking)
   const heroOpacity = useTransform(scrollY, [0, 600], [1, 0]);

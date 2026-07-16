@@ -633,24 +633,24 @@ const Calendar = () => {
     );
   };
   return (
-    <div className="dashboard-wrapper flex flex-col h-full p-2 md:p-4 animate-fade-in-up">
+    <div className="dashboard-wrapper flex flex-col flex-1 p-2 md:p-4 animate-fade-in-up">
 
       {/* HEADER */}
-      <div className="card glass mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 md:p-6" style={{ borderLeft: '6px solid var(--primary)', borderRadius: '20px' }}>
+      <div className="card glass mb-4 flex justify-between items-center gap-3 p-4 md:p-6" style={{ borderRadius: '20px' }}>
         <div>
           <h1 className="text-2xl md:text-3xl font-black m-0 tracking-tight" style={{ background: 'linear-gradient(90deg, var(--primary) 0%, #a855f7 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             Agenda
           </h1>
           <p className="text-xs md:text-sm m-0 mt-1 font-semibold" style={{ color: '#64748b' }}>
-            {isTeacher ? 'Arraste horários ou clique nas aulas.' : 'Solicite aulas ou acompanhe seu cronograma.'}
+            {isTeacher ? 'Arraste horários ou clique nas aulas.' : 'Acompanhe seu cronograma.'}
           </p>
         </div>
         <button
-          className="btn btn-primary w-full sm:w-auto flex items-center justify-center gap-2 transition-all duration-300 text-sm py-2 px-4"
-          style={{ borderRadius: '12px', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)', fontWeight: 'bold' }}
+          className="btn btn-primary flex items-center justify-center gap-2 transition-all duration-300 text-sm py-2 px-4"
+          style={{ borderRadius: '12px', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)', fontWeight: 'bold', whiteSpace: 'nowrap' }}
           onClick={() => openNewClassModal()}
         >
-          <Plus size={16} strokeWidth={3} /> {isTeacher ? 'Nova Aula' : 'Novo Evento'}
+          <Plus size={16} strokeWidth={3} /> <span className="hidden sm:inline">{isTeacher ? 'Nova Aula' : 'Novo Evento'}</span>
         </button>
       </div>
 

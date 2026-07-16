@@ -134,15 +134,17 @@ const StudentFinancial = () => {
               <h2 className="mb-6 font-bold text-xl">Status do Pagamento</h2>
 
               {month.isPaid ? (
-                <div className="flex items-center gap-4 p-5 border rounded-xl" style={{ borderColor: 'var(--success)', backgroundColor: 'rgba(16, 185, 129, 0.05)' }}>
-                  <CheckCircle className="text-success" size={28} />
-                  <div className="text-left">
-                    <div className="font-bold text-success text-lg">Pago</div>
-                    <div className="text-sm text-muted">Aprovado pelo professor</div>
+                <div className="flex items-center gap-4 p-5 border rounded-2xl" style={{ borderColor: 'var(--success)', backgroundColor: 'rgba(16, 185, 129, 0.05)' }}>
+                  <div className="bg-success text-white p-3 rounded-full">
+                    <DollarSign size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg m-0">Tudo Certo!</h3>
+                    <p className="text-sm m-0 text-muted">Não há pagamentos pendentes.</p>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-4 p-5 border rounded-xl" style={{ borderColor: 'var(--warning)', backgroundColor: 'rgba(245, 158, 11, 0.05)' }}>
+                <div className="flex items-center gap-4 p-5 border rounded-2xl" style={{ borderColor: 'var(--warning)', backgroundColor: 'rgba(245, 158, 11, 0.05)' }}>
                   <Clock className="text-warning" size={28} />
                   <div className="text-left">
                     <div className="font-bold text-warning text-lg">A Receber</div>

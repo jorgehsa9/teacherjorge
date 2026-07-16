@@ -37,6 +37,7 @@ const Materials = () => {
   // Edit Material State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingMaterial, setEditingMaterial] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
 
   const ALLOWED_MIME_TYPES = "application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.presentation, application/vnd.oasis.opendocument.text, application/vnd.oasis.opendocument.spreadsheet, application/vnd.oasis.opendocument.presentation, application/rtf, text/plain, image/jpeg, image/png, image/gif, image/webp, audio/mpeg, audio/aac, audio/wav, video/mp4, video/webm";
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -90,6 +91,30 @@ const Materials = () => {
 
     fetchMaterials();
   }, [selectedStudentEmail, user, students]);
+
+  useEffect(() => {
+    const loadPreview = async () => {
+      if (editingMaterial && editingMaterial.file_url) {
+        const isImage = editingMaterial.file_url.match(/\.(jpeg|jpg|gif|png|webp)$/i) || editingMaterial.file_type === 'Imagem';
+        
+        if (isImage) {
+          if (editingMaterial.file_url.startsWith('http')) {
+            setPreviewUrl(editingMaterial.file_url);
+          } else {
+            const { data } = await supabase.storage.from('cloud').createSignedUrl(editingMaterial.file_url, 3600);
+            if (data?.signedUrl) {
+              setPreviewUrl(data.signedUrl);
+            }
+          }
+        } else {
+          setPreviewUrl('');
+        }
+      } else {
+        setPreviewUrl('');
+      }
+    };
+    loadPreview();
+  }, [editingMaterial]);
 
   const handleAddMaterial = async (e) => {
     e.preventDefault();
@@ -183,6 +208,7 @@ const Materials = () => {
 
   const openEditModal = (material) => {
     setEditingMaterial(material);
+    setPreviewUrl('');
     setIsEditModalOpen(true);
   };
 
@@ -232,16 +258,16 @@ const Materials = () => {
   };
 
   return (
-    <div className="dashboard-wrapper h-full flex flex-col relative animate-fade-in-up">
-      <div className="dashboard-header mb-6 flex justify-between items-end">
+    <div className="dashboard-wrapper flex-1 flex flex-col relative animate-fade-in-up">
+      <div className="dashboard-header mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
           <h1>Materiais dos Alunos</h1>
           <p>Compartilhe arquivos, links e tarefas com seus alunos.</p>
         </div>
 
         {/* Student Selector */}
-        <div className="flex gap-4 items-center">
-          <div className="input-group" style={{ marginBottom: 0, minWidth: '300px' }}>
+        <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center w-full sm:w-auto">
+          <div className="input-group w-full sm:w-72" style={{ marginBottom: 0 }}>
             <select
               className="input w-full"
               value={selectedStudentEmail}
@@ -256,18 +282,18 @@ const Materials = () => {
             </select>
           </div>
           <button
-            className="btn btn-primary"
+            className="btn btn-primary w-full sm:w-auto flex justify-center items-center gap-2 whitespace-nowrap"
             onClick={() => setIsAdding(true)}
             disabled={!selectedStudentEmail || selectedStudentEmail === 'ALL'}
             title={selectedStudentEmail === 'ALL' ? 'Selecione um aluno específico para atribuir' : ''}
           >
-            <Plus size={18} /> Atribuir Novo Material
+            <Plus size={18} /> <span>Atribuir Novo Material</span>
           </button>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-4 mb-6 border-b border-[rgba(255,255,255,0.1)] pb-2 animate-fade-in-up delay-100">
+      <div className="flex gap-4 mb-6 border-b pb-2 animate-fade-in-up delay-100" style={{ borderColor: 'var(--border)' }}>
         <button
           onClick={() => setActiveTab('materials')}
           className={`pb-2 px-2 font-bold transition-colors ${activeTab === 'materials' ? 'text-primary border-b-2 border-primary' : 'text-muted hover:text-main'}`}
@@ -287,66 +313,50 @@ const Materials = () => {
       {activeTab === 'materials' ? (
         <div className="grid-cols-3 flex-1 gap-6">
           {/* Materials List Column */}
-          <div className="main-col h-full flex flex-col" style={{ gridColumn: 'span 3' }}>
+          <div className="main-col h-full flex flex-col" style={{ gridColumn: 'span 3', minWidth: 0 }}>
             <div className="card glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-100 flex flex-col">
               {loading ? (
                 <div className="p-8 text-center text-muted">Carregando materiais...</div>
               ) : materials.length > 0 ? (
-                <div className="px-4 pb-4 overflow-x-auto flex-1">
-                  <table className="data-table">
-                    <thead>
-                      <tr>
-                        <th>Título</th>
-                        {selectedStudentEmail === 'ALL' && <th>Aluno</th>}
-                        <th>Tipo</th>
-                        <th>Data de Adição</th>
-                        <th className="text-right">Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {materials.map((mat) => (
-                        <tr key={mat.id}>
-                          <td>
-                            <button
-                              className="font-medium text-main flex items-center gap-2 hover:text-primary transition-colors text-left"
-                              onClick={() => openEditModal(mat)}
-                              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-                              title="Editar Material"
-                            >
-                              <FileText size={16} className="text-primary" /> {mat.title}
-                            </button>
-                          </td>
-                          {selectedStudentEmail === 'ALL' && (
-                            <td className="text-muted text-sm">{mat.student_email}</td>
-                          )}
-                          <td>
-                            <span className="badge" style={{ backgroundColor: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)' }}>
-                              {mat.file_type}
-                            </span>
-                          </td>
-                          <td className="text-muted">
-                            {new Date(mat.created_at).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric', year: 'numeric' })}
-                          </td>
-                          <td className="text-right">
-                            <button
-                              onClick={() => handleDownloadMaterial(mat.file_url)}
-                              className="btn-icon text-muted hover:text-primary flex items-center justify-center"
-                              title="Abrir/Baixar Material"
-                              style={{ padding: '4px', background: 'none', border: 'none', marginRight: '8px', display: 'inline-flex', cursor: 'pointer' }}
-                            >
-                              <Download size={16} />
-                            </button>
-                            <button onClick={() => openEditModal(mat)} title="Editar Material" className="btn-icon text-muted hover:text-primary" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px' }}>
-                              <Edit2 size={16} />
-                            </button>
-                            <button onClick={() => handleDeleteMaterial(mat)} title="Excluir Material" className="btn-icon text-muted hover:text-danger" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none' }}>
-                              <Trash size={16} />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="p-4 overflow-y-auto flex-1">
+                  <div className="flex flex-col gap-3">
+                    {materials.map((mat) => (
+                      <div
+                        key={mat.id}
+                        onClick={() => openEditModal(mat)}
+                        className="flex justify-between items-center p-4 rounded-2xl cursor-pointer transition-all"
+                        style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}
+                        onMouseOver={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+                        onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
+                        title="Clique para ver ou editar detalhes"
+                      >
+                        <div className="flex items-center gap-4 overflow-hidden">
+                          <div style={{ backgroundColor: 'rgba(79, 70, 229, 0.1)', padding: '0.75rem', borderRadius: '10px', flexShrink: 0 }}>
+                            <FileText size={20} className="text-primary" />
+                          </div>
+                          <div className="overflow-hidden flex flex-col">
+                            <h3 className="font-bold text-main m-0 truncate text-sm sm:text-base">{mat.title}</h3>
+                            <p className="text-xs text-muted m-0 mt-1 truncate">
+                              {mat.file_type} • {new Date(mat.created_at).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric', year: 'numeric' })}
+                              {selectedStudentEmail === 'ALL' && mat.student_email && (
+                                <> • <span className="text-primary opacity-80" style={{ fontWeight: '500' }}>{mat.student_email}</span></>
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 items-center flex-shrink-0">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleDownloadMaterial(mat.file_url); }}
+                            className="btn-icon text-muted hover:text-primary flex items-center justify-center transition-colors"
+                            title="Abrir/Baixar Material"
+                            style={{ padding: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
+                          >
+                            <Download size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center p-12 text-center text-muted">
@@ -407,6 +417,7 @@ const Materials = () => {
                   <option>PDF</option>
                   <option>DOCX</option>
                   <option>Link</option>
+                  <option>Imagem</option>
                   <option>Áudio</option>
                   <option>Vídeo</option>
                 </select>
@@ -478,6 +489,12 @@ const Materials = () => {
             </div>
 
             <form onSubmit={handleUpdateMaterial}>
+              {previewUrl && (
+                <div className="mb-6 flex justify-center w-full" style={{ backgroundColor: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '12px' }}>
+                  <img src={previewUrl} alt="Preview do Material" style={{ maxHeight: '250px', maxWidth: '100%', objectFit: 'contain', borderRadius: '8px' }} />
+                </div>
+              )}
+
               <div className="input-group">
                 <label>Título do Material</label>
                 <input type="text" className="input w-full" required
@@ -491,6 +508,7 @@ const Materials = () => {
                   <option>PDF</option>
                   <option>DOCX</option>
                   <option>Link</option>
+                  <option>Imagem</option>
                   <option>Áudio</option>
                   <option>Vídeo</option>
                 </select>

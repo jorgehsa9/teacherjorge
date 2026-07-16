@@ -393,7 +393,7 @@ const StudentDashboard = () => {
               <h3 className="mb-4 flex items-center gap-2"><MessageSquare className="text-primary" /> Histórico de Aulas</h3>
               <div className="flex flex-col gap-3">
                 {classFeedbacks.length > 0 ? classFeedbacks.slice(0, 5).map((log) => (
-                  <div key={log.id} className="p-3 rounded-xl" style={{ backgroundColor: 'rgba(0,0,0,0.02)', border: '1px solid var(--border)' }}>
+                  <div key={log.id} className="p-3 rounded-2xl" style={{ backgroundColor: 'rgba(0,0,0,0.02)', border: '1px solid var(--border)' }}>
                     <div className="font-bold text-sm" style={{ color: 'var(--primary)' }}>{log.title}</div>
                     <div className="text-xs text-muted mt-1 whitespace-pre-line">{log.file_url}</div>
                     <div className="text-xs text-muted mt-2 opacity-60 text-right">{formatShortDate(log.created_at)}</div>

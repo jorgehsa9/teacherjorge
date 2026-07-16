@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { supabase, secondarySupabase } from '../../lib/supabase';
-import { Search, Edit, Trash, X, Phone, Clock, FileText, Calendar, UploadCloud } from 'lucide-react';
+import { Search, Edit, Trash, X, Phone, Clock, FileText, Calendar, UploadCloud, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 const StudentsList = () => {
@@ -201,7 +201,7 @@ const StudentsList = () => {
   );
 
   return (
-    <div className="dashboard-wrapper h-full flex flex-col relative animate-fade-in-up">
+    <div className="dashboard-wrapper flex-1 flex flex-col relative animate-fade-in-up">
       <div className="dashboard-header mb-6 flex justify-between items-end">
         <div>
           <h1>Alunos</h1>
@@ -233,52 +233,53 @@ const StudentsList = () => {
           <div className="p-8 text-center text-muted">Carregando alunos...</div>
         ) : (
           <div className="px-4 pb-4 overflow-x-auto">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Nome</th>
-                  <th>Email</th>
-                  {user?.is_admin && <th>Professor</th>}
-                  <th>Nível</th>
-                  <th>Status</th>
-                  <th className="text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
+            <div className="p-4 overflow-y-auto">
+              <div className="flex flex-col gap-3">
                 {filteredStudents.length > 0 ? filteredStudents.map((student, i) => (
-                  <tr key={student.id || i}>
-                    <td>
-                      <span className="font-medium text-main" style={{ fontSize: '1.05rem', letterSpacing: '0.02em' }}>
-                        {student.name}
-                      </span>
-                    </td>
-                    <td className="text-muted">{student.email}</td>
-                    {user?.is_admin && (
-                      <td className="text-muted text-sm">{student.teacher_name || student.teacher_email || '-'}</td>
-                    )}
-                    <td>
-                      <span className="badge" style={{ backgroundColor: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)' }}>
-                        {student.level}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={`badge ${student.status === 'Active' ? 'success' : 'warning'}`}>
+                  <div
+                    key={student.id || i}
+                    onClick={() => openEditModal(student)}
+                    className="flex justify-between items-center p-4 rounded-2xl cursor-pointer transition-all"
+                    style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}
+                    onMouseOver={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+                    onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
+                    title="Clique para ver ou editar detalhes do aluno"
+                  >
+                    <div className="flex items-center gap-4 overflow-hidden">
+                      <div style={{ backgroundColor: 'rgba(79, 70, 229, 0.1)', padding: '0.75rem', borderRadius: '10px', flexShrink: 0 }}>
+                        <User size={20} className="text-primary" />
+                      </div>
+                      <div className="overflow-hidden flex flex-col">
+                        <h3 className="font-bold text-main m-0 truncate text-sm sm:text-base">{student.name}</h3>
+                        <p className="text-xs text-muted m-0 mt-1 truncate">
+                          {student.email} • Nível: {student.level}
+                          {user?.is_admin && (student.teacher_name || student.teacher_email) && (
+                            <> • <span className="text-primary opacity-80" style={{ fontWeight: '500' }}>Prof: {student.teacher_name || student.teacher_email}</span></>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3 items-center flex-shrink-0">
+                      <span className={`badge ${student.status === 'Active' ? 'success' : 'warning'} hidden sm:inline-flex`} style={{ transform: 'scale(0.85)' }}>
                         {student.status}
                       </span>
-                    </td>
-                    <td className="text-right">
-                      <button onClick={() => openClassModal(student)} title="Agendar Aula" className="btn-icon text-muted hover:text-primary" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px' }}><Calendar size={16} /></button>
-                      <button onClick={() => openEditModal(student)} title="Editar Perfil" className="btn-icon text-muted hover:text-primary" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px' }}><Edit size={16} /></button>
-                      <button onClick={() => handleDeleteStudent(student)} title="Excluir Aluno" className="btn-icon text-muted hover:text-danger" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none' }}><Trash size={16} /></button>
-                    </td>
-                  </tr>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); openClassModal(student); }}
+                        className="btn-icon text-muted hover:text-primary flex items-center justify-center transition-colors"
+                        title="Agendar Aula"
+                        style={{ padding: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
+                      >
+                        <Calendar size={16} />
+                      </button>
+                    </div>
+                  </div>
                 )) : (
-                  <tr>
-                    <td colSpan="5" className="p-8 text-center text-muted" style={{ background: 'transparent', boxShadow: 'none' }}>Nenhum aluno encontrado no banco de dados.</td>
-                  </tr>
+                  <div className="p-8 text-center text-muted" style={{ background: 'transparent' }}>
+                    Nenhum aluno encontrado no banco de dados.
+                  </div>
                 )}
-              </tbody>
-            </table>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -518,11 +519,21 @@ const StudentsList = () => {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 mt-6 border-t pt-4" style={{ borderColor: 'var(--border)' }}>
-                <button type="button" className="btn btn-outline" onClick={() => setIsEditModalOpen(false)}>Cancelar</button>
-                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                  {isSubmitting ? 'Salvando...' : 'Salvar Alterações'}
+              <div className="flex justify-between items-center mt-6 border-t pt-4" style={{ borderColor: 'var(--border)' }}>
+                <button
+                  type="button"
+                  className="btn btn-outline hover:text-danger hover:border-danger transition-colors"
+                  onClick={() => { handleDeleteStudent(editingStudent); setIsEditModalOpen(false); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  <Trash size={16} /> Excluir Aluno
                 </button>
+                <div className="flex gap-2">
+                  <button type="button" className="btn btn-outline" onClick={() => setIsEditModalOpen(false)}>Cancelar</button>
+                  <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                    {isSubmitting ? 'Salvando...' : 'Salvar Alterações'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>

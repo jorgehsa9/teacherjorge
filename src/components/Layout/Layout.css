@@ -213,6 +213,7 @@
     height: 70px;
     z-index: 50;
     transition: none;
+    overflow: hidden;
   }
   
   .sidebar:hover {
@@ -244,15 +245,12 @@
     border-radius: 0;
   }
 
+  .nav-item svg {
+    margin: 0;
+  }
+
   .nav-item span {
-    display: block;
-    opacity: 1;
-    font-size: 0.65rem;
-    text-align: center;
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    display: none;
   }
 
   .nav-item.active {
@@ -262,12 +260,14 @@
     position: relative;
   }
 
-  .nav-item.active::after {
+  .nav-item.active::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 10%;
-    width: 80%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 32px;
     height: 3px;
     background: var(--primary);
     border-radius: 0 0 3px 3px;

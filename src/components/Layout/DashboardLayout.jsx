@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { BookOpen, Calendar, DollarSign, LogOut, LayoutDashboard, Users, Moon, Sun, Folder, User, Shield } from 'lucide-react';
+import { BookOpen, Calendar, DollarSign, LogOut, LayoutDashboard, Users, Moon, Sun, Folder, User, Shield, GraduationCap } from 'lucide-react';
 import AnimatedBackground from './AnimatedBackground';
 import './Layout.css';
 
@@ -111,7 +111,7 @@ const DashboardLayout = () => {
   const navItems = [
     { name: 'Dashboard', path: `/dashboard/${user?.role}`, icon: LayoutDashboard },
     ...(user?.role === 'teacher' ? [{ name: 'Alunos', path: '/dashboard/students', icon: Users }] : []),
-    ...(user?.is_admin ? [{ name: 'Equipe', path: '/dashboard/equipe', icon: Shield }] : []),
+    ...(user?.is_admin ? [{ name: 'Equipe', path: '/dashboard/equipe', icon: GraduationCap }] : []),
     ...(user?.role === 'teacher' ? [{ name: 'Materiais', path: '/dashboard/materials', icon: Folder }] : []),
     ...(user?.role === 'student' ? [{ name: 'Materiais', path: '/dashboard/student/materials', icon: Folder }] : []),
     { name: 'Calendário', path: '/dashboard/calendar', icon: Calendar },

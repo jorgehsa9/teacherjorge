@@ -30,9 +30,15 @@ const StudentMaterials = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newMaterial, setNewMaterial] = useState({ title: '', file_type: 'PDF', file_url: '' });
+  const [uploadMode, setUploadMode] = useState('url'); // 'url' or 'file'
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const ALLOWED_MIME_TYPES = "application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.presentation, application/vnd.oasis.opendocument.text, application/vnd.oasis.opendocument.spreadsheet, application/vnd.oasis.opendocument.presentation, application/rtf, text/plain, image/jpeg, image/png, image/gif, image/webp, audio/mpeg, audio/aac, audio/wav, video/mp4, video/webm";
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
   // Edit Material State
   const [editingMaterial, setEditingMaterial] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
 
   useEffect(() => {
     const fetchMaterials = async () => {
@@ -56,17 +62,73 @@ const StudentMaterials = () => {
     fetchMaterials();
   }, [user]);
 
+  useEffect(() => {
+    const loadPreview = async () => {
+      if (editingMaterial && editingMaterial.file_url) {
+        const isImage = editingMaterial.file_url.match(/\.(jpeg|jpg|gif|png|webp)$/i) || editingMaterial.file_type === 'Imagem';
+        
+        if (isImage) {
+          if (editingMaterial.file_url.startsWith('http')) {
+            setPreviewUrl(editingMaterial.file_url);
+          } else {
+            const { data } = await supabase.storage.from('cloud').createSignedUrl(editingMaterial.file_url, 3600);
+            if (data?.signedUrl) {
+              setPreviewUrl(data.signedUrl);
+            }
+          }
+        } else {
+          setPreviewUrl('');
+        }
+      } else {
+        setPreviewUrl('');
+      }
+    };
+    loadPreview();
+  }, [editingMaterial]);
+
   const handleAddMaterial = async (e) => {
     e.preventDefault();
     if (!user?.email) return;
 
     setIsSubmitting(true);
+    let finalFileUrl = newMaterial.file_url;
+
+    if (uploadMode === 'file') {
+      if (!selectedFile) {
+        alert('Por favor, selecione um arquivo.');
+        setIsSubmitting(false);
+        return;
+      }
+      
+      if (selectedFile.size > MAX_FILE_SIZE) {
+        alert('O arquivo excede o limite de 50MB.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      const fileExt = selectedFile.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `${user.email}/${fileName}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('cloud')
+        .upload(filePath, selectedFile);
+
+      if (uploadError) {
+        console.error('Error uploading file:', uploadError);
+        alert('Falha ao fazer upload do arquivo.');
+        setIsSubmitting(false);
+        return;
+      }
+      finalFileUrl = filePath;
+    }
+
     const { error } = await supabase.from('Materials').insert([
       {
         student_email: user.email,
         title: newMaterial.title,
         file_type: newMaterial.file_type,
-        file_url: newMaterial.file_url
+        file_url: finalFileUrl
       }
     ]);
 
@@ -83,14 +145,39 @@ const StudentMaterials = () => {
       if (data) setMaterials(data);
 
       setNewMaterial({ title: '', file_type: 'PDF', file_url: '' });
+      setSelectedFile(null);
+      setUploadMode('url');
       setIsAdding(false);
     }
     setIsSubmitting(false);
   };
 
+  const handleDownloadMaterial = async (fileUrl) => {
+    if (fileUrl.startsWith('http')) {
+      window.open(fileUrl, '_blank');
+      return;
+    }
+    
+    const { data, error } = await supabase.storage.from('cloud').createSignedUrl(fileUrl, 60);
+    
+    if (error) {
+      console.error('Error generating signed URL:', error);
+      alert('Erro ao acessar o arquivo. Talvez ele tenha sido removido.');
+    } else if (data?.signedUrl) {
+      window.open(data.signedUrl, '_blank');
+    }
+  };
+
   const handleDeleteMaterial = async (id) => {
     if (!window.confirm('Tem certeza de que deseja remover este material?')) return;
     setIsSubmitting(true);
+    
+    const mat = materials.find(m => m.id === id);
+    if (mat && !mat.file_url.startsWith('http')) {
+      const { error: storageError } = await supabase.storage.from('cloud').remove([mat.file_url]);
+      if (storageError) console.error('Error deleting file from storage:', storageError);
+    }
+
     const { error } = await supabase.from('Materials').delete().eq('id', id);
     if (error) {
       console.error('Error deleting material:', error);
@@ -129,7 +216,7 @@ const StudentMaterials = () => {
   };
 
   return (
-    <div className="dashboard-wrapper h-full flex flex-col relative animate-fade-in-up">
+    <div className="dashboard-wrapper flex-1 flex flex-col relative animate-fade-in-up">
       <div className="dashboard-header mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
@@ -199,8 +286,11 @@ const StudentMaterials = () => {
                 {materials.map((mat) => (
                   <div
                     key={mat.id}
-                    onClick={() => setEditingMaterial(mat)}
-                    className="flex justify-between items-center p-4 rounded-xl cursor-pointer transition-all"
+                    onClick={() => {
+                      setEditingMaterial(mat);
+                      setPreviewUrl('');
+                    }}
+                    className="flex justify-between items-center p-4 rounded-2xl cursor-pointer transition-all"
                     style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}
                     onMouseOver={e => e.currentTarget.style.borderColor = 'var(--primary)'}
                     onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
@@ -276,18 +366,51 @@ const StudentMaterials = () => {
                   <option>PDF</option>
                   <option>DOCX</option>
                   <option>Link</option>
+                  <option>Imagem</option>
                   <option>Áudio</option>
                   <option>Vídeo</option>
                 </select>
               </div>
 
-              <div className="input-group mb-6">
-                <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>URL do Google Drive (ou link externo)</label>
-                <input type="url" className="input w-full" required placeholder="https://drive.google.com/..."
-                  value={newMaterial.file_url} onChange={(e) => setNewMaterial({ ...newMaterial, file_url: e.target.value })}
-                  style={{ borderRadius: '12px' }}
-                />
+              <div className="input-group mb-4">
+                <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>Método de Envio</label>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="uploadMode" checked={uploadMode === 'url'} onChange={() => setUploadMode('url')} />
+                    Link Externo
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="uploadMode" checked={uploadMode === 'file'} onChange={() => setUploadMode('file')} />
+                    Fazer Upload
+                  </label>
+                </div>
               </div>
+
+              {uploadMode === 'url' ? (
+                <div className="input-group mb-6">
+                  <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>URL do Material</label>
+                  <input type="url" className="input w-full" required={uploadMode === 'url'} placeholder="https://drive.google.com/..."
+                    value={newMaterial.file_url} onChange={(e) => setNewMaterial({ ...newMaterial, file_url: e.target.value })}
+                    style={{ borderRadius: '12px' }}
+                  />
+                </div>
+              ) : (
+                <div className="input-group mb-6">
+                  <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>Arquivo (Máx 50MB)</label>
+                  <input 
+                    type="file" 
+                    className="input w-full" 
+                    required={uploadMode === 'file'} 
+                    accept={ALLOWED_MIME_TYPES}
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setSelectedFile(e.target.files[0]);
+                      }
+                    }}
+                    style={{ paddingTop: '0.35rem', borderRadius: '12px' }}
+                  />
+                </div>
+              )}
 
               <div className="flex justify-end gap-3 mt-6">
                 <button type="button" className="btn btn-outline" onClick={() => setIsAdding(false)} style={{ borderRadius: '12px' }}>Cancelar</button>
@@ -316,6 +439,12 @@ const StudentMaterials = () => {
             </div>
 
             <form onSubmit={handleEditMaterialSubmit}>
+              {previewUrl && (
+                <div className="mb-6 flex justify-center w-full" style={{ backgroundColor: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '12px' }}>
+                  <img src={previewUrl} alt="Preview do Material" style={{ maxHeight: '250px', maxWidth: '100%', objectFit: 'contain', borderRadius: '8px' }} />
+                </div>
+              )}
+
               <div className="input-group mb-4">
                 <label className="text-sm font-bold mb-1 block" style={{ color: 'var(--text-main)' }}>Título do Material</label>
                 <input type="text" className="input w-full" required
@@ -330,6 +459,7 @@ const StudentMaterials = () => {
                   <option>PDF</option>
                   <option>DOCX</option>
                   <option>Link</option>
+                  <option>Imagem</option>
                   <option>Áudio</option>
                   <option>Vídeo</option>
                   <option>Feedback</option>
@@ -346,14 +476,14 @@ const StudentMaterials = () => {
 
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
                 <div className="flex gap-2 w-full sm:w-auto">
-                  <a
-                    href={editingMaterial.file_url.startsWith('http') ? editingMaterial.file_url : `https://${editingMaterial.file_url}`}
-                    target="_blank" rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    onClick={() => handleDownloadMaterial(editingMaterial.file_url)}
                     className="btn btn-primary flex-1 sm:flex-none flex justify-center items-center gap-2"
-                    style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 'bold', textDecoration: 'none' }}
+                    style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 'bold' }}
                   >
                     <ExternalLink size={18} /> Abrir
-                  </a>
+                  </button>
                   <button type="button" className="btn text-danger flex-1 sm:flex-none flex justify-center items-center"
                     onClick={() => handleDeleteMaterial(editingMaterial.id)}
                     disabled={isSubmitting}

@@ -464,6 +464,18 @@
     overflow-x: hidden;
   }
   
+  .view-selector-btn {
+    padding: 8px 4px;
+    font-size: 0.8rem;
+    gap: 4px;
+    border-radius: 10px;
+  }
+
+  .view-selector-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
   .calendar-month-grid {
     grid-template-columns: repeat(7, minmax(0, 1fr));
     min-width: 100%;
