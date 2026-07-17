@@ -232,7 +232,7 @@ const StudentMaterials = () => {
           <p>Tudo que foi compartilhado entre você e o professor.</p>
         </div>
         <button
-          className="btn btn-primary flex items-center gap-2 py-2 px-4 whitespace-nowrap"
+          className="btn btn-primary btn-glass flex items-center gap-2 py-2 px-4 whitespace-nowrap"
           onClick={() => setIsAdding(true)}
           style={{ borderRadius: '12px', fontWeight: 'bold' }}
         >
@@ -240,7 +240,7 @@ const StudentMaterials = () => {
         </button>
       </div>
 
-      <div className="card glass mb-6 p-6 animate-fade-in-up delay-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(236, 72, 153, 0.05))', borderColor: 'var(--primary)' }}>
+      <div className="card liquid-glass mb-6 p-6 animate-fade-in-up delay-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(236, 72, 153, 0.05))', borderColor: 'var(--primary)' }}>
         <div>
           <h2 className="text-xl font-bold flex items-center gap-2 mb-2 text-primary">
             <BookOpen size={24} /> Meu Livro de Inglês Interativo
@@ -251,7 +251,7 @@ const StudentMaterials = () => {
           href="https://book-8uu.pages.dev"
           target="_blank"
           rel="noopener noreferrer"
-          className="btn btn-primary"
+          className="btn btn-primary btn-glass"
           style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem' }}
         >
           Acessar Livro <ExternalLink size={18} />
@@ -277,7 +277,7 @@ const StudentMaterials = () => {
       </div>
 
       {activeTab === 'materials' ? (
-        <div className="card glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-200 flex flex-col">
+        <div className="card liquid-glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-200 flex flex-col">
           {loading ? (
             <div className="p-8 text-center text-muted">Carregando seus materiais...</div>
           ) : materials.length > 0 ? (
@@ -324,7 +324,7 @@ const StudentMaterials = () => {
             <div
               key={app.id}
               onClick={() => setActiveApp(app)}
-              className="card glass p-5 cursor-pointer transition-all transform hover:-translate-y-1 hover:shadow-lg flex flex-col items-center text-center"
+              className="card glass-3d p-5 cursor-pointer transition-all hover:shadow-lg flex flex-col items-center text-center"
               style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
               onMouseOver={e => e.currentTarget.style.borderColor = 'var(--primary)'}
               onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
@@ -339,11 +339,11 @@ const StudentMaterials = () => {
 
       {/* Add Material Modal */}
       {isAdding && createPortal(
-        <div className="modal-overlay flex items-center justify-center" style={{
+        <div className="modal-overlay flex items-center justify-center" onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setIsAdding(false); }} style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full animate-fade-in-up" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem', borderRadius: '24px' }}>
+          <div className="card glass-3d w-full animate-fade-in-up" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem', borderRadius: '24px' }}>
             <div className="flex justify-between items-center mb-6">
               <h2 style={{ margin: 0 }} className="text-xl font-bold text-main">Enviar Material</h2>
               <button onClick={() => setIsAdding(false)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
@@ -413,8 +413,8 @@ const StudentMaterials = () => {
               )}
 
               <div className="flex justify-end gap-3 mt-6">
-                <button type="button" className="btn btn-outline" onClick={() => setIsAdding(false)} style={{ borderRadius: '12px' }}>Cancelar</button>
-                <button type="submit" className="btn btn-primary" disabled={isSubmitting} style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 'bold' }}>
+                <button type="button" className="btn btn-outline btn-glass" onClick={() => setIsAdding(false)} style={{ borderRadius: '12px' }}>Cancelar</button>
+                <button type="submit" className="btn btn-primary btn-glass" disabled={isSubmitting} style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 'bold' }}>
                   {isSubmitting ? 'Enviando...' : 'Enviar para o Professor'}
                 </button>
               </div>
@@ -426,11 +426,11 @@ const StudentMaterials = () => {
 
       {/* Edit Material Modal */}
       {editingMaterial && createPortal(
-        <div className="modal-overlay flex items-center justify-center" style={{
+        <div className="modal-overlay flex items-center justify-center" onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setEditingMaterial(null); }} style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full animate-fade-in-up" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem', borderRadius: '24px' }}>
+          <div className="card glass-3d w-full animate-fade-in-up" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem', borderRadius: '24px' }}>
             <div className="flex justify-between items-center mb-6">
               <h2 style={{ margin: 0 }} className="text-xl font-bold text-main">Detalhes do Material</h2>
               <button onClick={() => setEditingMaterial(null)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
@@ -479,12 +479,12 @@ const StudentMaterials = () => {
                   <button
                     type="button"
                     onClick={() => handleDownloadMaterial(editingMaterial.file_url)}
-                    className="btn btn-primary flex-1 sm:flex-none flex justify-center items-center gap-2"
+                    className="btn btn-primary btn-glass flex-1 sm:flex-none flex justify-center items-center gap-2"
                     style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 'bold' }}
                   >
                     <ExternalLink size={18} /> Abrir
                   </button>
-                  <button type="button" className="btn text-danger flex-1 sm:flex-none flex justify-center items-center"
+                  <button type="button" className="btn btn-glass text-danger flex-1 sm:flex-none flex justify-center items-center"
                     onClick={() => handleDeleteMaterial(editingMaterial.id)}
                     disabled={isSubmitting}
                     style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', backgroundColor: 'rgba(239, 68, 68, 0.1)', border: 'none' }}
@@ -494,7 +494,7 @@ const StudentMaterials = () => {
                 </div>
 
                 <div className="flex gap-2 w-full sm:w-auto">
-                  <button type="submit" className="btn w-full sm:w-auto" disabled={isSubmitting} style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 'bold', backgroundColor: 'var(--text-main)', color: 'var(--surface)' }}>
+                  <button type="submit" className="btn btn-glass w-full sm:w-auto" disabled={isSubmitting} style={{ borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 'bold', backgroundColor: 'var(--text-main)', color: 'var(--surface)' }}>
                     {isSubmitting ? 'Salvando...' : 'Salvar'}
                   </button>
                 </div>
@@ -507,11 +507,11 @@ const StudentMaterials = () => {
 
       {/* App Modal Iframe (Centralizado) */}
       {activeApp && createPortal(
-        <div className="modal-overlay flex items-center justify-center" style={{
+        <div className="modal-overlay flex items-center justify-center" onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setActiveApp(null); }} style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.7)', zIndex: 60, backdropFilter: 'blur(8px)'
         }}>
-          <div className="card glass animate-fade-in-up flex flex-col overflow-hidden relative" style={{
+          <div className="card glass-3d animate-fade-in-up flex flex-col overflow-hidden relative" style={{
             width: '90vw', height: '85vh', maxWidth: '1200px', backgroundColor: 'var(--bg-color)',
             borderRadius: '24px', border: '1px solid var(--primary-glow)',
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'

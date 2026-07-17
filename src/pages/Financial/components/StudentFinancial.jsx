@@ -84,7 +84,7 @@ const StudentFinancial = () => {
           {index > 0 && <h2 className="text-xl font-bold mb-6 text-muted border-b border-white/10 pb-4 capitalize">{month.monthLabel}</h2>}
 
           <div className="grid-cols-2">
-            <div className="card glass text-center flex flex-col items-center justify-center p-8">
+            <div className="card glass-3d text-center flex flex-col items-center justify-center p-8">
               {month.isPaid ? (
                 <div className="flex flex-col items-center justify-center text-success py-8">
                   <CheckCircle size={64} className="mb-4" />
@@ -112,7 +112,7 @@ const StudentFinancial = () => {
                         <p className="text-xs text-muted mb-2 text-left">PIX Copia e Cola</p>
                         <div className="flex gap-2 w-full">
                           <input type="text" className="input flex-1 text-sm bg-surface w-full font-mono text-xs" readOnly value={month.pixPayload} onClick={(e) => e.target.select()} />
-                          <button className="btn btn-primary" onClick={() => {
+                          <button className="btn btn-primary btn-glass" onClick={() => {
                             navigator.clipboard.writeText(month.pixPayload);
                             alert('Chave PIX Copiada!');
                           }}>
@@ -130,7 +130,7 @@ const StudentFinancial = () => {
               )}
             </div>
 
-            <div className="card glass h-full">
+            <div className="card glass-3d h-full">
               <h2 className="mb-6 font-bold text-xl">Status do Pagamento</h2>
 
               {month.isPaid ? (
@@ -169,7 +169,7 @@ const StudentFinancial = () => {
                 </div>
                 
                 <button 
-                  className="btn btn-outline w-full mt-4 flex items-center justify-center gap-2"
+                  className="btn btn-outline btn-glass w-full mt-4 flex items-center justify-center gap-2"
                   onClick={() => {
                     setActiveMonthData(month);
                     setIsReceiptModalOpen(true);
@@ -186,7 +186,7 @@ const StudentFinancial = () => {
 
       {/* Receipt Modal */}
       {isReceiptModalOpen && activeMonthData && createPortal(
-        <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay">
+        <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay" onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setIsReceiptModalOpen(false); }}>
           <div className="card w-full flex flex-col receipt-card relative tf-receipt-card general">
             <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200 tf-receipt-header">
               <h2 className="text-black font-bold m-0 text-xl">Comprovante</h2>
@@ -248,8 +248,8 @@ const StudentFinancial = () => {
             </div>
 
             <div className="no-print mt-2 pt-4 border-t border-gray-200 flex justify-between gap-3" style={{padding: '0 1.5rem 1.5rem', flexShrink: 0}}>
-              <button className="btn btn-outline text-gray-700 border-gray-300 hover:bg-gray-100" onClick={() => setIsReceiptModalOpen(false)}>Voltar</button>
-              <button className="btn btn-primary" onClick={() => window.print()} style={{backgroundColor: '#3b82f6', color: 'white', border: 'none'}}>
+              <button className="btn btn-outline btn-glass text-gray-700 border-gray-300 hover:bg-gray-100" onClick={() => setIsReceiptModalOpen(false)}>Voltar</button>
+              <button className="btn btn-primary btn-glass" onClick={() => window.print()} style={{backgroundColor: '#3b82f6', color: 'white', border: 'none'}}>
                 Imprimir / PDF
               </button>
             </div>

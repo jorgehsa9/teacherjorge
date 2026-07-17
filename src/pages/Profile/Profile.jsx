@@ -91,7 +91,7 @@ const Profile = () => {
         <p>Atualize suas informações pessoais e credenciais de acesso.</p>
       </div>
 
-      <div className="card glass" style={{ maxWidth: '600px' }}>
+      <div className="card liquid-glass" style={{ maxWidth: '600px' }}>
         <form onSubmit={handleUpdateProfile}>
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -139,7 +139,7 @@ const Profile = () => {
           </div>
 
           <div className="flex justify-end">
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+            <button type="submit" className="btn btn-primary btn-glass" disabled={loading}>
               <Save size={18} />
               {loading ? 'Salvando...' : 'Salvar Alterações'}
             </button>
@@ -148,7 +148,7 @@ const Profile = () => {
       </div>
 
       {outletContext && (
-        <div className="card glass mt-6" style={{ maxWidth: '600px' }}>
+        <div className="card liquid-glass mt-6" style={{ maxWidth: '600px' }}>
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Palette className="text-primary" size={20} /> Aparência e Sessão
           </h2>
@@ -201,12 +201,12 @@ const Profile = () => {
           )}
 
           <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
-            <button onClick={() => setIsDarkMode && setIsDarkMode(!isDarkMode)} className="btn flex-1 flex items-center justify-center gap-2" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+            <button onClick={() => setIsDarkMode && setIsDarkMode(!isDarkMode)} className="btn btn-glass flex-1 flex items-center justify-center gap-2" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
               {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
               {isDarkMode ? 'Modo Claro' : 'Modo Escuro'}
             </button>
             
-            <button onClick={handleLogout} className="btn flex-1 flex items-center justify-center gap-2" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', border: 'none' }}>
+            <button onClick={handleLogout} className="btn btn-glass flex-1 flex items-center justify-center gap-2" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', border: 'none' }}>
               <LogOut size={20} /> Sair da Conta
             </button>
           </div>

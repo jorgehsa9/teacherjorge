@@ -279,7 +279,7 @@ const TeacherFinancial = () => {
   return (
     <div>
       {/* Financial Chart */}
-      <div className="card glass mb-12">
+      <div className="card liquid-glass mb-12">
         <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><DollarSign className="text-primary" /> Evolução do Faturamento</h2>
         <div style={{ height: '300px', width: '100%' }}>
           <ResponsiveContainer width="100%" height="100%">
@@ -313,28 +313,28 @@ const TeacherFinancial = () => {
             ) : (
               <h2 className="text-xl font-bold text-muted m-0 capitalize">{monthData.monthLabel}</h2>
             )}
-            <button className="btn btn-outline btn-sm" onClick={() => openGeneralReceipt(monthData.refMonthStr)}>
+            <button className="btn btn-outline btn-glass btn-sm" onClick={() => openGeneralReceipt(monthData.refMonthStr)}>
               <FileText size={14} className="mr-2" style={{ display: 'inline' }} />
               Gerar Relatório
             </button>
           </div>
 
           <div className="grid-cols-3 mb-6">
-            <div className="card glass col-span-1">
+            <div className="card glass-3d col-span-1">
               <h2 className="mb-4 text-muted text-sm uppercase">Faturamento</h2>
               <div className="text-3xl font-bold text-success mb-2">
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(monthData.totalRevenue)}
               </div>
               <p className="text-sm text-muted">De {monthData.studentsData.length} alunos ativos</p>
             </div>
-            <div className="card glass col-span-1">
+            <div className="card glass-3d col-span-1">
               <h2 className="mb-4 text-muted text-sm uppercase">Total de Aulas</h2>
               <div className="text-3xl font-bold text-main mb-2">
                 {monthData.totalClasses}
               </div>
               <p className="text-sm text-muted">Aulas agendadas no mês</p>
             </div>
-            <div className="card glass col-span-1">
+            <div className="card glass-3d col-span-1">
               <h2 className="mb-4 text-muted text-sm uppercase">Falta Receber</h2>
               <div className="text-3xl font-bold text-warning mb-2">
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(monthData.pendingRevenue)}
@@ -343,7 +343,7 @@ const TeacherFinancial = () => {
             </div>
           </div>
 
-          <div className="card glass main-col mb-6" style={{ gridColumn: 'span 3' }}>
+          <div className="card liquid-glass main-col mb-6" style={{ gridColumn: 'span 3' }}>
             <h3 className="mb-4 font-bold text-white uppercase text-sm tracking-wider">Tabela de Cobranças</h3>
             <table className="w-full text-left border-collapse tf-billing-table">
               <thead>
@@ -376,7 +376,7 @@ const TeacherFinancial = () => {
                       </td>
                       <td className="py-4 text-right" style={{ padding: '1rem 0' }}>
                         <button
-                          className="btn btn-outline btn-sm"
+                          className="btn btn-outline btn-glass btn-sm"
                           onClick={() => openBillingDetails(student.email, monthData.refMonthStr)}
                         >
                           <FileText size={14} className="mr-1" style={{ display: 'inline' }} />
@@ -396,8 +396,8 @@ const TeacherFinancial = () => {
 
       {/* Billing Details Modal */}
       {isBillingModalOpen && activeStudent && createPortal(
-        <div className="tf-modal-overlay">
-          <div className="card glass tf-modal-card">
+        <div className="tf-modal-overlay" onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('tf-modal-overlay')) setIsBillingModalOpen(false); }}>
+          <div className="card glass-3d tf-modal-card">
 
             {/* Header - Fixed */}
             <div className="tf-modal-header">
@@ -424,7 +424,7 @@ const TeacherFinancial = () => {
               <div style={{ marginBottom: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                   <h3 style={{ margin: 0, fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Aulas no Mês ({activeStudent.classesCount})</h3>
-                  <button className="btn btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }} onClick={() => setIsAddingClass(!isAddingClass)}>
+                  <button className="btn btn-outline btn-glass" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }} onClick={() => setIsAddingClass(!isAddingClass)}>
                     + Adicionar Manual
                   </button>
                 </div>
@@ -442,8 +442,8 @@ const TeacherFinancial = () => {
                       </select></div>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                      <button type="button" className="btn btn-outline" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }} onClick={() => setIsAddingClass(false)}>Cancelar</button>
-                      <button type="submit" className="btn btn-primary" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }} disabled={isSubmitting}>Salvar</button>
+                      <button type="button" className="btn btn-outline btn-glass" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }} onClick={() => setIsAddingClass(false)}>Cancelar</button>
+                      <button type="submit" className="btn btn-primary btn-glass" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }} disabled={isSubmitting}>Salvar</button>
                     </div>
                   </form>
                 )}
@@ -463,8 +463,8 @@ const TeacherFinancial = () => {
                             </select></div>
                           </div>
                           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                            <button type="button" className="btn btn-outline" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }} onClick={() => setEditingClassId(null)}>Cancelar</button>
-                            <button type="submit" className="btn btn-primary" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }} disabled={isSubmitting}>Salvar</button>
+                            <button type="button" className="btn btn-outline btn-glass" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }} onClick={() => setEditingClassId(null)}>Cancelar</button>
+                            <button type="submit" className="btn btn-primary btn-glass" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }} disabled={isSubmitting}>Salvar</button>
                           </div>
                         </form>
                       ) : (
@@ -524,15 +524,15 @@ const TeacherFinancial = () => {
                   onChange={(e) => setNotes(e.target.value)}
                 />
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                  <button className="btn btn-outline btn-sm" onClick={handleSaveNotes} disabled={isSubmitting}>Salvar Observação</button>
+                  <button className="btn btn-outline btn-glass btn-sm" onClick={handleSaveNotes} disabled={isSubmitting}>Salvar Observação</button>
                 </div>
               </div>
             </div>
 
             {/* Footer - Fixed */}
             <div className="tf-modal-footer">
-              <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setIsBillingModalOpen(false)}>Fechar</button>
-              <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => { setIsBillingModalOpen(false); setIsReceiptModalOpen(true); }}>
+              <button className="btn btn-outline btn-glass" style={{ flex: 1 }} onClick={() => setIsBillingModalOpen(false)}>Fechar</button>
+              <button className="btn btn-primary btn-glass" style={{ flex: 1 }} onClick={() => { setIsBillingModalOpen(false); setIsReceiptModalOpen(true); }}>
                 <FileText size={16} className="mr-2" style={{ display: 'inline' }} />
                 Gerar Comprovante
               </button>
@@ -544,7 +544,7 @@ const TeacherFinancial = () => {
 
       {/* Receipt Modal */}
       {isReceiptModalOpen && activeStudent && createPortal(
-        <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay">
+        <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay" onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setIsReceiptModalOpen(false); }}>
           <div className="card w-full flex flex-col receipt-card relative tf-receipt-card">
             <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200 tf-receipt-header">
               <h2 className="text-black font-bold m-0 text-xl">Comprovante</h2>
@@ -606,8 +606,8 @@ const TeacherFinancial = () => {
             </div>
 
             <div className="no-print mt-2 pt-4 border-t border-gray-200 flex justify-between gap-3" style={{ padding: '0 1.5rem 1.5rem' }}>
-              <button className="btn btn-outline text-gray-700 border-gray-300 hover:bg-gray-100" onClick={() => setIsReceiptModalOpen(false)}>Voltar</button>
-              <button className="btn btn-primary" onClick={() => window.print()} style={{ backgroundColor: '#3b82f6', color: 'white', border: 'none' }}>
+              <button className="btn btn-outline btn-glass text-gray-700 border-gray-300 hover:bg-gray-100" onClick={() => setIsReceiptModalOpen(false)}>Voltar</button>
+              <button className="btn btn-primary btn-glass" onClick={() => window.print()} style={{ backgroundColor: '#3b82f6', color: 'white', border: 'none' }}>
                 Imprimir / PDF
               </button>
             </div>
@@ -617,7 +617,7 @@ const TeacherFinancial = () => {
       )}
       {/* General Receipt Modal */}
       {isGeneralReceiptModalOpen && activeMonthData && createPortal(
-        <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay">
+        <div className="modal-overlay flex items-center justify-center print-overlay tf-receipt-overlay" onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setIsGeneralReceiptModalOpen(false); }}>
           <div className="card w-full flex flex-col receipt-card relative tf-receipt-card general">
             <div className="no-print flex justify-between items-center mb-4 pb-4 border-b border-gray-200 tf-receipt-header">
               <h2 className="text-black font-bold m-0 text-xl">Relatório Mensal</h2>
@@ -684,8 +684,8 @@ const TeacherFinancial = () => {
             </div>
 
             <div className="no-print mt-2 pt-4 border-t border-gray-200 flex justify-between gap-3" style={{ padding: '0 1.5rem 1.5rem', flexShrink: 0 }}>
-              <button className="btn btn-outline text-gray-700 border-gray-300 hover:bg-gray-100" onClick={() => setIsGeneralReceiptModalOpen(false)}>Voltar</button>
-              <button className="btn btn-primary" onClick={() => window.print()} style={{ backgroundColor: '#3b82f6', color: 'white', border: 'none' }}>
+              <button className="btn btn-outline btn-glass text-gray-700 border-gray-300 hover:bg-gray-100" onClick={() => setIsGeneralReceiptModalOpen(false)}>Voltar</button>
+              <button className="btn btn-primary btn-glass" onClick={() => window.print()} style={{ backgroundColor: '#3b82f6', color: 'white', border: 'none' }}>
                 Imprimir / PDF
               </button>
             </div>

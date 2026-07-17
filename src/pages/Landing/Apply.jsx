@@ -62,7 +62,7 @@ const Apply = () => {
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="card glass max-w-md w-full text-center"
+          className="card liquid-glass max-w-md w-full text-center"
         >
           <div className="w-16 h-16 bg-success-light text-success rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle size={32} />
@@ -71,7 +71,7 @@ const Apply = () => {
           <p className="text-muted mb-8">
             Obrigado pelo interesse, {formData.name.split(' ')[0]}! Nossa equipe analisará seu perfil e entrará em contato em breve para agendar sua aula teste.
           </p>
-          <button onClick={() => navigate('/')} className="btn btn-primary w-full">
+          <button onClick={() => navigate('/')} className="btn btn-primary btn-glass w-full">
             Voltar para o Início
           </button>
         </motion.div>
@@ -105,7 +105,7 @@ const Apply = () => {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="card glass p-6 md:p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="card liquid-glass p-6 md:p-8 space-y-6">
           <div className="space-y-2">
             <label className="text-sm font-medium text-muted flex items-center gap-2">
               <User size={16} /> Nome Completo
@@ -189,7 +189,7 @@ const Apply = () => {
           <button 
             type="submit" 
             disabled={loading}
-            className="btn btn-primary w-full py-4 text-lg font-bold flex justify-center items-center gap-2 rounded-xl mt-4"
+            className="btn btn-primary btn-glass w-full py-4 text-lg font-bold flex justify-center items-center gap-2 rounded-xl mt-4"
           >
             {loading ? 'Enviando...' : 'Garantir Minha Vaga'}
             {!loading && <ArrowRight size={20} />}

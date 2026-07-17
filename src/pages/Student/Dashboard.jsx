@@ -161,49 +161,7 @@ const StudentDashboard = () => {
     );
   }
 
-  if (studentData && (studentData.status === 'Pending' || !studentData.teacher_email)) {
-    return (
-      <div className="dashboard-wrapper flex justify-center items-center h-full animate-fade-in-up">
-        <div className="card glass text-center" style={{maxWidth: '500px', width: '100%', padding: '2rem'}}>
-          <h2 className="mb-2">Bem-vindo(a), {user?.name?.split(' ')[0] || 'Aluno'}!</h2>
-          <p className="text-muted mb-6">Para iniciar sua jornada, você precisa escolher um professor.</p>
-          
-          {studentData.teacher_email ? (
-            <div className="p-4 rounded-lg mb-4" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', border: '1px solid var(--warning)' }}>
-              <Clock size={32} className="mx-auto text-warning mb-2" />
-              <h3 className="text-warning mb-1">Solicitação Pendente</h3>
-              <p className="text-sm">Você solicitou ingressar nas turmas deste professor. Aguarde a aprovação.</p>
-            </div>
-          ) : (
-            <div className="text-left">
-              <label className="block mb-2 font-medium">Selecione um Professor Disponível</label>
-              <div className="flex flex-col gap-3 max-h-60 overflow-y-auto mb-4 p-2">
-                {teachers.map(t => (
-                  <button 
-                    key={t.email}
-                    onClick={async () => {
-                      if (!window.confirm(`Deseja solicitar aulas com ${t.name}?`)) return;
-                      setRequestingTeacher(true);
-                      await supabase.from('Students').update({ teacher_email: t.email }).eq('email', user.email);
-                      window.location.reload();
-                    }}
-                    disabled={requestingTeacher}
-                    className="btn btn-outline text-left justify-start hover:bg-primary hover:text-white transition-colors"
-                  >
-                    <div className="avatar bg-surface border border-border flex items-center justify-center w-8 h-8 mr-3" style={{ borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
-                      <UserAvatar avatarId={t.avatar} name={t.name} size={16} />
-                    </div>
-                    {t.name}
-                  </button>
-                ))}
-                {teachers.length === 0 && <p className="text-muted text-sm">Nenhum professor disponível no momento.</p>}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
+
 
   const getBadgeInfo = () => {
     const lessons = studentData?.completed_lessons?.length || 0;
@@ -239,6 +197,50 @@ const StudentDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Pending Status / Teacher Selection Banner */}
+      {studentData && (studentData.status === 'Pending' || !studentData.teacher_email) && (
+        <div className="card glass-3d mb-6 p-6 animate-fade-in-up delay-100" style={{ borderLeft: '4px solid var(--warning)' }}>
+          {studentData.teacher_email ? (
+            <div className="flex items-center gap-4">
+              <Clock size={32} className="text-warning" />
+              <div>
+                <h3 className="text-warning mb-1">Sua matrícula está em análise</h3>
+                <p className="text-sm text-muted">Você solicitou ingressar nas turmas de um professor. Assim que ele aprovar, sua sala de aula ao vivo será liberada. Enquanto isso, explore o painel!</p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col md:flex-row gap-6 items-center">
+              <div className="flex-1">
+                <h3 className="text-primary mb-2 text-xl">Dê o primeiro passo!</h3>
+                <p className="text-muted text-sm mb-4">Para ter aulas ao vivo, você precisa escolher um professor. Selecione um abaixo para enviar sua solicitação de matrícula.</p>
+                <div className="flex flex-col gap-2 max-h-48 overflow-y-auto pr-2">
+                  {teachers.map(t => (
+                    <button 
+                      key={t.email}
+                      onClick={async () => {
+                        if (!window.confirm(`Deseja solicitar aulas com ${t.name}?`)) return;
+                        setRequestingTeacher(true);
+                        await supabase.from('Students').update({ teacher_email: t.email }).eq('email', user.email);
+                        window.location.reload();
+                      }}
+                      disabled={requestingTeacher}
+                      className="btn btn-outline btn-glass text-left flex items-center p-2"
+                    >
+                      <div className="avatar bg-surface border border-border flex items-center justify-center w-8 h-8 mr-3" style={{ borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+                        <UserAvatar avatarId={t.avatar} name={t.name} size={16} />
+                      </div>
+                      <span className="flex-1">{t.name}</span>
+                      <span className="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">Solicitar</span>
+                    </button>
+                  ))}
+                  {teachers.length === 0 && <p className="text-muted text-sm">Nenhum professor disponível no momento.</p>}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="grid-cols-3">
         

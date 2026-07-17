@@ -636,7 +636,7 @@ const Calendar = () => {
     <div className="dashboard-wrapper flex flex-col flex-1 p-2 md:p-4 animate-fade-in-up">
 
       {/* HEADER */}
-      <div className="card glass mb-4 flex justify-between items-center gap-3 p-4 md:p-6" style={{ borderRadius: '20px' }}>
+      <div className="card liquid-glass mb-4 flex justify-between items-center gap-3 p-4 md:p-6" style={{ borderRadius: '20px' }}>
         <div>
           <h1 className="text-2xl md:text-3xl font-black m-0 tracking-tight" style={{ background: 'linear-gradient(90deg, var(--primary) 0%, #a855f7 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             Agenda
@@ -654,7 +654,7 @@ const Calendar = () => {
         </button>
       </div>
 
-      <div className="card glass flex-1 flex flex-col p-0 overflow-hidden relative shadow-lg" style={{ borderRadius: '20px', borderColor: 'var(--border)' }}>
+      <div className="card liquid-glass flex-1 flex flex-col p-0 overflow-hidden relative shadow-lg" style={{ borderRadius: '20px', borderColor: 'var(--border)' }}>
 
         {/* CONTROLS */}
         <div className="flex flex-col gap-5 p-4 md:p-6" style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)', zIndex: 10 }}>
@@ -683,9 +683,9 @@ const Calendar = () => {
               {getHeaderTitle()}
             </span>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <button className="calendar-nav-btn" onClick={() => navigate(-1)}><ChevronLeft size={20} /></button>
+              <button className="btn btn-primary btn-glass" onClick={() => navigate(-1)}><ChevronLeft size={20} /></button>
               <button className="calendar-today-btn" onClick={goToToday}>HOJE</button>
-              <button className="calendar-nav-btn" onClick={() => navigate(1)}><ChevronRight size={20} /></button>
+              <button className="btn btn-primary btn-glass" onClick={() => navigate(1)}><ChevronRight size={20} /></button>
             </div>
           </div>
         </div>
@@ -701,8 +701,8 @@ const Calendar = () => {
 
       {/* Modal Adicionar/Editar Aula */}
       {isModalOpen && createPortal(
-        <div className="modal-overlay flex items-center justify-center bottom-sheet-modal" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 9999, backdropFilter: 'blur(4px)' }}>
-          <div className="card glass w-full" style={{ maxWidth: '450px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
+        <div className="modal-overlay flex items-center justify-center bottom-sheet-modal" onClick={() => setIsModalOpen(false)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 9999, backdropFilter: 'blur(4px)' }}>
+          <div className="card glass-3d w-full" style={{ maxWidth: '450px', backgroundColor: 'var(--surface)', margin: '1rem' }} onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
               <h2 style={{ margin: 0 }}>{editMode ? (isTeacher ? 'Editar Aula' : 'Detalhes do Evento') : (isTeacher ? 'Agendar Aula' : 'Novo Evento')}</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>

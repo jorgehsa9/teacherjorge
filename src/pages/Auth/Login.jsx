@@ -6,12 +6,14 @@ import { supabase } from '../../lib/supabase';
 import './Auth.css';
 
 const Login = () => {
+  const [isLogin, setIsLogin] = useState(true);
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  const { user, login, loginWithGoogle } = useAuth();
+  const { user, login, signup, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,32 +33,40 @@ const Login = () => {
         loginEmail = `${loginEmail}@teacherjorge.com`;
       }
       
-      await login(loginEmail, password);
+      if (isLogin) {
+        await login(loginEmail, password);
 
-      // Record login history
-      try {
-        const { data: student } = await supabase
-          .from('Students')
-          .select('login_history')
-          .ilike('email', loginEmail)
-          .single();
-          
-        if (student) {
-          const currentHistory = Array.isArray(student.login_history) ? student.login_history : [];
-          const now = new Date().toISOString();
-          const newHistory = [{ loginAt: now, lastSeenAt: now }, ...currentHistory].slice(0, 50); // Keep last 50 logins
-          await supabase
+        // Record login history
+        try {
+          const { data: student } = await supabase
             .from('Students')
-            .update({ login_history: newHistory })
-            .ilike('email', loginEmail);
+            .select('login_history')
+            .ilike('email', loginEmail)
+            .single();
+            
+          if (student) {
+            const currentHistory = Array.isArray(student.login_history) ? student.login_history : [];
+            const now = new Date().toISOString();
+            const newHistory = [{ loginAt: now, lastSeenAt: now }, ...currentHistory].slice(0, 50); // Keep last 50 logins
+            await supabase
+              .from('Students')
+              .update({ login_history: newHistory })
+              .ilike('email', loginEmail);
+          }
+        } catch (historyErr) {
+          console.error("Error updating login history:", historyErr);
         }
-      } catch (historyErr) {
-        console.error("Error updating login history:", historyErr);
+      } else {
+        // Signup
+        if (!name.trim()) {
+          throw new Error("O nome é obrigatório para cadastro.");
+        }
+        await signup(loginEmail, password, name.trim());
       }
 
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message || 'Falha ao entrar');
+      setError(err.message || (isLogin ? 'Falha ao entrar' : 'Falha ao cadastrar'));
     } finally {
       setIsLoading(false);
     }
@@ -70,7 +80,7 @@ const Login = () => {
             <BookOpen className="brand-icon" size={32} />
             <h1 className="brand-name">Teacher Jorge</h1>
           </div>
-          <p>Entre na sua conta</p>
+          <p>{isLogin ? 'Entre na sua conta' : 'Crie uma nova conta'}</p>
         </div>
 
         {error && (
@@ -80,12 +90,25 @@ const Login = () => {
         )}
 
         <form onSubmit={handleSubmit} className="auth-form">
+          {!isLogin && (
+            <div className="input-group">
+              <label>Nome Completo</label>
+              <input 
+                type="text" 
+                className="input glass-3d" 
+                placeholder="Ex: João da Silva"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+          )}
           <div className="input-group">
-            <label>ID do Aluno ou E-mail</label>
+            <label>E-mail</label>
             <input 
               type="text" 
-              className="input" 
-              placeholder="Ex: jorge ou you@example.com"
+              className="input glass-3d" 
+              placeholder="Ex: you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -95,7 +118,7 @@ const Login = () => {
             <label>Senha</label>
             <input 
               type="password" 
-              className="input" 
+              className="input glass-3d" 
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -103,11 +126,25 @@ const Login = () => {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-full mt-4" disabled={isLoading}>
+          <button type="submit" className="btn btn-primary btn-glass w-full mt-4" disabled={isLoading}>
             <LogIn size={18} />
-            {isLoading ? 'Entrando...' : 'Entrar'}
+            {isLoading ? (isLogin ? 'Entrando...' : 'Cadastrando...') : (isLogin ? 'Entrar' : 'Cadastrar')}
           </button>
         </form>
+
+        <div className="text-center mt-4">
+          <button 
+            type="button" 
+            className="text-primary hover:underline text-sm font-semibold" 
+            style={{background: 'none', border: 'none', cursor: 'pointer', padding: 0}}
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setError('');
+            }}
+          >
+            {isLogin ? 'Não tem uma conta? Cadastre-se' : 'Já tem uma conta? Entre'}
+          </button>
+        </div>
 
         <div className="text-center my-4 text-muted text-sm">
           OU
@@ -115,7 +152,7 @@ const Login = () => {
         
         <button 
           type="button" 
-          className="btn w-full flex items-center justify-center gap-2" 
+          className="btn btn-glass w-full flex items-center justify-center gap-2" 
           style={{backgroundColor: 'white', color: '#333', border: '1px solid #ddd'}}
           onClick={async () => {
             try {
