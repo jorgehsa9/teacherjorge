@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { supabase, secondarySupabase } from '../../lib/supabase';
 import { Search, Edit, Trash, X, Shield } from 'lucide-react';
+import UserAvatar from '../../components/UserAvatar';
 import { useAuth } from '../../contexts/AuthContext';
 
 const TeachersList = () => {
@@ -133,12 +134,12 @@ const TeachersList = () => {
           <h1 className="text-2xl font-bold mb-1">Equipe de Professores</h1>
           <p className="text-muted text-sm">Gerencie o acesso administrativo da plataforma.</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
+        <button className="btn btn-primary btn-glass" onClick={() => setIsModalOpen(true)}>
           Adicionar Professor
         </button>
       </div>
 
-      <div className="card glass mb-6">
+      <div className="card liquid-glass mb-6">
         <div className="flex justify-between items-center mb-6">
           <div className="input-group mb-0" style={{ maxWidth: '300px' }}>
             <div className="flex items-center" style={{ position: 'relative' }}>
@@ -158,54 +159,39 @@ const TeachersList = () => {
         {loading ? (
           <p className="text-center py-8 text-muted">Carregando equipe...</p>
         ) : (
-          <div className="table-responsive">
-            <table className="w-full text-left" style={{ borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid var(--border)' }}>
-                  <th className="pb-3 text-muted font-medium text-sm">Professor</th>
-                  <th className="pb-3 text-muted font-medium text-sm">Status</th>
-                  <th className="pb-3 text-muted font-medium text-sm text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredTeachers.length > 0 ? filteredTeachers.map(teacher => (
-                  <tr key={teacher.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    <td className="py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="avatar bg-primary-light text-primary font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
-                          {teacher.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <div className="font-semibold">{teacher.name}</div>
-                          <div className="text-xs text-muted mt-1">{teacher.email}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-4">
-                      <span className={`badge ${teacher.status === 'Active' ? 'success' : 'warning'}`}>
-                        {teacher.status === 'Active' ? 'Ativo' : 'Inativo'}
-                      </span>
-                    </td>
-                    <td className="py-4 text-right">
-                      <button onClick={() => openEditModal(teacher)} title="Editar" className="btn-icon text-muted hover:text-primary" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none', marginRight: '8px' }}><Edit size={16} /></button>
-                      <button onClick={() => handleDeleteTeacher(teacher)} title="Excluir" className="btn-icon text-muted hover:text-danger" style={{ padding: '4px', cursor: 'pointer', background: 'none', border: 'none' }}><Trash size={16} /></button>
-                    </td>
-                  </tr>
-                )) : (
-                  <tr>
-                    <td colSpan="3" className="text-center py-8 text-muted">Nenhum professor encontrado.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+          <div className="flex flex-col gap-2">
+            {filteredTeachers.length > 0 ? filteredTeachers.map(teacher => (
+              <div key={teacher.id} className="card glass-3d flex flex-row items-center justify-between p-5 mb-4 transition-all hover:border-primary hover:shadow-lg duration-200" style={{ borderRadius: 'var(--radius-lg)' }}>
+                <div className="flex items-center gap-4 flex-1 min-w-0">
+                  <div className="avatar bg-surface border border-border flex items-center justify-center w-12 h-12" style={{ borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+                    <UserAvatar avatarId={teacher.avatar} name={teacher.name} size={24} />
+                  </div>
+                  <div className="overflow-hidden min-w-0">
+                    <div className="font-semibold text-main truncate" style={{fontSize: '1.05rem'}}>{teacher.name}</div>
+                    <div className="text-sm text-muted mt-1 truncate">
+                      <span className={teacher.status === 'Active' ? 'text-success' : 'text-warning'}>{teacher.status === 'Active' ? 'Ativo' : 'Inativo'}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-sm text-muted hidden md:block flex-1 min-w-0 truncate px-4">
+                  {teacher.email}
+                </div>
+                <div className="flex justify-end gap-2 flex-1 min-w-0">
+                  <button onClick={() => openEditModal(teacher)} title="Editar" className="btn btn-outline btn-glass flex items-center justify-center px-3"><Edit size={16} /></button>
+                  <button onClick={() => handleDeleteTeacher(teacher)} title="Excluir" className="btn btn-outline btn-glass text-danger hover:border-danger hover:bg-danger hover:bg-opacity-10 flex items-center justify-center px-3"><Trash size={16} /></button>
+                </div>
+              </div>
+            )) : (
+              <div className="text-center py-8 text-muted">Nenhum professor encontrado.</div>
+            )}
           </div>
         )}
       </div>
 
       {/* Modal - Adicionar Professor */}
       {isModalOpen && createPortal(
-        <div className="modal-overlay" onClick={(e) => { if (e.target.className === 'modal-overlay') setIsModalOpen(false); }}>
-          <div className="modal-content glass animate-scale-in max-w-md">
+        <div className="modal-overlay flex items-center justify-center" style={{ backgroundColor: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)' }} onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setIsModalOpen(false); }}>
+          <div className="card glass-3d animate-scale-in" style={{ padding: '2rem', borderRadius: '24px', width: '100%', maxWidth: '450px', margin: '0 20px' }}>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold flex items-center gap-2"><Shield className="text-primary" /> Novo Professor</h2>
               <button className="text-muted hover:text-main" onClick={() => setIsModalOpen(false)}><X size={24} /></button>
@@ -245,8 +231,8 @@ const TeachersList = () => {
               </div>
 
               <div className="flex justify-end gap-2">
-                <button type="button" className="btn btn-outline" onClick={() => setIsModalOpen(false)}>Cancelar</button>
-                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                <button type="button" className="btn btn-outline btn-glass" onClick={() => setIsModalOpen(false)}>Cancelar</button>
+                <button type="submit" className="btn btn-primary btn-glass" disabled={isSubmitting}>
                   {isSubmitting ? 'Adicionando...' : 'Confirmar'}
                 </button>
               </div>
@@ -258,8 +244,8 @@ const TeachersList = () => {
 
       {/* Modal - Editar Professor */}
       {isEditModalOpen && editingTeacher && createPortal(
-        <div className="modal-overlay" onClick={(e) => { if (e.target.className === 'modal-overlay') setIsEditModalOpen(false); }}>
-          <div className="modal-content glass animate-scale-in max-w-md">
+        <div className="modal-overlay flex items-center justify-center" style={{ backgroundColor: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)' }} onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setIsEditModalOpen(false); }}>
+          <div className="card glass-3d animate-scale-in" style={{ padding: '2rem', borderRadius: '24px', width: '100%', maxWidth: '450px', margin: '0 20px' }}>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold flex items-center gap-2"><Edit className="text-primary" /> Editar Professor</h2>
               <button className="text-muted hover:text-main" onClick={() => setIsEditModalOpen(false)}><X size={24} /></button>
@@ -299,8 +285,8 @@ const TeachersList = () => {
               </div>
 
               <div className="flex justify-end gap-2 mt-6 border-t pt-4" style={{ borderColor: 'var(--border)' }}>
-                <button type="button" className="btn btn-outline" onClick={() => setIsEditModalOpen(false)}>Cancelar</button>
-                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                <button type="button" className="btn btn-outline btn-glass" onClick={() => setIsEditModalOpen(false)}>Cancelar</button>
+                <button type="submit" className="btn btn-primary btn-glass" disabled={isSubmitting}>
                   {isSubmitting ? 'Salvando...' : 'Salvar Alterações'}
                 </button>
               </div>

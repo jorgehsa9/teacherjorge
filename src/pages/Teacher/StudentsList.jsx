@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { supabase, secondarySupabase } from '../../lib/supabase';
-import { Search, Edit, Trash, X, Phone, Clock, FileText, Calendar, UploadCloud, User } from 'lucide-react';
+import { Search, Edit, Trash, X, Phone, Clock, FileText, Calendar, UploadCloud } from 'lucide-react';
+import UserAvatar from '../../components/UserAvatar';
 import { useAuth } from '../../contexts/AuthContext';
 
 const StudentsList = () => {
@@ -224,11 +225,11 @@ const StudentsList = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>Adicionar Aluno</button>
+          <button className="btn btn-primary btn-glass" onClick={() => setIsModalOpen(true)}>Adicionar Aluno</button>
         </div>
       </div>
 
-      <div className="card glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-200">
+      <div className="card liquid-glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-200">
         {loading ? (
           <div className="p-8 text-center text-muted">Carregando alunos...</div>
         ) : (
@@ -239,37 +240,34 @@ const StudentsList = () => {
                   <div
                     key={student.id || i}
                     onClick={() => openEditModal(student)}
-                    className="flex justify-between items-center p-4 rounded-2xl cursor-pointer transition-all"
-                    style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}
-                    onMouseOver={e => e.currentTarget.style.borderColor = 'var(--primary)'}
-                    onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
-                    title="Clique para ver ou editar detalhes do aluno"
+                    className="card glass-3d flex flex-row items-center justify-between p-5 mb-4 transition-all cursor-pointer hover:border-primary hover:shadow-lg duration-200"
+                    style={{ borderRadius: 'var(--radius-lg)' }}
                   >
-                    <div className="flex items-center gap-4 overflow-hidden">
-                      <div style={{ backgroundColor: 'rgba(79, 70, 229, 0.1)', padding: '0.75rem', borderRadius: '10px', flexShrink: 0 }}>
-                        <User size={20} className="text-primary" />
+                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                      <div className="avatar bg-surface border border-border flex items-center justify-center w-12 h-12" style={{ borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+                        <UserAvatar avatarId={student.avatar} name={student.name} size={24} />
                       </div>
-                      <div className="overflow-hidden flex flex-col">
-                        <h3 className="font-bold text-main m-0 truncate text-sm sm:text-base">{student.name}</h3>
-                        <p className="text-xs text-muted m-0 mt-1 truncate">
-                          {student.email} • Nível: {student.level}
-                          {user?.is_admin && (student.teacher_name || student.teacher_email) && (
-                            <> • <span className="text-primary opacity-80" style={{ fontWeight: '500' }}>Prof: {student.teacher_name || student.teacher_email}</span></>
-                          )}
-                        </p>
+                      <div className="overflow-hidden min-w-0">
+                        <div className="font-semibold text-main truncate" style={{fontSize: '1.05rem'}}>{student.name}</div>
+                        <div className="text-sm text-muted mt-1 truncate">
+                          <span style={{color: 'var(--primary)'}}>{student.level}</span>
+                          <span className="mx-2">•</span>
+                          <span className={student.status === 'Active' ? 'text-success' : 'text-warning'}>{student.status}</span>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex gap-3 items-center flex-shrink-0">
-                      <span className={`badge ${student.status === 'Active' ? 'success' : 'warning'} hidden sm:inline-flex`} style={{ transform: 'scale(0.85)' }}>
-                        {student.status}
-                      </span>
+                    <div className="text-sm text-muted hidden md:block flex-1 min-w-0 truncate px-4">
+                      {student.email}
+                      {user?.is_admin && (student.teacher_name || student.teacher_email) && (
+                        <div className="text-xs text-primary opacity-80 mt-1">Prof: {student.teacher_name || student.teacher_email}</div>
+                      )}
+                    </div>
+                    <div className="flex justify-end gap-3 flex-1 min-w-0">
                       <button
                         onClick={(e) => { e.stopPropagation(); openClassModal(student); }}
-                        className="btn-icon text-muted hover:text-primary flex items-center justify-center transition-colors"
-                        title="Agendar Aula"
-                        style={{ padding: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
+                        className="btn btn-outline btn-glass flex items-center gap-2"
                       >
-                        <Calendar size={16} />
+                        <Calendar size={16} /> <span className="hidden sm:inline">Agendar</span>
                       </button>
                     </div>
                   </div>
@@ -286,11 +284,11 @@ const StudentsList = () => {
 
       {/* Add Student Modal */}
       {isModalOpen && createPortal(
-        <div className="modal-overlay flex items-center justify-center" style={{
+        <div className="modal-overlay flex items-center justify-center" onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setIsModalOpen(false); }} style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
+          <div className="card glass-3d w-full" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
             <div className="flex justify-between items-center mb-6">
               <h2 style={{ margin: 0 }}>Adicionar Novo Aluno</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
@@ -340,8 +338,8 @@ const StudentsList = () => {
               )}
 
               <div className="flex justify-end gap-2 mt-6">
-                <button type="button" className="btn btn-outline" onClick={() => setIsModalOpen(false)}>Cancelar</button>
-                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                <button type="button" className="btn btn-outline btn-glass" onClick={() => setIsModalOpen(false)}>Cancelar</button>
+                <button type="submit" className="btn btn-primary btn-glass" disabled={isSubmitting}>
                   {isSubmitting ? 'Salvando...' : 'Adicionar Aluno'}
                 </button>
               </div>
@@ -353,11 +351,11 @@ const StudentsList = () => {
 
       {/* Edit Student Modal */}
       {isEditModalOpen && editingStudent && createPortal(
-        <div className="modal-overlay flex items-center justify-center" style={{
+        <div className="modal-overlay flex items-center justify-center" onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setIsEditModalOpen(false); }} style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full" style={{ maxWidth: '600px', backgroundColor: 'var(--surface)', margin: '1rem', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div className="card glass-3d w-full" style={{ maxWidth: '600px', backgroundColor: 'var(--surface)', margin: '1rem', maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="flex justify-between items-center mb-6">
               <h2 style={{ margin: 0 }}>Editar Perfil do Aluno</h2>
               <button onClick={() => setIsEditModalOpen(false)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
@@ -473,11 +471,11 @@ const StudentsList = () => {
               </div>
 
               {/* Login History Section */}
-              <div className="input-group mt-4 p-4 rounded-lg" style={{ backgroundColor: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)' }}>
-                <label className="flex items-center gap-2 mb-3"><Clock size={14} /> Histórico de Login (Últimos acessos)</label>
-                <div className="max-h-32 overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin' }}>
+              <div className="mt-6 mb-2">
+                <label className="flex items-center gap-2 mb-3 text-sm font-semibold text-muted uppercase tracking-wider"><Clock size={16} /> Histórico de Acessos</label>
+                <div className="max-h-64 overflow-y-auto pr-2">
                   {editingStudent.login_history && Array.isArray(editingStudent.login_history) && editingStudent.login_history.length > 0 ? (
-                    <ul className="flex flex-col gap-2">
+                    <div className="flex flex-col">
                       {editingStudent.login_history.map((entry, idx) => {
                         const isObject = typeof entry === 'object' && entry !== null;
                         const loginDate = isObject ? entry.loginAt : entry;
@@ -491,30 +489,50 @@ const StudentsList = () => {
                             if (diffMinutes >= 60) {
                               const hours = Math.floor(diffMinutes / 60);
                               const mins = diffMinutes % 60;
-                              durationText = ` (${hours}h ${mins}m)`;
+                              durationText = `${hours}h ${mins}m`;
                             } else {
-                              durationText = ` (${diffMinutes} min)`;
+                              durationText = `${diffMinutes} min`;
                             }
                           } else {
-                            durationText = ` (< 1 min)`;
+                            durationText = `< 1 min`;
                           }
                         }
 
                         return (
-                          <li key={idx} className="text-sm flex items-center justify-between border-b pb-1 last:border-0" style={{ borderColor: 'var(--border-light)' }}>
-                            <span className="text-main font-medium">
-                              {loginTime.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' })}
-                            </span>
-                            <span className="text-muted text-xs bg-bg px-2 py-1 rounded">
+                          <div key={idx} className="card glass-3d flex flex-row items-center justify-between p-4 mb-3 transition-all hover:border-primary hover:shadow-lg duration-200" style={{ borderRadius: 'var(--radius-lg)' }}>
+                            <div className="flex items-center gap-4 flex-1 min-w-0">
+                              <div className="w-10 h-10 rounded-full bg-primary bg-opacity-20 flex items-center justify-center text-primary flex-shrink-0">
+                                <Clock size={16} />
+                              </div>
+                              <div className="overflow-hidden min-w-0">
+                                <div className="font-semibold text-main truncate">
+                                  {loginTime.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="text-sm text-muted flex-1 min-w-0 truncate px-4">
                               {loginTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                              {durationText && <span style={{ color: 'var(--primary)', marginLeft: '4px' }}>{durationText}</span>}
-                            </span>
-                          </li>
+                            </div>
+
+                            <div className="flex justify-end gap-2 flex-1 min-w-0">
+                              {durationText ? (
+                                <span className="text-xs font-semibold text-primary bg-primary bg-opacity-10 px-3 py-1.5 rounded-full whitespace-nowrap">
+                                  {durationText}
+                                </span>
+                              ) : (
+                                <span className="text-xs text-muted">--</span>
+                              )}
+                            </div>
+                          </div>
                         );
                       })}
-                    </ul>
+                    </div>
                   ) : (
-                    <p className="text-muted text-sm italic">Nenhum login registrado ainda.</p>
+                    <div className="card glass-3d flex flex-col items-center justify-center p-6 text-muted" style={{ borderRadius: 'var(--radius-lg)' }}>
+                      <Clock size={24} className="mb-2 opacity-50" />
+                      <p className="text-sm">Nenhum acesso registrado.</p>
+                    </div>
                   )}
                 </div>
               </div>
@@ -522,15 +540,15 @@ const StudentsList = () => {
               <div className="flex justify-between items-center mt-6 border-t pt-4" style={{ borderColor: 'var(--border)' }}>
                 <button
                   type="button"
-                  className="btn btn-outline hover:text-danger hover:border-danger transition-colors"
+                  className="btn btn-outline btn-glass hover:text-danger hover:border-danger transition-colors"
                   onClick={() => { handleDeleteStudent(editingStudent); setIsEditModalOpen(false); }}
                   style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                 >
                   <Trash size={16} /> Excluir Aluno
                 </button>
                 <div className="flex gap-2">
-                  <button type="button" className="btn btn-outline" onClick={() => setIsEditModalOpen(false)}>Cancelar</button>
-                  <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                  <button type="button" className="btn btn-outline btn-glass" onClick={() => setIsEditModalOpen(false)}>Cancelar</button>
+                  <button type="submit" className="btn btn-primary btn-glass" disabled={isSubmitting}>
                     {isSubmitting ? 'Salvando...' : 'Salvar Alterações'}
                   </button>
                 </div>
@@ -543,11 +561,11 @@ const StudentsList = () => {
 
       {/* Schedule Class Modal */}
       {isClassModalOpen && selectedStudentForAction && createPortal(
-        <div className="modal-overlay flex items-center justify-center" style={{
+        <div className="modal-overlay flex items-center justify-center" onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setIsClassModalOpen(false); }} style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full" style={{ maxWidth: '400px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
+          <div className="card glass-3d w-full" style={{ maxWidth: '400px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
             <div className="flex justify-between items-center mb-6">
               <h2 style={{ margin: 0 }}>Agendar Aula</h2>
               <button onClick={() => setIsClassModalOpen(false)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
@@ -581,8 +599,8 @@ const StudentsList = () => {
               </div>
 
               <div className="flex justify-end gap-2 mt-6">
-                <button type="button" className="btn btn-outline" onClick={() => setIsClassModalOpen(false)}>Cancelar</button>
-                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                <button type="button" className="btn btn-outline btn-glass" onClick={() => setIsClassModalOpen(false)}>Cancelar</button>
+                <button type="submit" className="btn btn-primary btn-glass" disabled={isSubmitting}>
                   {isSubmitting ? 'Salvando...' : 'Agendar'}
                 </button>
               </div>

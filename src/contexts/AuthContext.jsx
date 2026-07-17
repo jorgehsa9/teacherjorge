@@ -54,8 +54,9 @@ export const AuthProvider = ({ children }) => {
       const displayName = session.user.user_metadata?.name || defaultName;
       const theme = session.user.user_metadata?.theme;
       const isDarkMode = session.user.user_metadata?.isDarkMode;
+      const avatar = session.user.user_metadata?.avatar;
       
-      setUser({ ...session.user, role, is_admin, name: displayName, theme, isDarkMode });
+      setUser({ ...session.user, role, is_admin, name: displayName, theme, isDarkMode, avatar });
     } else {
       setUser(null);
     }
@@ -119,6 +120,7 @@ export const AuthProvider = ({ children }) => {
     loginWithGoogle,
     logout,
     isTeacher: user?.role === 'teacher',
+    updateLocalUser: (data) => setUser(prev => prev ? { ...prev, ...data } : null),
   };
 
   return (

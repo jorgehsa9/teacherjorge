@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { supabase } from '../../lib/supabase';
-import { Folder, FileText, Link as LinkIcon, Trash, Plus, Search, ExternalLink, Gamepad2, Mic, CheckCircle, PenTool, Brain, ArrowRight, Video, File, Type, Layers, MoreHorizontal, Edit, X, Download, Edit2 } from 'lucide-react';
+import { Folder, FileText, Link as LinkIcon, Trash, Trash2, Plus, Search, ExternalLink, Gamepad2, Mic, CheckCircle, PenTool, Brain, ArrowRight, Video, File, Type, Layers, MoreHorizontal, Edit, X, Download, Edit2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import '../Teacher/TeacherDashboard.css';
 
@@ -282,7 +282,7 @@ const Materials = () => {
             </select>
           </div>
           <button
-            className="btn btn-primary w-full sm:w-auto flex justify-center items-center gap-2 whitespace-nowrap"
+            className="btn btn-primary btn-glass w-full sm:w-auto flex justify-center items-center gap-2 whitespace-nowrap"
             onClick={() => setIsAdding(true)}
             disabled={!selectedStudentEmail || selectedStudentEmail === 'ALL'}
             title={selectedStudentEmail === 'ALL' ? 'Selecione um aluno específico para atribuir' : ''}
@@ -314,42 +314,50 @@ const Materials = () => {
         <div className="grid-cols-3 flex-1 gap-6">
           {/* Materials List Column */}
           <div className="main-col h-full flex flex-col" style={{ gridColumn: 'span 3', minWidth: 0 }}>
-            <div className="card glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-100 flex flex-col">
+            <div className="card liquid-glass flex-1 p-0 overflow-hidden animate-fade-in-up delay-100 flex flex-col">
               {loading ? (
                 <div className="p-8 text-center text-muted">Carregando materiais...</div>
               ) : materials.length > 0 ? (
-                <div className="p-4 overflow-y-auto flex-1">
-                  <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2">
                     {materials.map((mat) => (
                       <div
                         key={mat.id}
-                        onClick={() => openEditModal(mat)}
-                        className="flex justify-between items-center p-4 rounded-2xl cursor-pointer transition-all"
-                        style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}
-                        onMouseOver={e => e.currentTarget.style.borderColor = 'var(--primary)'}
-                        onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
-                        title="Clique para ver ou editar detalhes"
+                        onClick={() => { if (user?.is_admin) openEditModal(mat); }}
+                        className="card glass-3d flex flex-row items-center justify-between p-5 mb-4 transition-all hover:border-primary hover:shadow-lg duration-200 cursor-pointer"
+                        style={{ borderRadius: 'var(--radius-lg)' }}
                       >
-                        <div className="flex items-center gap-4 overflow-hidden">
-                          <div style={{ backgroundColor: 'rgba(79, 70, 229, 0.1)', padding: '0.75rem', borderRadius: '10px', flexShrink: 0 }}>
-                            <FileText size={20} className="text-primary" />
+                        <div className="flex items-center gap-4 flex-1 min-w-0">
+                          <div className="avatar bg-surface border border-border flex items-center justify-center w-12 h-12" style={{ borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+                            <FileText size={24} className="text-primary" />
                           </div>
-                          <div className="overflow-hidden flex flex-col">
-                            <h3 className="font-bold text-main m-0 truncate text-sm sm:text-base">{mat.title}</h3>
-                            <p className="text-xs text-muted m-0 mt-1 truncate">
-                              {mat.file_type} • {new Date(mat.created_at).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric', year: 'numeric' })}
-                              {selectedStudentEmail === 'ALL' && mat.student_email && (
-                                <> • <span className="text-primary opacity-80" style={{ fontWeight: '500' }}>{mat.student_email}</span></>
-                              )}
-                            </p>
+                          <div className="overflow-hidden min-w-0">
+                            <div className="font-semibold text-main truncate" style={{fontSize: '1.05rem'}}>{mat.title}</div>
+                            <div className="text-sm text-muted mt-1 truncate">
+                              {mat.file_type}
+                            </div>
                           </div>
                         </div>
-                        <div className="flex gap-2 items-center flex-shrink-0">
+                        <div className="text-sm text-muted hidden md:block flex-1 min-w-0 truncate px-4">
+                          {new Date(mat.created_at).toLocaleDateString()}
+                          {selectedStudentEmail === 'ALL' && (
+                            <div className="text-xs text-primary opacity-80 mt-1 truncate">Aluno: {students.find(s => s.email === mat.student_email)?.name || mat.student_email}</div>
+                          )}
+                        </div>
+                        <div className="flex justify-end gap-2 flex-1 min-w-0">
+                          {user?.is_admin && (
+                            <>
+                              <button onClick={(e) => { e.stopPropagation(); openEditModal(mat); }} className="btn btn-outline btn-glass flex items-center justify-center px-3" title="Editar Material">
+                                <Edit size={16} />
+                              </button>
+                              <button onClick={(e) => { e.stopPropagation(); handleDeleteMaterial(mat); }} className="btn btn-outline btn-glass text-danger hover:border-danger hover:bg-danger hover:bg-opacity-10 flex items-center justify-center px-3" title="Remover Material">
+                                <Trash2 size={16} />
+                              </button>
+                            </>
+                          )}
                           <button
                             onClick={(e) => { e.stopPropagation(); handleDownloadMaterial(mat.file_url); }}
-                            className="btn-icon text-muted hover:text-primary flex items-center justify-center transition-colors"
+                            className="btn btn-outline btn-glass flex items-center justify-center px-3"
                             title="Abrir/Baixar Material"
-                            style={{ padding: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
                           >
                             <Download size={16} />
                           </button>
@@ -357,12 +365,11 @@ const Materials = () => {
                       </div>
                     ))}
                   </div>
-                </div>
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center p-12 text-center text-muted">
                   <FileText size={48} className="mb-4 opacity-20" />
                   <p>Nenhum material foi compartilhado com este aluno ainda.</p>
-                  <button className="btn btn-outline mt-4" onClick={() => setIsAdding(true)}>Atribuir o primeiro material</button>
+                  <button className="btn btn-outline btn-glass mt-4" onClick={() => setIsAdding(true)}>Atribuir o primeiro material</button>
                 </div>
               )}
             </div>
@@ -374,7 +381,7 @@ const Materials = () => {
             <div
               key={app.id}
               onClick={() => setActiveApp(app)}
-              className="card glass p-5 cursor-pointer transition-all transform hover:-translate-y-1 hover:shadow-lg flex flex-col items-center text-center"
+              className="card glass-3d p-5 cursor-pointer transition-all hover:shadow-lg flex flex-col items-center text-center"
               style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
               onMouseOver={e => e.currentTarget.style.borderColor = 'var(--primary)'}
               onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
@@ -389,11 +396,11 @@ const Materials = () => {
 
       {/* Add Material Modal */}
       {isAdding && createPortal(
-        <div className="modal-overlay flex items-center justify-center" style={{
+        <div className="modal-overlay flex items-center justify-center" onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setIsAdding(false); }} style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
+          <div className="card glass-3d w-full" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
             <div className="flex justify-between items-center mb-6">
               <h2 style={{ margin: 0 }}>Atribuir Novo Material</h2>
               <button onClick={() => setIsAdding(false)} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
@@ -463,8 +470,8 @@ const Materials = () => {
               )}
 
               <div className="flex justify-end gap-2 mt-6">
-                <button type="button" className="btn btn-outline" onClick={() => setIsAdding(false)}>Cancelar</button>
-                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                <button type="button" className="btn btn-outline btn-glass" onClick={() => setIsAdding(false)}>Cancelar</button>
+                <button type="submit" className="btn btn-primary btn-glass" disabled={isSubmitting}>
                   {isSubmitting ? 'Salvando...' : 'Compartilhar Material'}
                 </button>
               </div>
@@ -476,11 +483,11 @@ const Materials = () => {
 
       {/* Edit Material Modal */}
       {isEditModalOpen && editingMaterial && createPortal(
-        <div className="modal-overlay flex items-center justify-center" style={{
+        <div className="modal-overlay flex items-center justify-center" onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setIsEditModalOpen(false); }} style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.6)', zIndex: 50, backdropFilter: 'blur(4px)'
         }}>
-          <div className="card glass w-full" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
+          <div className="card glass-3d w-full" style={{ maxWidth: '500px', backgroundColor: 'var(--surface)', margin: '1rem' }}>
             <div className="flex justify-between items-center mb-6">
               <h2 style={{ margin: 0 }}>Editar Material</h2>
               <button onClick={() => { setIsEditModalOpen(false); setEditingMaterial(null); }} className="text-muted" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
@@ -524,14 +531,14 @@ const Materials = () => {
               <div className="flex justify-between items-center mt-6">
                 <button
                   type="button"
-                  className="btn btn-outline hover:text-danger hover:border-danger transition-colors"
+                  className="btn btn-outline btn-glass hover:text-danger hover:border-danger transition-colors"
                   onClick={() => { handleDeleteMaterial(editingMaterial); setIsEditModalOpen(false); }}
                 >
                   <Trash size={16} className="mr-2" style={{ display: 'inline' }} /> Excluir
                 </button>
                 <div className="flex gap-2">
-                  <button type="button" className="btn btn-outline" onClick={() => { setIsEditModalOpen(false); setEditingMaterial(null); }}>Cancelar</button>
-                  <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                  <button type="button" className="btn btn-outline btn-glass" onClick={() => { setIsEditModalOpen(false); setEditingMaterial(null); }}>Cancelar</button>
+                  <button type="submit" className="btn btn-primary btn-glass" disabled={isSubmitting}>
                     {isSubmitting ? 'Salvando...' : 'Salvar Alterações'}
                   </button>
                 </div>
@@ -544,11 +551,11 @@ const Materials = () => {
 
       {/* App Modal Iframe (Centralizado) */}
       {activeApp && createPortal(
-        <div className="modal-overlay flex items-center justify-center" style={{
+        <div className="modal-overlay flex items-center justify-center" onClick={(e) => { if (typeof e.target.className === 'string' && e.target.className.includes('modal-overlay')) setActiveApp(null); }} style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.7)', zIndex: 60, backdropFilter: 'blur(8px)'
         }}>
-          <div className="card glass animate-fade-in-up flex flex-col overflow-hidden relative" style={{
+          <div className="card glass-3d animate-fade-in-up flex flex-col overflow-hidden relative" style={{
             width: '90vw', height: '85vh', maxWidth: '1200px', backgroundColor: 'var(--bg-color)',
             borderRadius: '24px', border: '1px solid var(--primary-glow)',
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'

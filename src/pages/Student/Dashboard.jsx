@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { Play, Download, Book, Award, Calendar, MessageSquare, Clock } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import UserAvatar from '../../components/UserAvatar';
 import './StudentDashboard.css';
 
 const StudentDashboard = () => {
@@ -37,7 +38,7 @@ const StudentDashboard = () => {
           setStudentData(sData);
 
           if (sData.status === 'Pending' || !sData.teacher_email) {
-            const { data: tData } = await supabase.from('Teachers').select('email, name').eq('status', 'Active');
+            const { data: tData } = await supabase.from('Teachers').select('email, name, avatar').eq('status', 'Active');
             if (tData) setTeachers(tData);
           }
         }
@@ -189,8 +190,8 @@ const StudentDashboard = () => {
                     disabled={requestingTeacher}
                     className="btn btn-outline text-left justify-start hover:bg-primary hover:text-white transition-colors"
                   >
-                    <div className="avatar bg-primary-light text-primary font-bold rounded-full w-8 h-8 flex items-center justify-center mr-3">
-                      {t.name.charAt(0)}
+                    <div className="avatar bg-surface border border-border flex items-center justify-center w-8 h-8 mr-3" style={{ borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+                      <UserAvatar avatarId={t.avatar} name={t.name} size={16} />
                     </div>
                     {t.name}
                   </button>

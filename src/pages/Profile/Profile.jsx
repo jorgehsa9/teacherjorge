@@ -3,20 +3,23 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { User, Lock, Save, Moon, Sun, LogOut, Palette } from 'lucide-react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
+import { avatarOptions } from '../../components/UserAvatar';
 
 const Profile = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateLocalUser } = useAuth();
   const navigate = useNavigate();
   const outletContext = useOutletContext();
   const { isDarkMode, setIsDarkMode, activeTheme, setActiveTheme, themes } = outletContext || {};
   
   const [displayName, setDisplayName] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [selectedAvatar, setSelectedAvatar] = useState('book');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
       setDisplayName(user.name || '');
+      if (user.avatar) setSelectedAvatar(user.avatar);
     }
   }, [user]);
 
@@ -32,18 +35,25 @@ const Profile = () => {
       }
 
       // 1. Update Supabase Auth metadata
-      if (displayName !== user.name) {
+      if (displayName !== user.name || selectedAvatar !== user.avatar) {
         const { error: authError } = await supabase.auth.updateUser({
-          data: { name: displayName }
+          data: { name: displayName, avatar: selectedAvatar }
         });
         
         if (authError) throw authError;
 
-        // 2. If student, update the Students table
+        // 2. Update DB tables
         if (user.role === 'student') {
           const { error: dbError } = await supabase
             .from('Students')
-            .update({ name: displayName })
+            .update({ name: displayName, avatar: selectedAvatar })
+            .ilike('email', user.email);
+            
+          if (dbError) console.error("Could not update DB:", dbError);
+        } else if (user.role === 'teacher') {
+          const { error: dbError } = await supabase
+            .from('Teachers')
+            .update({ name: displayName, avatar: selectedAvatar })
             .ilike('email', user.email);
             
           if (dbError) console.error("Could not update DB:", dbError);
@@ -91,12 +101,14 @@ const Profile = () => {
               <label>Nome de Exibição</label>
               <input 
                 type="text" 
-                className="input w-full" 
+                className="input w-full mb-4" 
                 value={displayName} 
                 onChange={(e) => setDisplayName(e.target.value)}
                 required
               />
             </div>
+            
+
             <div className="input-group">
               <label>E-mail de Acesso (Login)</label>
               <input 
@@ -142,18 +154,48 @@ const Profile = () => {
           </h2>
           
           {themes && (
-            <div className="mb-6">
-              <label className="text-sm font-semibold text-muted uppercase tracking-wider mb-3 block">Cor Principal</label>
-              <div className="flex gap-4">
-                {themes.map(t => (
-                  <button 
-                    key={t.name}
-                    onClick={() => setActiveTheme(t)}
-                    className={`theme-dot ${activeTheme?.name === t.name ? 'active' : ''}`}
-                    style={{ backgroundColor: t.hex, width: '32px', height: '32px' }}
-                    title={t.name}
-                  />
-                ))}
+            <div className="mb-6 flex flex-col md:flex-row gap-8">
+              <div>
+                <label className="text-sm font-semibold text-muted uppercase tracking-wider mb-3 block">Cor Principal</label>
+                <div className="flex gap-4">
+                  {themes.map(t => (
+                    <button 
+                      key={t.name}
+                      onClick={() => setActiveTheme(t)}
+                      className={`theme-dot ${activeTheme?.name === t.name ? 'active' : ''}`}
+                      style={{ backgroundColor: t.hex, width: '32px', height: '32px' }}
+                      title={t.name}
+                    />
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <label className="text-sm font-semibold text-muted uppercase tracking-wider mb-3 block">Avatar Escolar</label>
+                <div className="flex gap-4 flex-wrap">
+                  {avatarOptions.map(avatar => {
+                    const Icon = avatar.icon;
+                    return (
+                      <button
+                        key={avatar.id}
+                        type="button"
+                        onClick={async () => {
+                          setSelectedAvatar(avatar.id);
+                          updateLocalUser({ avatar: avatar.id });
+                          // Auto-save avatar
+                          await supabase.auth.updateUser({ data: { avatar: avatar.id } });
+                          if (user.role === 'student') await supabase.from('Students').update({ avatar: avatar.id }).ilike('email', user.email);
+                          if (user.role === 'teacher') await supabase.from('Teachers').update({ avatar: avatar.id }).ilike('email', user.email);
+                        }}
+                        className={`theme-dot flex items-center justify-center p-0 ${selectedAvatar === avatar.id ? 'active' : ''}`}
+                        style={{ backgroundColor: avatar.colorHex, width: '32px', height: '32px' }}
+                        title={avatar.name}
+                      >
+                        <Icon size={16} color="#fff" />
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           )}

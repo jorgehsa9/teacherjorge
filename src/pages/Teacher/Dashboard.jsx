@@ -4,6 +4,7 @@ import { Users, Video, Clock, DollarSign, UploadCloud, Play, FileText, CheckCirc
 import { supabase } from '../../lib/supabase';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { useAuth } from '../../contexts/AuthContext';
+import UserAvatar from '../../components/UserAvatar';
 import './TeacherDashboard.css';
 
 const TeacherDashboard = () => {
@@ -278,7 +279,7 @@ const TeacherDashboard = () => {
 
       {/* Stats Cards */}
       <div className="grid-cols-4 mb-6">
-        <div className="stat-card card glass animate-fade-in-up delay-100">
+        <div className="card stat-card liquid-glass accent-blue animate-fade-in-up delay-100">
           <div className="stat-icon bg-primary-light">
             <Users size={24} className="text-primary" />
           </div>
@@ -287,7 +288,7 @@ const TeacherDashboard = () => {
             <span className="stat-label">Alunos Ativos</span>
           </div>
         </div>
-        <div className="card stat-card glass">
+        <div className="card stat-card liquid-glass accent-green animate-fade-in-up delay-200">
           <div className="stat-icon bg-success-light">
             <Video size={24} className="text-success" />
           </div>
@@ -296,7 +297,7 @@ const TeacherDashboard = () => {
             <span className="stat-label">Aulas este Mês</span>
           </div>
         </div>
-        <div className="card stat-card glass">
+        <div className="card stat-card liquid-glass accent-yellow animate-fade-in-up delay-300">
           <div className="stat-icon bg-warning-light">
             <DollarSign size={24} className="text-warning" />
           </div>
@@ -305,7 +306,7 @@ const TeacherDashboard = () => {
             <span className="stat-label">Pagamentos Pendentes</span>
           </div>
         </div>
-        <div className="card stat-card glass">
+        <div className="card stat-card liquid-glass accent-red animate-fade-in-up delay-400">
           <div className="stat-icon bg-danger-light">
             <Clock size={24} className="text-danger" />
           </div>
@@ -317,7 +318,7 @@ const TeacherDashboard = () => {
       </div>
 
       {/* Activity Chart */}
-      <div className="card glass mb-6 animate-fade-in-up delay-200">
+      <div className="card liquid-glass accent-primary mb-6 animate-fade-in-up delay-200">
         <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Calendar className="text-primary"/> Frequência de Aulas (Mês Atual)</h2>
         <div style={{ height: '220px', width: '100%' }}>
           <ResponsiveContainer width="100%" height="100%">
@@ -339,7 +340,7 @@ const TeacherDashboard = () => {
       </div>
 
       {/* Leads Kanban Board */}
-      <div className="card glass mb-6 animate-fade-in-up delay-300">
+      <div className="card liquid-glass mb-6 animate-fade-in-up delay-300">
         <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><Target className="text-primary"/> Pipeline de Leads</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Column 1: Novos (Applied) */}
@@ -350,11 +351,11 @@ const TeacherDashboard = () => {
             </h3>
             <div className="flex flex-col gap-3">
               {leads.filter(l => l.status === 'Applied').map(lead => (
-                <div key={lead.id} className="card bg-surface p-4 border border-border">
+                <div key={lead.id} className="card glass-3d p-4">
                   <div className="font-semibold">{lead.name}</div>
                   <div className="text-xs text-muted mb-3">{lead.email}</div>
                   <div className="text-xs mb-3" style={{ color: 'var(--primary)' }}>Obj: {lead.goals.substring(0, 50)}{lead.goals.length > 50 ? '...' : ''}</div>
-                  <button className="btn btn-sm w-full btn-primary" onClick={() => handleLeadStatusChange(lead.id, 'Trial Scheduled')}>
+                  <button className="btn btn-sm w-full btn-primary btn-glass" onClick={() => handleLeadStatusChange(lead.id, 'Trial Scheduled')}>
                     Agendar Aula Teste
                   </button>
                 </div>
@@ -373,10 +374,10 @@ const TeacherDashboard = () => {
             </h3>
             <div className="flex flex-col gap-3">
               {leads.filter(l => l.status === 'Trial Scheduled').map(lead => (
-                <div key={lead.id} className="card bg-surface p-4 border border-border">
+                <div key={lead.id} className="card glass-3d p-4">
                   <div className="font-semibold">{lead.name}</div>
                   <div className="text-xs text-muted mb-3">{lead.email}</div>
-                  <button className="btn btn-sm w-full btn-outline hover:text-success hover:border-success" onClick={() => handleLeadStatusChange(lead.id, 'Enrolled')}>
+                  <button className="btn btn-sm w-full btn-outline btn-glass hover:text-success hover:border-success" onClick={() => handleLeadStatusChange(lead.id, 'Enrolled')}>
                     Matricular
                   </button>
                 </div>
@@ -395,7 +396,7 @@ const TeacherDashboard = () => {
             </h3>
             <div className="flex flex-col gap-3">
               {leads.filter(l => l.status === 'Enrolled').map(lead => (
-                <div key={lead.id} className="card bg-surface p-4 border border-border opacity-75">
+                <div key={lead.id} className="card glass-3d p-4 opacity-75">
                   <div className="font-semibold flex items-center gap-2">
                     <CheckCircle size={14} className="text-success"/> {lead.name}
                   </div>
@@ -415,7 +416,7 @@ const TeacherDashboard = () => {
         <div className="main-col" style={{ gridColumn: 'span 2' }}>
           
           {/* Class Control Center */}
-          <div className="card mb-6 control-center glass border-primary">
+          <div className="card mb-6 control-center liquid-glass accent-primary">
             <div className="flex justify-between items-center mb-4">
               <div>
                 <h2>Controle de Aula ao Vivo</h2>
@@ -428,7 +429,7 @@ const TeacherDashboard = () => {
               </div>
               <div className="flex gap-2">
                 <button 
-                  className="btn btn-primary start-class-btn" 
+                  className="btn btn-primary btn-glass start-class-btn" 
                   disabled={!meetLink}
                   onClick={() => window.open(meetLink, '_blank')}
                 >
@@ -436,7 +437,7 @@ const TeacherDashboard = () => {
                   Iniciar Aula
                 </button>
                 <button 
-                  className="btn btn-outline" 
+                  className="btn btn-outline btn-glass" 
                   style={{borderColor: 'var(--success)', color: 'var(--success)'}}
                   disabled={!nextClass}
                   onClick={async () => {
@@ -478,7 +479,7 @@ const TeacherDashboard = () => {
           </div>
 
           {/* Student Roster */}
-          <div className="card glass mb-6">
+          <div className="card liquid-glass mb-6">
             <div className="flex justify-between items-center mb-4">
               <h2>Lista de Alunos</h2>
             </div>
@@ -496,7 +497,7 @@ const TeacherDashboard = () => {
                     </div>
                   </div>
                   <div className="text-sm text-muted">{student.email}</div>
-                  <button className="btn btn-outline" onClick={() => navigate('/dashboard/students')}>Perfil</button>
+                  <button className="btn btn-outline btn-glass" onClick={() => navigate('/dashboard/students')}>Perfil</button>
                 </div>
               )) : (
                 <p className="text-muted text-sm p-4 text-center">Nenhum aluno encontrado.</p>
@@ -510,7 +511,7 @@ const TeacherDashboard = () => {
           
           {/* Pending Students Widget */}
           {pendingStudents.length > 0 && (
-            <div className="card glass mb-6" style={{ borderTop: '4px solid var(--primary)' }}>
+            <div className="card liquid-glass accent-primary mb-6">
               <h3 className="mb-4 flex items-center gap-2"><Users className="text-primary"/> Matrículas Pendentes</h3>
               <div className="flex flex-col gap-3">
                 {pendingStudents.map(student => (
@@ -521,8 +522,8 @@ const TeacherDashboard = () => {
                     </div>
                     <div className="flex gap-2">
                       <button 
-                        className="btn btn-sm w-full flex justify-center items-center gap-1" 
-                        style={{ backgroundColor: 'var(--success)', color: 'white' }} 
+                        className="btn btn-sm w-full flex justify-center items-center gap-1 btn-glass btn-primary" 
+                        style={{ backgroundColor: 'var(--success)', borderColor: 'var(--success)' }} 
                         onClick={async () => {
                           if(!window.confirm(`Aprovar a matrícula de ${student.name}?`)) return;
                           setLoading(true);
@@ -540,7 +541,7 @@ const TeacherDashboard = () => {
           )}
 
           {/* Pending Requests Widget */}
-          <div className="card glass mb-6" style={{ borderTop: '4px solid var(--warning)' }}>
+          <div className="card liquid-glass accent-yellow mb-6">
             <h3 className="mb-4 flex items-center gap-2"><Clock className="text-warning"/> Solicitações Pendentes</h3>
             <div className="flex flex-col gap-3">
               {pendingRequests.length > 0 ? pendingRequests.map(req => {
@@ -553,10 +554,10 @@ const TeacherDashboard = () => {
                       <Calendar size={12} /> {date.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' })} às {date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} ({req.duration}m)
                     </div>
                     <div className="flex gap-2">
-                      <button className="btn btn-sm w-full flex justify-center items-center gap-1" style={{ backgroundColor: 'var(--success)', color: 'white' }} onClick={() => handleAcceptRequest(req.id)}>
+                      <button className="btn btn-sm w-full flex justify-center items-center gap-1 btn-glass btn-primary" style={{ backgroundColor: 'var(--success)', borderColor: 'var(--success)' }} onClick={() => handleAcceptRequest(req.id)}>
                         <CheckCircle size={14} /> Aceitar
                       </button>
-                      <button className="btn btn-sm btn-outline w-full hover:text-danger hover:border-danger flex justify-center items-center" onClick={() => handleRejectRequest(req.id)}>
+                      <button className="btn btn-sm btn-outline btn-glass w-full hover:text-danger hover:border-danger flex justify-center items-center" onClick={() => handleRejectRequest(req.id)}>
                         Recusar
                       </button>
                     </div>
@@ -568,25 +569,25 @@ const TeacherDashboard = () => {
             </div>
           </div>
 
-          <div className="card glass upload-card">
+          <div className="card liquid-glass upload-card mb-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="flex items-center gap-2"><CheckCircle className="text-success"/> Tarefas Rápidas</h2>
               <p className="text-muted">Ações comuns</p>
             </div>
             
             <div className="quick-actions-grid mt-4">
-              <button className="btn btn-outline flex-col py-4 h-auto" onClick={() => navigate('/dashboard/materials')}>
+              <button className="btn btn-outline btn-glass flex-col py-4 h-auto" onClick={() => navigate('/dashboard/materials')}>
                 <UploadCloud size={24} className="mb-2 text-primary" />
                 Compartilhar Material
               </button>
-              <button className="btn btn-outline flex-col py-4 h-auto" onClick={() => navigate('/dashboard/calendar')}>
+              <button className="btn btn-outline btn-glass flex-col py-4 h-auto" onClick={() => navigate('/dashboard/calendar')}>
                 <Clock size={24} className="mb-2 text-primary" />
                 Agendar Reposição
               </button>
             </div>
           </div>
           
-          <div className="card glass mt-6">
+          <div className="card liquid-glass mt-6">
             <h3 className="mb-4 flex items-center gap-2"><Users className="text-primary"/> Últimos Logins</h3>
             <div className="recent-students-list">
               {loading ? (
@@ -594,8 +595,8 @@ const TeacherDashboard = () => {
               ) : recentLogins.length > 0 ? recentLogins.slice(0, 4).map(({student, date}, idx) => (
                 <div key={idx} className="student-list-item flex items-center justify-between p-3 border-b border-border hover:bg-surface transition-colors rounded">
                   <div className="flex items-center gap-3">
-                    <div className="avatar bg-primary-light text-primary font-bold rounded-full w-10 h-10 flex items-center justify-center">
-                      {student.name.charAt(0)}
+                    <div className="avatar bg-surface border border-border flex items-center justify-center w-10 h-10" style={{ borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+                      <UserAvatar avatarId={student.avatar} name={student.name} size={20} />
                     </div>
                     <div>
                       <div className="font-semibold">{student.name}</div>
@@ -604,7 +605,7 @@ const TeacherDashboard = () => {
                       </div>
                     </div>
                   </div>
-                  <button className="btn btn-outline btn-sm" onClick={() => navigate('/dashboard/students')}>Ver</button>
+                  <button className="btn btn-outline btn-glass btn-sm" onClick={() => navigate('/dashboard/students')}>Ver</button>
                 </div>
               )) : (
                 <p className="text-muted text-sm text-center pt-2">Nenhum login registrado.</p>

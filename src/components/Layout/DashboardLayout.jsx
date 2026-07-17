@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { BookOpen, Calendar, DollarSign, LogOut, LayoutDashboard, Users, Moon, Sun, Folder, User, Shield, GraduationCap } from 'lucide-react';
 import AnimatedBackground from './AnimatedBackground';
+import UserAvatar from '../UserAvatar';
 import './Layout.css';
 
 
@@ -130,8 +131,8 @@ const DashboardLayout = () => {
         </div>
 
         <NavLink to="/dashboard/profile" className="user-profile">
-          <div className="avatar bg-primary text-white flex items-center justify-center rounded-full" style={{ width: '32px', height: '32px', flexShrink: 0, fontWeight: 'bold' }}>
-            {user?.name?.charAt(0) || 'U'}
+          <div className="avatar bg-surface border border-border flex items-center justify-center" style={{ width: '32px', height: '32px', flexShrink: 0, borderRadius: '50%', overflow: 'hidden' }}>
+            <UserAvatar avatarId={user?.avatar} name={user?.name} size={18} />
           </div>
           <div className="user-info">
             <span className="user-name">{user?.name}</span>
