@@ -21,6 +21,16 @@
   border-radius: var(--radius-xl);
 }
 
+/* Hide scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+.sidebar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+
 .brand {
   display: flex;
   align-items: center;
