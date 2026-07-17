@@ -106,8 +106,8 @@ const Landing = () => {
               prepare-se para exames e desbloqueie o mundo.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.8 }}>
-              <Link to="/login" className="hero-cta">
-                Começar Jornada
+              <Link to="/plans" className="hero-cta">
+                Escolher Plano
                 <ArrowRight size={20} />
               </Link>
             </motion.div>
@@ -290,8 +290,8 @@ const Landing = () => {
             Junte-se à elite de alunos que aceleraram suas carreiras e vivências através de uma metodologia de alto impacto.
           </motion.p>
           <motion.div variants={fadeInUp} className="cta-buttons">
-            <Link to="/login" className="hero-cta">
-              Acessar a Plataforma
+            <Link to="/plans" className="hero-cta">
+              Ver Planos e Valores
               <ArrowRight size={20} />
             </Link>
             <a href="mailto:contato@teacherjorge.com" className="cta-outline-btn">

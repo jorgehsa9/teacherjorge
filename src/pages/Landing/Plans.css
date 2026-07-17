@@ -1,0 +1,230 @@
+/* Plans.css */
+.plans-container {
+  min-height: 100vh;
+  background-color: #030014; /* Matching landing page */
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.plans-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.plans-orb-1 {
+  top: -10%;
+  right: 5%;
+  width: 40vw;
+  height: 40vw;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.4), transparent 70%); /* Purple */
+  filter: blur(120px);
+}
+
+.plans-orb-2 {
+  bottom: -20%;
+  left: 5%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.3), transparent 70%); /* Blue */
+  filter: blur(140px);
+}
+
+.plans-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 5%;
+  min-height: 100vh;
+}
+
+.plans-header {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.plans-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #a78bfa, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.plans-nav {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .plans-nav {
+    display: flex;
+    gap: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 2rem;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+  }
+  .plans-nav-btn {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .plans-nav-btn:hover, .plans-nav-btn.active {
+    color: white;
+  }
+}
+
+.plans-btn-start {
+  background: linear-gradient(135deg, var(--primary), #4F46E5);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+
+.plans-btn-start:hover {
+  box-shadow: 0 0 15px var(--primary-glow);
+  transform: translateY(-2px);
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .plans-grid {
+    grid-template-columns: 1fr 1fr;
+    margin-top: 2rem;
+  }
+}
+
+.plan-card {
+  background: rgba(10, 10, 15, 0.4);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2.5rem;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s, border-color 0.3s;
+}
+
+.plan-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(168, 85, 247, 0.3); /* subtle primary border on hover */
+}
+
+.plan-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #cbd5e1;
+  margin-bottom: 0.5rem;
+}
+
+.plan-price-wrapper {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.plan-price {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.02em;
+}
+
+.plan-period {
+  font-size: 1.1rem;
+  color: #94a3b8;
+}
+
+.plan-desc {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  min-height: 60px;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2.5rem 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.plan-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.plan-feature-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(168, 85, 247, 0.2); /* var(--primary) with opacity */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.plan-btn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--primary), #4F46E5);
+  color: white;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+}
+
+.plan-btn:hover {
+  box-shadow: 0 8px 25px var(--primary-glow);
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}

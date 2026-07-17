@@ -174,6 +174,17 @@ const Login = () => {
           Entrar com Google
         </button>
 
+        <div className="text-center mt-6">
+          <button 
+            type="button" 
+            className="text-muted hover:text-white transition-colors text-sm font-medium" 
+            style={{background: 'none', border: 'none', cursor: 'pointer', padding: 0}}
+            onClick={() => navigate('/')}
+          >
+            ← Voltar para o Início
+          </button>
+        </div>
+
       </div>
     </div>
   );

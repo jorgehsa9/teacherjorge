@@ -14,6 +14,7 @@ import Calendar from './pages/Calendar/Calendar';
 import Profile from './pages/Profile/Profile';
 import TeacherSelection from './pages/Student/TeacherSelection';
 import Landing from './pages/Landing/Landing';
+import Plans from './pages/Landing/Plans';
 import Apply from './pages/Landing/Apply';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -124,6 +125,7 @@ function App() {
           </Route>
 
           <Route path="/" element={<Landing />} />
+          <Route path="/plans" element={<Plans />} />
           <Route path="/apply" element={<Apply />} />
         </Routes>
       </Router>

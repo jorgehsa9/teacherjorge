@@ -12,14 +12,14 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-async function checkPriceColumn() {
-  const { data, error } = await supabase.from('Classes').select('price').limit(1);
+async function checkLeadsColumn() {
+  const { data, error } = await supabase.from('Leads').select('*').limit(1);
   
   if (error) {
     console.error(error.message);
   } else {
-    console.log("Column 'price' exists! Data:", data);
+    console.log("Leads data:", data);
   }
 }
 
-checkPriceColumn();
+checkLeadsColumn();

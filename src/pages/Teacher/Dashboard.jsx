@@ -344,14 +344,14 @@ const TeacherDashboard = () => {
         <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><Target className="text-primary"/> Pipeline de Leads</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Column 1: Novos (Applied) */}
-          <div className="p-4 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}>
+          <div style={{ padding: '1.5rem', borderRadius: '1rem', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}>
             <h3 className="font-semibold mb-4 flex justify-between items-center text-muted">
               <span>Novos Leads</span>
               <span className="bg-surface px-2 py-1 rounded-md text-xs">{leads.filter(l => l.status === 'Applied').length}</span>
             </h3>
             <div className="flex flex-col gap-3">
               {leads.filter(l => l.status === 'Applied').map(lead => (
-                <div key={lead.id} className="card glass-3d p-4">
+                <div key={lead.id} className="card glass-3d" style={{ padding: '1.25rem' }}>
                   <div className="font-semibold">{lead.name}</div>
                   <div className="text-xs text-muted mb-3">{lead.email}</div>
                   <div className="text-xs mb-3" style={{ color: 'var(--primary)' }}>Obj: {lead.goals.substring(0, 50)}{lead.goals.length > 50 ? '...' : ''}</div>
@@ -367,14 +367,14 @@ const TeacherDashboard = () => {
           </div>
 
           {/* Column 2: Aula Teste (Trial Scheduled) */}
-          <div className="p-4 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}>
+          <div style={{ padding: '1.5rem', borderRadius: '1rem', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}>
             <h3 className="font-semibold mb-4 flex justify-between items-center text-muted">
               <span>Aula Teste</span>
               <span className="bg-surface px-2 py-1 rounded-md text-xs">{leads.filter(l => l.status === 'Trial Scheduled').length}</span>
             </h3>
             <div className="flex flex-col gap-3">
               {leads.filter(l => l.status === 'Trial Scheduled').map(lead => (
-                <div key={lead.id} className="card glass-3d p-4">
+                <div key={lead.id} className="card glass-3d" style={{ padding: '1.25rem' }}>
                   <div className="font-semibold">{lead.name}</div>
                   <div className="text-xs text-muted mb-3">{lead.email}</div>
                   <button className="btn btn-sm w-full btn-outline btn-glass hover:text-success hover:border-success" onClick={() => handleLeadStatusChange(lead.id, 'Enrolled')}>
@@ -389,14 +389,14 @@ const TeacherDashboard = () => {
           </div>
 
           {/* Column 3: Matriculados (Enrolled) */}
-          <div className="p-4 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}>
+          <div style={{ padding: '1.5rem', borderRadius: '1rem', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}>
             <h3 className="font-semibold mb-4 flex justify-between items-center text-muted">
               <span>Matriculados</span>
               <span className="bg-surface px-2 py-1 rounded-md text-xs">{leads.filter(l => l.status === 'Enrolled').length}</span>
             </h3>
             <div className="flex flex-col gap-3">
               {leads.filter(l => l.status === 'Enrolled').map(lead => (
-                <div key={lead.id} className="card glass-3d p-4 opacity-75">
+                <div key={lead.id} className="card glass-3d opacity-75" style={{ padding: '1.25rem' }}>
                   <div className="font-semibold flex items-center gap-2">
                     <CheckCircle size={14} className="text-success"/> {lead.name}
                   </div>
@@ -515,7 +515,7 @@ const TeacherDashboard = () => {
               <h3 className="mb-4 flex items-center gap-2"><Users className="text-primary"/> Matrículas Pendentes</h3>
               <div className="flex flex-col gap-3">
                 {pendingStudents.map(student => (
-                  <div key={student.id} className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(79, 70, 229, 0.05)', border: '1px solid rgba(79, 70, 229, 0.2)' }}>
+                  <div key={student.id} style={{ padding: '1rem', borderRadius: '0.75rem', backgroundColor: 'rgba(79, 70, 229, 0.05)', border: '1px solid rgba(79, 70, 229, 0.2)' }}>
                     <div className="font-semibold mb-1">{student.name}</div>
                     <div className="text-xs text-muted mb-3 flex items-center gap-1">
                       {student.email}
@@ -548,7 +548,7 @@ const TeacherDashboard = () => {
                 const studentName = students.find(s => s.email === req.student_email)?.name || req.student_email;
                 const date = new Date(req.scheduled_at);
                 return (
-                  <div key={req.id} className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                  <div key={req.id} style={{ padding: '1rem', borderRadius: '0.75rem', backgroundColor: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
                     <div className="font-semibold mb-1">{studentName}</div>
                     <div className="text-xs text-muted mb-3 flex items-center gap-1">
                       <Calendar size={12} /> {date.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' })} às {date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} ({req.duration}m)

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
-import { Play, Download, Book, Award, Calendar, MessageSquare, Clock } from 'lucide-react';
+import { Play, Download, Book, Award, Calendar, MessageSquare, Clock, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import UserAvatar from '../../components/UserAvatar';
 import './StudentDashboard.css';
@@ -331,21 +331,39 @@ const StudentDashboard = () => {
                   return (
                     <label 
                       key={lessonNumber} 
-                      className="flex items-start gap-3 p-3 rounded-md cursor-pointer transition-colors"
+                      className="flex items-start gap-3 p-3 cursor-pointer transition-all"
                       style={{ 
                         border: '1px solid',
-                        borderColor: isChecked ? 'var(--primary)' : 'var(--border)', 
-                        backgroundColor: isChecked ? 'rgba(79, 70, 229, 0.1)' : 'var(--bg-color)',
-                        borderRadius: 'var(--radius-md)'
+                        borderColor: isChecked ? 'rgba(168, 85, 247, 0.4)' : 'rgba(255,255,255,0.05)', 
+                        backgroundColor: isChecked ? 'rgba(168, 85, 247, 0.08)' : 'rgba(255,255,255,0.02)',
+                        borderRadius: '0.75rem',
+                        boxShadow: isChecked ? '0 4px 20px rgba(168, 85, 247, 0.1)' : 'none'
                       }}
                     >
                       <input 
                         type="checkbox" 
-                        className="mt-1"
-                        style={{ width: '16px', height: '16px', accentColor: 'var(--primary)' }}
+                        style={{ display: 'none' }}
                         checked={isChecked}
                         onChange={() => handleToggleLesson(lessonNumber)}
                       />
+                      <div 
+                        style={{ 
+                           width: '20px', 
+                           height: '20px', 
+                           borderRadius: '6px',
+                           border: isChecked ? 'none' : '1px solid rgba(255,255,255,0.2)',
+                           backgroundColor: isChecked ? 'var(--primary)' : 'rgba(0,0,0,0.2)',
+                           display: 'flex',
+                           alignItems: 'center',
+                           justifyContent: 'center',
+                           flexShrink: 0,
+                           marginTop: '2px',
+                           transition: 'all 0.2s',
+                           boxShadow: isChecked ? '0 0 10px var(--primary-glow)' : 'inset 0 2px 4px rgba(0,0,0,0.5)'
+                        }}
+                      >
+                        {isChecked && <Check size={14} color="white" strokeWidth={4} />}
+                      </div>
                       <div className="flex-1">
                         <div style={{ fontSize: '0.875rem', fontWeight: 600, color: isChecked ? 'var(--primary)' : 'var(--text-main)' }}>Lição {lessonNumber}</div>
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{lessonTitle}</div>
