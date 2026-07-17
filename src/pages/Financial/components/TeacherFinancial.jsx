@@ -60,13 +60,14 @@ const TeacherFinancial = () => {
         const monthClasses = classes.filter(c => {
           const d = new Date(c.scheduled_at);
           const isBillable = !c.type || c.type === 'Aula';
-          return d.getFullYear() === refDate.getFullYear() && d.getMonth() === refDate.getMonth() && isBillable;
+          const isConfirmed = c.status === 'Scheduled' || c.status === 'Completed';
+          return d.getFullYear() === refDate.getFullYear() && d.getMonth() === refDate.getMonth() && isBillable && isConfirmed;
         });
         const monthPayments = payments?.filter(p => p.reference_month === refMonthStr) || [];
 
         const studentsAggregated = students.map(student => {
           const studentClasses = monthClasses.filter(c => c.student_email === student.email);
-          const totalAmount = studentClasses.length * classPrice;
+          const totalAmount = studentClasses.reduce((acc, cls) => acc + (cls.price || classPrice), 0);
           const paymentRecord = monthPayments.find(p => p.student_email === student.email);
 
           return {
@@ -103,7 +104,7 @@ const TeacherFinancial = () => {
   const [isBillingModalOpen, setIsBillingModalOpen] = useState(false);
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
   const [isGeneralReceiptModalOpen, setIsGeneralReceiptModalOpen] = useState(false);
-  const [manualClassForm, setManualClassForm] = useState({ date: '', time: '08:00', duration: 60 });
+  const [manualClassForm, setManualClassForm] = useState({ date: '', time: '08:00', duration: 60, price: classPrice });
   const [isAddingClass, setIsAddingClass] = useState(false);
   const [editingClassId, setEditingClassId] = useState(null);
   const [editClassForm, setEditClassForm] = useState({ date: '', time: '', duration: 60 });
@@ -179,7 +180,8 @@ const TeacherFinancial = () => {
       student_email: selectedStudentEmail,
       scheduled_at: baseDate.toISOString(),
       duration: parseInt(manualClassForm.duration),
-      status: 'Completed'
+      status: 'Completed',
+      price: manualClassForm.price || classPrice
     }]);
 
     if (error) {
@@ -191,7 +193,7 @@ const TeacherFinancial = () => {
       await fetchFinancialData();
 
       if (activeStudent?.paymentRecord) {
-        const newTotal = activeStudent.totalAmount + classPrice;
+        const newTotal = activeStudent.totalAmount + (manualClassForm.price || classPrice);
         await supabase.from('Payments').update({ amount: newTotal }).eq('id', activeStudent.paymentRecord.id);
         await fetchFinancialData();
       }
@@ -208,7 +210,9 @@ const TeacherFinancial = () => {
     else {
       await fetchFinancialData();
       if (activeStudent?.paymentRecord) {
-        const newTotal = activeStudent.totalAmount - classPrice;
+        const removedClass = activeStudent.classes.find(c => c.id === classId);
+        const amountToSubtract = removedClass ? (removedClass.price || classPrice) : classPrice;
+        const newTotal = Math.max(0, activeStudent.totalAmount - amountToSubtract);
         await supabase.from('Payments').update({ amount: newTotal }).eq('id', activeStudent.paymentRecord.id);
         await fetchFinancialData();
       }
@@ -440,6 +444,7 @@ const TeacherFinancial = () => {
                         <option value="45">45 min</option>
                         <option value="60">60 min</option>
                       </select></div>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}><label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Valor (R$)</label><input type="number" min="0" step="0.01" className="input" style={{ padding: '0.5rem' }} value={manualClassForm.price} onChange={e => setManualClassForm({ ...manualClassForm, price: parseFloat(e.target.value) || 0 })} /></div>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
                       <button type="button" className="btn btn-outline btn-glass" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }} onClick={() => setIsAddingClass(false)}>Cancelar</button>
@@ -477,7 +482,7 @@ const TeacherFinancial = () => {
                             </div>
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <span style={{ fontWeight: 'bold', fontSize: '0.9rem', marginRight: '0.5rem' }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(classPrice)}</span>
+                            <span style={{ fontWeight: 'bold', fontSize: '0.9rem', marginRight: '0.5rem' }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cls.price || classPrice)}</span>
                             <button style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: 'none', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={() => startEditingClass(cls)} disabled={isSubmitting} title="Editar aula">
                               <Edit2 size={14} />
                             </button>
@@ -583,7 +588,7 @@ const TeacherFinancial = () => {
                 {activeStudent.classes.map((cls, idx) => (
                   <div key={idx} className="flex justify-between mb-2 text-sm text-black">
                     <span>{new Date(cls.scheduled_at).toLocaleDateString('pt-BR')} - {new Date(cls.scheduled_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
-                    <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(classPrice)}</span>
+                    <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cls.price || classPrice)}</span>
                   </div>
                 ))}
               </div>

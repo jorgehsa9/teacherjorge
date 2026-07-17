@@ -12,6 +12,7 @@ import Materials from './pages/Teacher/Materials';
 import Financial from './pages/Financial/Financial';
 import Calendar from './pages/Calendar/Calendar';
 import Profile from './pages/Profile/Profile';
+import TeacherSelection from './pages/Student/TeacherSelection';
 import Landing from './pages/Landing/Landing';
 import Apply from './pages/Landing/Apply';
 
@@ -83,6 +84,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['student']}>
                   <StudentMaterials />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="student/teachers" 
+              element={
+                <ProtectedRoute allowedRoles={['student']}>
+                  <TeacherSelection />
                 </ProtectedRoute>
               } 
             />

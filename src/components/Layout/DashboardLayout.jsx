@@ -115,6 +115,7 @@ const DashboardLayout = () => {
     ...(user?.is_admin ? [{ name: 'Equipe', path: '/dashboard/equipe', icon: GraduationCap }] : []),
     ...(user?.role === 'teacher' ? [{ name: 'Materiais', path: '/dashboard/materials', icon: Folder }] : []),
     ...(user?.role === 'student' ? [{ name: 'Materiais', path: '/dashboard/student/materials', icon: Folder }] : []),
+    ...(user?.role === 'student' ? [{ name: 'Professores', path: '/dashboard/student/teachers', icon: Users }] : []),
     { name: 'Calendário', path: '/dashboard/calendar', icon: Calendar },
     { name: 'Financeiro', path: '/dashboard/financial', icon: DollarSign },
     { name: 'Perfil', path: '/dashboard/profile', icon: User, className: 'mobile-only' },

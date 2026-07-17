@@ -226,6 +226,32 @@
 .weekly-event.bg-success { background-color: rgba(16, 185, 129, 0.15); color: var(--success); border-left: 3px solid var(--success); }
 .weekly-event.bg-purple { background-color: rgba(139, 92, 246, 0.15); color: #8b5cf6; border-left: 3px solid #8b5cf6; }
 
+.weekly-event.event-requested {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(245, 158, 11, 0.15),
+    rgba(245, 158, 11, 0.15) 10px,
+    rgba(245, 158, 11, 0.3) 10px,
+    rgba(245, 158, 11, 0.3) 20px
+  );
+  border: 1px solid var(--warning);
+  border-left: 4px solid var(--warning);
+  color: var(--warning);
+  animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+
+.month-event.event-requested {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: var(--warning);
+  border-left: 2px dashed var(--warning);
+}
+
 .weekly-event .event-time {
   font-weight: bold;
   margin-bottom: 2px;

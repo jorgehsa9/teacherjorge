@@ -43,7 +43,7 @@ const Calendar = () => {
   const [selectedClassId, setSelectedClassId] = useState(null);
   const [classForm, setClassForm] = useState({
     student_email: '', date: '', startHour: '08', startMinute: '00', duration: 60, status: 'Scheduled',
-    isRecurring: false, repeatDays: [], repeatUntil: ''
+    type: 'Aula', price: 40, isRecurring: false, repeatDays: [], repeatUntil: ''
   });
 
   // Current Time Indicator
@@ -267,6 +267,7 @@ const Calendar = () => {
       duration: 60,
       status: isTeacher ? 'Scheduled' : 'Requested',
       type: isTeacher ? 'Aula' : 'Solicitação de Aula',
+      price: 40,
       isRecurring: false, repeatDays: [], repeatUntil: '', feedback: ''
     });
     setIsModalOpen(true);
@@ -284,6 +285,7 @@ const Calendar = () => {
     setClassForm({
       student_email: cls.student_email, date: dateStr, startHour: hourStr, startMinute: minStr,
       duration: cls.duration, status: cls.status, type: cls.type || 'Aula',
+      price: cls.price || 40,
       isRecurring: false, repeatDays: [], repeatUntil: '', feedback: ''
     });
     setIsModalOpen(true);
@@ -314,7 +316,8 @@ const Calendar = () => {
       scheduled_at: baseDate.toISOString(),
       duration: parseInt(classForm.duration),
       status: classForm.status,
-      type: classForm.type
+      type: classForm.type,
+      price: parseFloat(classForm.price) || 0
     };
 
     let error;
@@ -409,7 +412,7 @@ const Calendar = () => {
         draggable={isTeacher}
         onDragStart={(e) => handleDragStart(e, cls)}
         onDragEnd={handleDragEnd}
-        className={`weekly-event ${colorClass} ${isDragging ? 'resizing' : ''}`}
+        className={`weekly-event ${colorClass} ${isDragging ? 'resizing' : ''} ${cls.status === 'Requested' ? 'event-requested' : ''}`}
         style={{ top: `${topPosition}px`, height: `${height}px` }}
         onClick={(e) => { e.stopPropagation(); openEditClassModal(cls); }}
       >
@@ -450,7 +453,7 @@ const Calendar = () => {
                   const colorClass = cls.student_email ? COLORS[cls.student_email.length % COLORS.length] : 'bg-purple';
                   const timeStr = new Date(cls.scheduled_at).toTimeString().substring(0, 5);
                   return (
-                    <div key={cls.id} className={`month-event ${colorClass}`} onClick={(e) => { e.stopPropagation(); openEditClassModal(cls); }}>
+                    <div key={cls.id} className={`month-event ${colorClass} ${cls.status === 'Requested' ? 'event-requested' : ''}`} onClick={(e) => { e.stopPropagation(); openEditClassModal(cls); }}>
                       {timeStr} {getStudentName(cls.student_email)}
                     </div>
                   )
@@ -787,6 +790,12 @@ const Calendar = () => {
                     <option value={120}>2 horas</option>
                   </select>
                 </div>
+                {isTeacher && classForm.type === 'Aula' && (
+                  <div className="input-group" style={{ marginBottom: 0 }}>
+                    <label>Valor da Aula (R$)</label>
+                    <input type="number" min="0" step="0.01" className="input w-full" value={classForm.price} onChange={(e) => setClassForm({ ...classForm, price: e.target.value })} />
+                  </div>
+                )}
                 {editMode && (
                   <div className="input-group" style={{ marginBottom: 0 }}>
                     <label>Status</label>
