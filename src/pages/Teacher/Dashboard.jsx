@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Video, Clock, DollarSign, UploadCloud, Play, FileText, CheckCircle, Calendar } from 'lucide-react';
+import { Users, Video, Clock, DollarSign, UploadCloud, Play, FileText, CheckCircle, Calendar, Target } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { useAuth } from '../../contexts/AuthContext';
@@ -18,6 +18,7 @@ const TeacherDashboard = () => {
   const [meetLink, setMeetLink] = useState('');
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [leads, setLeads] = useState([]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -138,6 +139,10 @@ const TeacherDashboard = () => {
         setPendingRequests(pendingData);
       }
 
+      // 5. Fetch Leads
+      const { data: leadsData } = await supabase.from('Leads').select('*').order('created_at', { ascending: false });
+      if (leadsData) setLeads(leadsData);
+
       setLoading(false);
     };
 
@@ -165,6 +170,17 @@ const TeacherDashboard = () => {
       setLoading(false);
       alert('Erro ao recusar solicitação.');
     }
+  };
+
+  const handleLeadStatusChange = async (leadId, newStatus) => {
+    setLoading(true);
+    const { error } = await supabase.from('Leads').update({ status: newStatus }).eq('id', leadId);
+    if (!error) {
+      setLeads(prevLeads => prevLeads.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
+    } else {
+      alert('Erro ao atualizar lead.');
+    }
+    setLoading(false);
   };
 
   // Update time to next class every minute
@@ -319,6 +335,78 @@ const TeacherDashboard = () => {
               <Line type="monotone" dataKey="Aulas" stroke="var(--primary)" strokeWidth={3} dot={{ r: 3, fill: 'var(--primary)' }} activeDot={{ r: 5 }} />
             </LineChart>
           </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Leads Kanban Board */}
+      <div className="card glass mb-6 animate-fade-in-up delay-300">
+        <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><Target className="text-primary"/> Pipeline de Leads</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Column 1: Novos (Applied) */}
+          <div className="p-4 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}>
+            <h3 className="font-semibold mb-4 flex justify-between items-center text-muted">
+              <span>Novos Leads</span>
+              <span className="bg-surface px-2 py-1 rounded-md text-xs">{leads.filter(l => l.status === 'Applied').length}</span>
+            </h3>
+            <div className="flex flex-col gap-3">
+              {leads.filter(l => l.status === 'Applied').map(lead => (
+                <div key={lead.id} className="card bg-surface p-4 border border-border">
+                  <div className="font-semibold">{lead.name}</div>
+                  <div className="text-xs text-muted mb-3">{lead.email}</div>
+                  <div className="text-xs mb-3" style={{ color: 'var(--primary)' }}>Obj: {lead.goals.substring(0, 50)}{lead.goals.length > 50 ? '...' : ''}</div>
+                  <button className="btn btn-sm w-full btn-primary" onClick={() => handleLeadStatusChange(lead.id, 'Trial Scheduled')}>
+                    Agendar Aula Teste
+                  </button>
+                </div>
+              ))}
+              {leads.filter(l => l.status === 'Applied').length === 0 && (
+                <div className="text-sm text-muted text-center py-4">Nenhum lead novo.</div>
+              )}
+            </div>
+          </div>
+
+          {/* Column 2: Aula Teste (Trial Scheduled) */}
+          <div className="p-4 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}>
+            <h3 className="font-semibold mb-4 flex justify-between items-center text-muted">
+              <span>Aula Teste</span>
+              <span className="bg-surface px-2 py-1 rounded-md text-xs">{leads.filter(l => l.status === 'Trial Scheduled').length}</span>
+            </h3>
+            <div className="flex flex-col gap-3">
+              {leads.filter(l => l.status === 'Trial Scheduled').map(lead => (
+                <div key={lead.id} className="card bg-surface p-4 border border-border">
+                  <div className="font-semibold">{lead.name}</div>
+                  <div className="text-xs text-muted mb-3">{lead.email}</div>
+                  <button className="btn btn-sm w-full btn-outline hover:text-success hover:border-success" onClick={() => handleLeadStatusChange(lead.id, 'Enrolled')}>
+                    Matricular
+                  </button>
+                </div>
+              ))}
+              {leads.filter(l => l.status === 'Trial Scheduled').length === 0 && (
+                <div className="text-sm text-muted text-center py-4">Nenhuma aula teste.</div>
+              )}
+            </div>
+          </div>
+
+          {/* Column 3: Matriculados (Enrolled) */}
+          <div className="p-4 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}>
+            <h3 className="font-semibold mb-4 flex justify-between items-center text-muted">
+              <span>Matriculados</span>
+              <span className="bg-surface px-2 py-1 rounded-md text-xs">{leads.filter(l => l.status === 'Enrolled').length}</span>
+            </h3>
+            <div className="flex flex-col gap-3">
+              {leads.filter(l => l.status === 'Enrolled').map(lead => (
+                <div key={lead.id} className="card bg-surface p-4 border border-border opacity-75">
+                  <div className="font-semibold flex items-center gap-2">
+                    <CheckCircle size={14} className="text-success"/> {lead.name}
+                  </div>
+                  <div className="text-xs text-muted">{lead.email}</div>
+                </div>
+              ))}
+              {leads.filter(l => l.status === 'Enrolled').length === 0 && (
+                <div className="text-sm text-muted text-center py-4">Nenhum aluno matriculado via leads.</div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 

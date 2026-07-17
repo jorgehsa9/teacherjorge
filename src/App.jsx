@@ -13,6 +13,7 @@ import Financial from './pages/Financial/Financial';
 import Calendar from './pages/Calendar/Calendar';
 import Profile from './pages/Profile/Profile';
 import Landing from './pages/Landing/Landing';
+import Apply from './pages/Landing/Apply';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
@@ -114,6 +115,7 @@ function App() {
           </Route>
 
           <Route path="/" element={<Landing />} />
+          <Route path="/apply" element={<Apply />} />
         </Routes>
       </Router>
     </AuthProvider>

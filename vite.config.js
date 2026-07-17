@@ -1,18 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
-import { execSync } from 'child_process'
-
-let commitCount = '0';
-try {
-  commitCount = execSync('git rev-list --count HEAD').toString().trim();
-} catch (e) {
-  console.warn('Failed to get git commit count', e);
-}
+import packageJson from './package.json'
 
 export default defineConfig({
   define: {
-    __APP_VERSION__: JSON.stringify(`1.${commitCount}.0`)
+    __APP_VERSION__: JSON.stringify(packageJson.version)
   },
   plugins: [
     react(),
